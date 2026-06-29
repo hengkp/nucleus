@@ -50,6 +50,18 @@
       "defaults": { "cpus": 4, "memoryMb": 16384, "timeMinutes": 720 }
     },
     {
+      "id": "mcmicro",
+      "name": "MCMICRO",
+      "repo": "labsyspharm/mcmicro",
+      "revision": "master",
+      "icon": "microscope-line",
+      "category": "Imaging",
+      "description": "Multiplexed tissue imaging: stitching/registration, segmentation, and single-cell quantification. Configure inputs with a custom Nextflow config / params at launch.",
+      "schemaUrl": null,
+      "docs": "https://mcmicro.org",
+      "defaults": { "cpus": 16, "memoryMb": 98304, "timeMinutes": 2880 }
+    },
+    {
       "id": "hello",
       "name": "Hello (smoke test)",
       "repo": "nextflow-io/hello",
