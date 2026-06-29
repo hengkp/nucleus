@@ -606,15 +606,24 @@ function Get-SelectedMappingDrive {
     return $null
 }
 
-function Update-MappingActionButtons {
-    $hasMapping = -not [string]::IsNullOrWhiteSpace((Get-SelectedMappingDrive))
-
-    if ($null -ne $disconnectButton) {
-        $disconnectButton.Enabled = $hasMapping
+# Drives whose checkbox is ticked in the mounted-drives list (multi-select disconnect).
+function Get-CheckedMappingDrives {
+    $drives = @()
+    if ($null -ne $mappingList) {
+        foreach ($it in $mappingList.CheckedItems) {
+            $m = $it.Tag
+            if ($null -ne $m) {
+                $d = [string]$m.LocalPath
+                if ($d -match '^[A-Z]:$') { $drives += $d }
+            }
+        }
     }
+    return $drives
+}
 
-    if ($null -ne $openButton) {
-        $openButton.Enabled = $hasMapping
+function Update-MappingActionButtons {
+    if ($null -ne $disconnectButton) {
+        $disconnectButton.Enabled = ($null -ne $mappingList -and $mappingList.CheckedItems.Count -gt 0)
     }
 }
 
@@ -844,9 +853,13 @@ function New-SispTrayIcon {
     $trayIconPath = Get-TrayIconAssetPath -Status $Status
     if (-not [string]::IsNullOrWhiteSpace($trayIconPath) -and (Test-Path -LiteralPath $trayIconPath)) {
         try {
-            return New-Object System.Drawing.Icon -ArgumentList $trayIconPath
+            # Pull the tray-sized frame out of the multi-resolution .ico so the new generated
+            # icon renders crisp at 16x16 instead of a blurry down-scale of the largest frame.
+            $small = [System.Windows.Forms.SystemInformation]::SmallIconSize
+            return (New-Object System.Drawing.Icon -ArgumentList $trayIconPath, $small)
         }
         catch {
+            try { return New-Object System.Drawing.Icon -ArgumentList $trayIconPath } catch { }
         }
     }
 
@@ -1268,47 +1281,45 @@ $drivesPanel.BorderStyle = 'FixedSingle'
 $form.Controls.Add($drivesPanel)
 
 $mappingLabel = New-Object System.Windows.Forms.Label
-$mappingLabel.Text = 'Mounted network drives'
+$mappingLabel.Text = 'Mounted network drives  —  tick to select, click a row to open'
 $mappingLabel.Font = New-Object System.Drawing.Font('Segoe UI', 11, [System.Drawing.FontStyle]::Bold)
 $mappingLabel.ForeColor = $ColorInk
 $mappingLabel.Location = New-Object System.Drawing.Point(36, 380)
-$mappingLabel.Size = New-Object System.Drawing.Size(260, 22)
+$mappingLabel.Size = New-Object System.Drawing.Size(590, 22)
 $form.Controls.Add($mappingLabel)
 
+# Refresh + Disconnect sit side by side on the list header row (top-right).
 $refreshButton = New-Object System.Windows.Forms.Button
 $refreshButton.Text = 'Refresh'
-$refreshButton.Location = New-Object System.Drawing.Point(734, 376)
-$refreshButton.Size = New-Object System.Drawing.Size(90, 30)
+$refreshButton.Location = New-Object System.Drawing.Point(638, 376)
+$refreshButton.Size = New-Object System.Drawing.Size(96, 30)
 $form.Controls.Add($refreshButton)
 
+$disconnectButton = New-Object System.Windows.Forms.Button
+$disconnectButton.Text = 'Disconnect'
+$disconnectButton.Location = New-Object System.Drawing.Point(740, 376)
+$disconnectButton.Size = New-Object System.Drawing.Size(104, 30)
+$form.Controls.Add($disconnectButton)
+
+# Mounted drives: checkbox multi-select (header toggles all/none), scrollable, click a row to open.
 $mappingList = New-Object System.Windows.Forms.ListView
 $mappingList.Location = New-Object System.Drawing.Point(36, 412)
-$mappingList.Size = New-Object System.Drawing.Size(808, 122)
+$mappingList.Size = New-Object System.Drawing.Size(808, 168)
 $mappingList.View = 'Details'
 $mappingList.FullRowSelect = $true
 $mappingList.GridLines = $false
-$mappingList.MultiSelect = $false
+$mappingList.CheckBoxes = $true
+$mappingList.MultiSelect = $true
 $mappingList.HideSelection = $false
+$mappingList.Scrollable = $true
 $mappingList.BackColor = $ColorSurfaceAlt
 $mappingList.ForeColor = $ColorInk
 $mappingList.Font = New-Object System.Drawing.Font('Consolas', 9)
-[void]$mappingList.Columns.Add('Drive', 70)
+[void]$mappingList.Columns.Add('✓ Drive', 150)
 [void]$mappingList.Columns.Add('Share', 360)
-[void]$mappingList.Columns.Add('User', 258)
-[void]$mappingList.Columns.Add('Status', 110)
+[void]$mappingList.Columns.Add('User', 190)
+[void]$mappingList.Columns.Add('Status', 100)
 $form.Controls.Add($mappingList)
-
-$disconnectButton = New-Object System.Windows.Forms.Button
-$disconnectButton.Text = 'Disconnect selected'
-$disconnectButton.Location = New-Object System.Drawing.Point(548, 544)
-$disconnectButton.Size = New-Object System.Drawing.Size(168, 32)
-$form.Controls.Add($disconnectButton)
-
-$openButton = New-Object System.Windows.Forms.Button
-$openButton.Text = 'Open'
-$openButton.Location = New-Object System.Drawing.Point(726, 544)
-$openButton.Size = New-Object System.Drawing.Size(98, 32)
-$form.Controls.Add($openButton)
 
 # ----- Activity card -----
 $activityPanel = New-Object System.Windows.Forms.Panel
@@ -1341,7 +1352,6 @@ $form.Controls.Add($statusBox)
 Set-ButtonStyle -Button $connectButton -BackColor $ColorCyan -ForeColor ([System.Drawing.Color]::White)
 $connectButton.Font = New-Object System.Drawing.Font('Segoe UI', 10, [System.Drawing.FontStyle]::Bold)
 Set-ButtonStyle -Button $disconnectButton -BackColor $ColorDanger -ForeColor ([System.Drawing.Color]::White)
-Set-ButtonStyle -Button $openButton -BackColor $ColorSurfaceAlt -ForeColor $ColorOcean
 Set-ButtonStyle -Button $forgetButton -BackColor $ColorSurfaceAlt -ForeColor $ColorOcean
 Set-ButtonStyle -Button $refreshButton -BackColor $ColorSurfaceAlt -ForeColor $ColorOcean
 
@@ -1349,7 +1359,7 @@ $connectPanel.SendToBack()
 $drivesPanel.SendToBack()
 $activityPanel.SendToBack()
 $disconnectButton.BringToFront()
-$openButton.BringToFront()
+$refreshButton.BringToFront()
 
 $trayMenu = New-Object System.Windows.Forms.ContextMenuStrip
 $trayStatusItem = New-Object System.Windows.Forms.ToolStripMenuItem -ArgumentList $AppTitle
@@ -1500,51 +1510,54 @@ $connectButton.Add_Click({
 })
 
 $disconnectButton.Add_Click({
-    $mapping = Get-SelectedMapping
-    $drive = Get-SelectedMappingDrive
-
-    if ([string]::IsNullOrWhiteSpace($drive)) {
-        Show-Warning 'Select a mounted drive row first.'
+    $drives = @(Get-CheckedMappingDrives)
+    if ($drives.Count -eq 0) {
+        $sel = Get-SelectedMappingDrive
+        if (-not [string]::IsNullOrWhiteSpace($sel)) { $drives = @($sel) }
+    }
+    if ($drives.Count -eq 0) {
+        Show-Warning 'Tick one or more mounted drives first.'
         return
     }
 
-    $remote = Get-DisplayText $mapping.RemotePath 'network share'
     $answer = [System.Windows.Forms.MessageBox]::Show(
-        "Disconnect $drive from $remote?",
+        "Disconnect $($drives.Count) drive(s)?`r`n`r`n$($drives -join '   ')",
         $AppTitle,
         'YesNo',
         'Question'
     )
-
     if ($answer -ne 'Yes') {
         return
     }
 
     $network = $null
-
+    $done = 0
     try {
         $network = New-NetworkObject
-        $existing = Get-DriveInfo -Drive $drive
-
-        if ($null -eq $existing -or $existing.DriveType -ne 4) {
-            Write-Status $statusBox "$drive is not mapped."
-            Refresh-DriveList -PreferredDrive $drive
-            Update-MappingView
-            return
+        foreach ($drive in $drives) {
+            try {
+                $existing = Get-DriveInfo -Drive $drive
+                if ($null -eq $existing -or $existing.DriveType -ne 4) {
+                    Write-Status $statusBox "$drive is not mapped."
+                    continue
+                }
+                Set-TrayBusy "disconnecting $drive..."
+                $network.RemoveNetworkDrive($drive, $true, $true)
+                Remove-MappingUserInfo -Drive $drive
+                Write-Status $statusBox "Disconnected $drive."
+                $done++
+            }
+            catch {
+                Write-Status $statusBox "Disconnect $drive failed: $($_.Exception.Message)"
+            }
         }
-
-        Set-TrayBusy "disconnecting $drive..."
-        $network.RemoveNetworkDrive($drive, $true, $true)
-        Remove-MappingUserInfo -Drive $drive
         Save-CurrentSettings
-        Refresh-DriveList -PreferredDrive $drive
+        Refresh-DriveList
         Update-MappingView
-        Write-Status $statusBox "Disconnected $drive."
-        Show-TrayNotification "Disconnected $drive." 'Info'
+        if ($done -gt 0) { Show-TrayNotification "Disconnected $done drive(s)." 'Info' }
     }
     catch {
         Show-Warning "Disconnect failed: $($_.Exception.Message)"
-        Write-Status $statusBox "Disconnect failed: $($_.Exception.Message)"
         Update-MappingView
     }
     finally {
@@ -1565,41 +1578,38 @@ $refreshButton.Add_Click({
     Write-Status $statusBox 'Refreshed drive and mapping status.'
 })
 
-$openButton.Add_Click({
-    $drive = Get-SelectedMappingDrive
-    if ([string]::IsNullOrWhiteSpace($drive)) {
-        Show-Warning 'Select a mounted drive row first.'
-        return
-    }
-
-    $path = $drive + '\'
-
-    if (Test-Path $path) {
-        Start-Process explorer.exe $path
-    }
-    else {
-        Show-Warning "$drive is not connected."
+# Click a row (anywhere except its checkbox) opens that drive in Explorer.
+$mappingList.Add_MouseClick({
+    param($eventSender, $e)
+    $info = $mappingList.HitTest($e.Location)
+    if ($null -eq $info -or $null -eq $info.Item) { return }
+    if ($info.Location -eq [System.Windows.Forms.ListViewHitTestLocations]::StateImage) { return }  # checkbox toggle, don't open
+    $m = $info.Item.Tag
+    if ($null -eq $m) { return }
+    $drive = [string]$m.LocalPath
+    if ($drive -match '^[A-Z]:$') {
+        $path = $drive + '\'
+        if (Test-Path $path) { Start-Process explorer.exe $path }
     }
 })
+
+# Clicking the first column header toggles all checkboxes (select all / none).
+$mappingList.Add_ColumnClick({
+    param($eventSender, $e)
+    if ($e.Column -ne 0) { return }
+    $rows = @($mappingList.Items | Where-Object { $null -ne $_.Tag })
+    if ($rows.Count -eq 0) { return }
+    $allChecked = -not ($rows | Where-Object { -not $_.Checked })
+    foreach ($it in $rows) { $it.Checked = (-not $allChecked) }
+    Update-MappingActionButtons
+})
+
+$mappingList.Add_ItemChecked({ Update-MappingActionButtons })
 
 $mappingList.Add_SelectedIndexChanged({
     $drive = Get-SelectedMappingDrive
     if (-not [string]::IsNullOrWhiteSpace($drive)) {
         Select-DriveBoxDrive -Drive $drive
-    }
-
-    Update-MappingActionButtons
-})
-
-$mappingList.Add_DoubleClick({
-    $drive = Get-SelectedMappingDrive
-    if ([string]::IsNullOrWhiteSpace($drive)) {
-        return
-    }
-
-    $path = $drive + '\'
-    if (Test-Path $path) {
-        Start-Process explorer.exe $path
     }
 })
 

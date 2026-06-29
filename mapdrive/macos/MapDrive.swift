@@ -159,7 +159,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setConnecting() {
         guard let btn = statusItem.button else { return }
         if let img = NSImage(named: NSImage.Name("connecting")) {
-            img.isTemplate = true; btn.image = img
+            img.isTemplate = false; img.size = NSSize(width: 18, height: 18); btn.image = img   // colorful generated icon
         } else if let img = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: "MapDrive: working") {
             img.isTemplate = true; btn.image = img
         }
@@ -174,7 +174,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let desc = connected ? "MapDrive: connected" : "MapDrive: disconnected"
             let customName = connected ? "connected" : "disconnected"
             if let img = NSImage(named: NSImage.Name(customName)) {
-                img.isTemplate = true
+                img.isTemplate = false                     // show the colorful generated icon, not a mono mask
+                img.size = NSSize(width: 18, height: 18)   // fit the menu bar
                 btn.image = img
             } else if let img = NSImage(systemSymbolName: symbol, accessibilityDescription: desc) {
                 img.isTemplate = true   // adapts to light/dark menu bar

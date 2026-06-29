@@ -1,5 +1,5 @@
 #define MyAppName "SISP NAS Drive Mapper"
-#define MyAppVersion "1.2.1"
+#define MyAppVersion "1.3.0"
 #define MyAppPublisher "SISP"
 #define MyAppURL "https://mapdrive.sisp.com"
 #define SourceRoot "..\windows"
@@ -12,10 +12,11 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={localappdata}\SISPDriveMapper
+DefaultDirName={autopf}\SISPDriveMapper
 DefaultGroupName=SISP
 DisableProgramGroupPage=yes
-PrivilegesRequired=lowest
+; Install for all users into Program Files so it shows in Add/Remove Programs and uninstalls cleanly.
+PrivilegesRequired=admin
 OutputDir=.
 OutputBaseFilename=SISPDriveMapperSetup
 SetupIconFile={#SourceRoot}\assets\app-icon.ico
@@ -42,13 +43,13 @@ Source: "{#SourceRoot}\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion 
 Name: "{group}\{#MyAppName}"; Filename: "{app}\SISPDriveMapperLauncher.exe"; WorkingDir: "{app}"; IconFilename: "{app}\assets\app-icon.ico"; IconIndex: 0
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{app}\SISPDriveMapperUninstaller.exe"; WorkingDir: "{app}"; IconFilename: "{app}\assets\app-icon.ico"; IconIndex: 0
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\SISPDriveMapperLauncher.exe"; WorkingDir: "{app}"; IconFilename: "{app}\assets\app-icon.ico"; IconIndex: 0; Tasks: desktopicon
-Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\SISPDriveMapperLauncher.exe"; WorkingDir: "{app}"; IconFilename: "{app}\assets\app-icon.ico"; IconIndex: 0; Tasks: startup
+Name: "{commonstartup}\{#MyAppName}"; Filename: "{app}\SISPDriveMapperLauncher.exe"; WorkingDir: "{app}"; IconFilename: "{app}\assets\app-icon.ico"; IconIndex: 0; Tasks: startup
 
 [Registry]
-Root: HKCU; Subkey: "Software\Classes\sispdrive"; ValueType: string; ValueName: ""; ValueData: "URL:SISP Drive Mapper"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Classes\sispdrive"; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "Software\Classes\sispdrive\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\assets\app-icon.ico,0"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Classes\sispdrive\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\SISPDriveMapperLauncher.exe"" ""%1"""; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Classes\sispdrive"; ValueType: string; ValueName: ""; ValueData: "URL:SISP Drive Mapper"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Classes\sispdrive"; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKLM; Subkey: "Software\Classes\sispdrive\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\assets\app-icon.ico,0"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Classes\sispdrive\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\SISPDriveMapperLauncher.exe"" ""%1"""; Flags: uninsdeletekey
 
 [Run]
 Filename: "{app}\SISPDriveMapperLauncher.exe"; Description: "Open SISP NAS Drive Mapper"; Flags: nowait postinstall skipifsilent
