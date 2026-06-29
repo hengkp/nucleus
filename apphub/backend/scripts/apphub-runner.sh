@@ -110,20 +110,31 @@ case "$TEMPLATE" in
       exec code-server --bind-addr 0.0.0.0:${PORT} --auth none --disable-telemetry --disable-update-check /
     " ;;
   qupath)
-    # QuPath 0.7 GUI streamed to the browser (TigerVNC + openbox + noVNC inside the image).
-    # Start the VNC X server, the window manager, QuPath, then noVNC/websockify on $PORT. NB:
-    # prism.order=sw (software JavaFX) only — do NOT set prism.useFontConfig=false, which breaks
-    # QuPath's glyph icons. Bind the lockers tree + NAS shares so users open images in place.
+    # QuPath 0.7 GUI streamed to the browser via KasmVNC (better web encoding/input than noVNC).
+    # KasmVNC serves the web client itself on the app port (HTTP; the per-instance vhost is
+    # Authelia-gated, so basic auth is disabled). prism.order=sw = software JavaFX (no GPU); do NOT
+    # set prism.useFontConfig=false (breaks QuPath glyph icons). Bind the lockers tree + NAS shares.
     WS_SRC="$LOCKERS_ROOT"; WS_DST="$LOCKERS_ROOT"; WS_PWD="$WS"; bind_data_shares
     export SINGULARITYENV_PORT="$PORT" APPTAINERENV_PORT="$PORT"
     run "$(img qupath.sif)" "
       export HOME='$WS' DISPLAY=:1 _JAVA_OPTIONS='-Dprism.order=sw'
-      mkdir -p /tmp/.X11-unix 2>/dev/null || true
-      Xvnc :1 -geometry 1600x900 -depth 24 -SecurityTypes None -localhost yes -rfbport 5901 -AlwaysShared >/tmp/xvnc.log 2>&1 &
-      for i in \$(seq 1 60); do [ -S /tmp/.X11-unix/X1 ] && break; sleep 0.25; done
-      openbox >/tmp/openbox.log 2>&1 &
-      /usr/local/bin/QuPath >/tmp/qupath.log 2>&1 &
-      exec websockify --web=/usr/share/novnc 0.0.0.0:${PORT} localhost:5901
+      mkdir -p '$WS/.vnc' /tmp/.X11-unix 2>/dev/null || true
+      # KasmVNC always loads an SSL cert (even with require_ssl:false). The image's snakeoil key
+      # lives in /etc/ssl/private (mode 0710 root:ssl-cert) which the job's non-root user can't read,
+      # so point KasmVNC at a self-signed cert we generate in the user-owned .vnc dir instead.
+      [ -f '$WS/.vnc/self.pem' ] || openssl req -x509 -nodes -newkey rsa:2048 -keyout '$WS/.vnc/self.key' -out '$WS/.vnc/self.pem' -days 3650 -subj '/CN=apphub' >/dev/null 2>&1
+      printf 'network:\n  protocol: http\n  interface: 0.0.0.0\n  websocket_port: %s\n  ssl:\n    require_ssl: false\n    pem_certificate: $WS/.vnc/self.pem\n    pem_key: $WS/.vnc/self.key\n  udp:\n    public_ip: 127.0.0.1\n' '${PORT}' > '$WS/.vnc/kasmvnc.yaml'
+      # KasmVNC needs a session user with write access (>=6-char password) or vncserver loops on the
+      # interactive prompt and never binds the port. Auth is still disabled at the VNC layer
+      # (-disableBasicAuth) since the per-instance vhost is Authelia-gated; this password is internal.
+      [ -f '$WS/.kasmpasswd' ] || printf 'sispkasm\nsispkasm\n' | kasmvncpasswd -u sisp -w >/dev/null 2>&1
+      vncserver :1 -select-de manual -geometry 1600x900 -disableBasicAuth </dev/null >/tmp/vnc.log 2>&1
+      sleep 4
+      DISPLAY=:1 openbox >/tmp/openbox.log 2>&1 &
+      DISPLAY=:1 /usr/local/bin/QuPath >/tmp/qupath.log 2>&1 &
+      XPID=\$(cat '$WS'/.vnc/*:1.pid 2>/dev/null | head -1)
+      if [ -n \"\$XPID\" ]; then exec tail --pid=\"\$XPID\" -f /dev/null; fi
+      echo 'KasmVNC failed to start'; tail -30 /tmp/vnc.log; exit 1
     " ;;
   static-html)
     run "$(img python-apps.sif)" "python -m http.server ${PORT} --bind 0.0.0.0 --directory /workspace" ;;
