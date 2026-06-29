@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "MCMICRO pipeline parameters",
+  "description": "Multiplexed tissue imaging (labsyspharm/mcmicro): stitching/registration, segmentation, quantification, downstream.",
+  "$defs": {
+    "input_output": {
+      "title": "Input / output",
+      "description": "Where MCMICRO reads the project. Results are written back into the project folder, so it must be writable by you.",
+      "required": ["in"],
+      "properties": {
+        "in": { "type": "string", "format": "directory-path", "description": "Project input directory (raw images + markers.csv). Browse to a folder on the NAS or in your locker." },
+        "params": { "type": "string", "format": "file-path", "description": "Optional external params.yml to layer on top (advanced)." }
+      }
+    },
+    "workflow": {
+      "title": "Workflow",
+      "description": "Which stages run and how the input is treated.",
+      "properties": {
+        "start-at": { "type": "string", "default": "registration", "enum": ["illumination", "registration", "background", "dearray", "segmentation", "watershed", "quantification", "downstream"], "description": "First stage to run." },
+        "stop-at": { "type": "string", "default": "quantification", "enum": ["illumination", "registration", "background", "dearray", "segmentation", "quantification", "downstream"], "description": "Last stage to run." },
+        "tma": { "type": "boolean", "default": false, "description": "Input is a tissue microarray (TMA) rather than a whole-slide image." },
+        "viz": { "type": "boolean", "default": false, "description": "Generate an Auto-Minerva visualization." },
+        "qc-files": { "type": "string", "default": "inherit", "enum": ["copy", "move", "link", "symlink", "inherit"], "description": "How QC files are pulled from the work directories." }
+      }
+    },
+    "segmentation_options": {
+      "title": "Segmentation",
+      "description": "Cell / nucleus segmentation.",
+      "properties": {
+        "segmentation": { "type": "string", "default": "unmicst", "enum": ["unmicst", "mesmer", "cellpose", "ilastik", "cypository"], "description": "Segmentation module (run several by listing them in a custom config)." },
+        "segmentation-channel": { "type": "string", "default": "1", "description": "One or more 1-based channel indices, space-separated (e.g. \"1 5\")." },
+        "segmentation-recyze": { "type": "boolean", "default": false, "description": "Reduce the image to the segmentation channels before processing." },
+        "ilastik-model": { "type": "string", "format": "file-path", "description": "Custom .ilp classifier (only when segmentation includes ilastik)." }
+      }
+    },
+    "background_subtraction": {
+      "title": "Background subtraction",
+      "properties": {
+        "background": { "type": "boolean", "default": false, "description": "Run background subtraction and use the result downstream." },
+        "background-method": { "type": "string", "default": "backsub", "enum": ["backsub", "imagej-rolling-ball"], "description": "Which background-subtraction module to use (when background is on)." }
+      }
+    },
+    "downstream_options": {
+      "title": "Downstream analysis",
+      "properties": {
+        "downstream": { "type": "string", "default": "scimap", "enum": ["scimap", "naivestates", "fastpg", "scanpy", "flowsom"], "description": "Downstream module (run several via a custom config)." }
+      }
+    },
+    "module_options": {
+      "title": "Module options (advanced)",
+      "description": "Extra command-line flags passed straight through to each tool.",
+      "properties": {
+        "ashlar-opts": { "type": "string", "description": "Extra ASHLAR registration flags, e.g. \"-m 50 --flip-y\"." },
+        "unmicst-opts": { "type": "string", "description": "Extra UnMICST flags." },
+        "mesmer-opts": { "type": "string", "description": "Extra Mesmer flags." },
+        "cellpose-opts": { "type": "string", "description": "Extra Cellpose flags." },
+        "s3seg-opts": { "type": "string", "description": "Extra S3segmenter flags, e.g. \"--maxima-footprint-size 5\"." },
+        "mcquant-opts": { "type": "string", "description": "Extra MCQUANT quantification flags." }
+      }
+    }
+  }
+}

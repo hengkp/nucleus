@@ -147,6 +147,11 @@ export async function removeCustomPipeline(id, user) {
 const schemaCache = new Map()
 export async function fetchSchema(pipeline) {
   if (!pipeline) throw new HttpError(404, 'Unknown pipeline')
+  // A bundled, curated schema (for pipelines that don't ship a nextflow_schema.json, e.g. mcmicro).
+  if (pipeline.localSchema && /^[a-z0-9._-]+\.json$/i.test(pipeline.localSchema)) {
+    try { return JSON.parse(readFileSync(resolve(here, '../../data/schemas', pipeline.localSchema), 'utf8')) }
+    catch { return { _noSchema: true } }
+  }
   if (!pipeline.schemaUrl) return { _noSchema: true } // custom repo without a schema -> form shows "no params"
   const key = `${pipeline.id}@${pipeline.revision}`
   if (schemaCache.has(key)) return schemaCache.get(key)

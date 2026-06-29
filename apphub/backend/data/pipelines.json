@@ -56,8 +56,9 @@
       "revision": "master",
       "icon": "microscope-line",
       "category": "Imaging",
-      "description": "Multiplexed tissue imaging: stitching/registration, segmentation, and single-cell quantification. Configure inputs with a custom Nextflow config / params at launch.",
+      "description": "Multiplexed tissue imaging: stitching/registration, segmentation, and single-cell quantification. Fill the parameter form (input folder, stages, segmentation, downstream) or layer a custom config.",
       "schemaUrl": null,
+      "localSchema": "mcmicro.json",
       "docs": "https://mcmicro.org",
       "defaults": { "cpus": 16, "memoryMb": 98304, "timeMinutes": 2880 }
     },
