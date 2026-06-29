@@ -104,6 +104,13 @@ case "$TEMPLATE" in
       mkdir -p '$WS/.config' '$WS/.local/share'
       exec code-server --bind-addr 0.0.0.0:${PORT} --auth none --disable-telemetry --disable-update-check '$WS'
     " ;;
+  qupath)
+    # QuPath 0.7 GUI streamed to the browser (TigerVNC + noVNC inside the image). The launch
+    # script serves noVNC on $PORT (exposed into the container) and runs QuPath on the VNC X
+    # display. Bind the lockers tree + NAS shares so users can open images in place.
+    WS_SRC="$LOCKERS_ROOT"; WS_DST="$LOCKERS_ROOT"; WS_PWD="$WS"; bind_data_shares
+    export SINGULARITYENV_PORT="$PORT" APPTAINERENV_PORT="$PORT"
+    run "$(img qupath.sif)" "export HOME='$WS'; exec /usr/local/bin/start-qupath.sh" ;;
   static-html)
     run "$(img python-apps.sif)" "python -m http.server ${PORT} --bind 0.0.0.0 --directory /workspace" ;;
   streamlit)
