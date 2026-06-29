@@ -853,10 +853,10 @@ function New-SispTrayIcon {
     $trayIconPath = Get-TrayIconAssetPath -Status $Status
     if (-not [string]::IsNullOrWhiteSpace($trayIconPath) -and (Test-Path -LiteralPath $trayIconPath)) {
         try {
-            # Pull the tray-sized frame out of the multi-resolution .ico so the new generated
-            # icon renders crisp at 16x16 instead of a blurry down-scale of the largest frame.
-            $small = [System.Windows.Forms.SystemInformation]::SmallIconSize
-            return (New-Object System.Drawing.Icon -ArgumentList $trayIconPath, $small)
+            # Request a generous 32px frame so the tray renders the icon FULL size (crisp on
+            # high-DPI), instead of pinning to a tiny padded 16px frame. Windows scales it to the
+            # notification-area slot. Pair this with full-bleed icon art for best results.
+            return (New-Object System.Drawing.Icon -ArgumentList $trayIconPath, 32, 32)
         }
         catch {
             try { return New-Object System.Drawing.Icon -ArgumentList $trayIconPath } catch { }
@@ -1281,7 +1281,7 @@ $drivesPanel.BorderStyle = 'FixedSingle'
 $form.Controls.Add($drivesPanel)
 
 $mappingLabel = New-Object System.Windows.Forms.Label
-$mappingLabel.Text = 'Mounted network drives  —  tick to select, click a row to open'
+$mappingLabel.Text = 'Mounted network drives  —  click a row to tick, double-click to open'
 $mappingLabel.Font = New-Object System.Drawing.Font('Segoe UI', 11, [System.Drawing.FontStyle]::Bold)
 $mappingLabel.ForeColor = $ColorInk
 $mappingLabel.Location = New-Object System.Drawing.Point(36, 380)
@@ -1578,13 +1578,30 @@ $refreshButton.Add_Click({
     Write-Status $statusBox 'Refreshed drive and mapping status.'
 })
 
-# Click a row (anywhere except its checkbox) opens that drive in Explorer.
+# Single-click anywhere on a row (the drive text, not just the small checkbox) toggles its tick,
+# so the whole row is clickable to select. Opening is on double-click (below) to avoid mistakes.
+$script:LastToggled = $null
 $mappingList.Add_MouseClick({
     param($eventSender, $e)
     $info = $mappingList.HitTest($e.Location)
-    if ($null -eq $info -or $null -eq $info.Item) { return }
-    if ($info.Location -eq [System.Windows.Forms.ListViewHitTestLocations]::StateImage) { return }  # checkbox toggle, don't open
-    $m = $info.Item.Tag
+    $script:LastToggled = $null
+    if ($null -eq $info -or $null -eq $info.Item -or $null -eq $info.Item.Tag) { return }
+    # The native checkbox (StateImage) toggles itself; toggle here only for clicks on the row text.
+    if ($info.Location -ne [System.Windows.Forms.ListViewHitTestLocations]::StateImage) {
+        $info.Item.Checked = -not $info.Item.Checked
+        $script:LastToggled = $info.Item
+    }
+})
+
+# Double-click opens that drive in Explorer. A double-click also fired one MouseClick above (which
+# toggled the tick), so undo that stray toggle first — opening must never change the selection.
+$mappingList.Add_DoubleClick({
+    if ($null -ne $script:LastToggled) {
+        $script:LastToggled.Checked = -not $script:LastToggled.Checked
+        $script:LastToggled = $null
+    }
+    $m = $null
+    if ($mappingList.SelectedItems.Count -gt 0) { $m = $mappingList.SelectedItems[0].Tag }
     if ($null -eq $m) { return }
     $drive = [string]$m.LocalPath
     if ($drive -match '^[A-Z]:$') {

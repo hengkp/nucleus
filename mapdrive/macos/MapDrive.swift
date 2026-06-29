@@ -46,7 +46,6 @@ let MODES: [Mode] = [
 
 // MARK: - App
 
-@main
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let defaults = UserDefaults.standard
@@ -248,3 +247,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         do { try p.run(); p.waitUntilExit(); return p.terminationStatus } catch { return -1 }
     }
 }
+
+// Single-file entry point (no @main, since this file also has top-level declarations):
+// create the app + delegate and run the event loop.
+let nsApp = NSApplication.shared
+let appDelegate = AppDelegate()
+nsApp.delegate = appDelegate
+nsApp.run()
