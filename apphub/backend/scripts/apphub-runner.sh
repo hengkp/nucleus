@@ -115,6 +115,13 @@ case "$TEMPLATE" in
     # Authelia-gated, so basic auth is disabled). prism.order=sw = software JavaFX (no GPU); do NOT
     # set prism.useFontConfig=false (breaks QuPath glyph icons). Bind the lockers tree + NAS shares.
     WS_SRC="$LOCKERS_ROOT"; WS_DST="$LOCKERS_ROOT"; WS_PWD="$WS"; bind_data_shares
+    # Default the KasmVNC web client to dynamic (remote) resize so the desktop follows the browser
+    # window instead of a fixed size. The www dir is root-owned (the job's non-root user can't edit
+    # it in place), so write a redirect index on the host and bind it read-only over index.html:
+    # index.html (==vnc.html) -> vnc.html?resize=remote makes the client request server-side resize.
+    mkdir -p "$WS/.vnc" 2>/dev/null || true
+    printf '%s' '<!doctype html><html><head><meta http-equiv="refresh" content="0; url=vnc.html?resize=remote&reconnect=true"></head><body style="background:#222"></body></html>' > "$WS/.vnc/kasm-index.html"
+    EXTRA_BINDS+=(--bind "$WS/.vnc/kasm-index.html:/usr/share/kasmvnc/www/index.html:ro")
     export SINGULARITYENV_PORT="$PORT" APPTAINERENV_PORT="$PORT"
     run "$(img qupath.sif)" "
       export HOME='$WS' DISPLAY=:1 _JAVA_OPTIONS='-Dprism.order=sw'
@@ -123,12 +130,14 @@ case "$TEMPLATE" in
       # lives in /etc/ssl/private (mode 0710 root:ssl-cert) which the job's non-root user can't read,
       # so point KasmVNC at a self-signed cert we generate in the user-owned .vnc dir instead.
       [ -f '$WS/.vnc/self.pem' ] || openssl req -x509 -nodes -newkey rsa:2048 -keyout '$WS/.vnc/self.key' -out '$WS/.vnc/self.pem' -days 3650 -subj '/CN=apphub' >/dev/null 2>&1
-      printf 'network:\n  protocol: http\n  interface: 0.0.0.0\n  websocket_port: %s\n  ssl:\n    require_ssl: false\n    pem_certificate: $WS/.vnc/self.pem\n    pem_key: $WS/.vnc/self.key\n  udp:\n    public_ip: 127.0.0.1\n' '${PORT}' > '$WS/.vnc/kasmvnc.yaml'
+      # desktop.resolution drives the framebuffer (it overrides vncserver's -geometry, which defaults
+      # to 1024x768); allow_resize lets the client dynamically resize the session to fit the window.
+      printf 'network:\n  protocol: http\n  interface: 0.0.0.0\n  websocket_port: %s\n  ssl:\n    require_ssl: false\n    pem_certificate: $WS/.vnc/self.pem\n    pem_key: $WS/.vnc/self.key\n  udp:\n    public_ip: 127.0.0.1\ndesktop:\n  resolution:\n    width: 1920\n    height: 1080\n  allow_resize: true\n  pixel_depth: 24\n' '${PORT}' > '$WS/.vnc/kasmvnc.yaml'
       # KasmVNC needs a session user with write access (>=6-char password) or vncserver loops on the
       # interactive prompt and never binds the port. Auth is still disabled at the VNC layer
       # (-disableBasicAuth) since the per-instance vhost is Authelia-gated; this password is internal.
       [ -f '$WS/.kasmpasswd' ] || printf 'sispkasm\nsispkasm\n' | kasmvncpasswd -u sisp -w >/dev/null 2>&1
-      vncserver :1 -select-de manual -geometry 1600x900 -disableBasicAuth </dev/null >/tmp/vnc.log 2>&1
+      vncserver :1 -select-de manual -disableBasicAuth </dev/null >/tmp/vnc.log 2>&1
       sleep 4
       DISPLAY=:1 openbox >/tmp/openbox.log 2>&1 &
       DISPLAY=:1 /usr/local/bin/QuPath >/tmp/qupath.log 2>&1 &
