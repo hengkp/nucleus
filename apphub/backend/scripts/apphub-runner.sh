@@ -105,12 +105,21 @@ case "$TEMPLATE" in
       exec code-server --bind-addr 0.0.0.0:${PORT} --auth none --disable-telemetry --disable-update-check '$WS'
     " ;;
   qupath)
-    # QuPath 0.7 GUI streamed to the browser (TigerVNC + noVNC inside the image). The launch
-    # script serves noVNC on $PORT (exposed into the container) and runs QuPath on the VNC X
-    # display. Bind the lockers tree + NAS shares so users can open images in place.
+    # QuPath 0.7 GUI streamed to the browser (TigerVNC + openbox + noVNC inside the image).
+    # Start the VNC X server, the window manager, QuPath, then noVNC/websockify on $PORT. NB:
+    # prism.order=sw (software JavaFX) only — do NOT set prism.useFontConfig=false, which breaks
+    # QuPath's glyph icons. Bind the lockers tree + NAS shares so users open images in place.
     WS_SRC="$LOCKERS_ROOT"; WS_DST="$LOCKERS_ROOT"; WS_PWD="$WS"; bind_data_shares
     export SINGULARITYENV_PORT="$PORT" APPTAINERENV_PORT="$PORT"
-    run "$(img qupath.sif)" "export HOME='$WS'; exec /usr/local/bin/start-qupath.sh" ;;
+    run "$(img qupath.sif)" "
+      export HOME='$WS' DISPLAY=:1 _JAVA_OPTIONS='-Dprism.order=sw'
+      mkdir -p /tmp/.X11-unix 2>/dev/null || true
+      Xvnc :1 -geometry 1600x900 -depth 24 -SecurityTypes None -localhost yes -rfbport 5901 -AlwaysShared >/tmp/xvnc.log 2>&1 &
+      for i in \$(seq 1 60); do [ -S /tmp/.X11-unix/X1 ] && break; sleep 0.25; done
+      openbox >/tmp/openbox.log 2>&1 &
+      /usr/local/bin/QuPath >/tmp/qupath.log 2>&1 &
+      exec websockify --web=/usr/share/novnc 0.0.0.0:${PORT} localhost:5901
+    " ;;
   static-html)
     run "$(img python-apps.sif)" "python -m http.server ${PORT} --bind 0.0.0.0 --directory /workspace" ;;
   streamlit)
