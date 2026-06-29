@@ -1,0 +1,31 @@
+name: Build macOS app
+
+# Builds the MapDrive menu-bar app (MapDrive.app) on a macOS runner — the only place a Cocoa
+# .app can be compiled — and uploads it as a zipped artifact for download/deploy.
+on:
+  push:
+    paths:
+      - 'mapdrive/macos/**'
+      - '.github/workflows/build-macos.yml'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build MapDrive.app
+        run: bash mapdrive/macos/build.sh
+
+      - name: Zip the .app (preserve bundle)
+        run: |
+          cd mapdrive/macos
+          ditto -c -k --sequesterRsrc --keepParent "MapDrive.app" "SISPDriveMapper-macOS.zip"
+          ls -la SISPDriveMapper-macOS.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SISPDriveMapper-macOS
+          path: mapdrive/macos/SISPDriveMapper-macOS.zip
+          if-no-files-found: error
