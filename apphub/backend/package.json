@@ -1,0 +1,16 @@
+{
+  "name": "sisp-apphub-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SISP AppHub control plane — plain-Node API (ADR-005): header-trust auth, SLURM launch, single-flight reconcile, squeue-derived routing.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "APPHUB_DEV_AUTH=1 APPHUB_SLURM_MODE=mock node src/server.js",
+    "smoke": "node test/smoke.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}

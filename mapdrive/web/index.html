@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SISP MapDrive — map your lab drive in one click</title>
+    <meta name="description" content="Map your SISP lab network drive in one click. Sign in with your lab username — file ownership is stamped automatically by the gateway." />
+    <link rel="icon" href="/assets/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
+    <script>try { document.documentElement.dataset.theme = localStorage.getItem('mapdrive-theme') || 'light' } catch (e) {}</script>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="hdr" id="hdr">
+      <div class="wrap hdr-in">
+        <a href="#top" class="brand"><img class="brand-wm" src="/assets/wordmark.png" alt="SISP MapDrive" /></a>
+        <nav class="nav" id="nav">
+          <a href="#" data-view="connect" class="active">Connect</a>
+          <a href="#" data-view="how">How it works</a>
+          <a href="#" data-view="get">Get the app</a>
+          <a href="#" data-view="shares">Shares</a>
+          <a href="#" data-view="help">Help</a>
+        </nav>
+        <div class="hdr-tools">
+          <span class="gw"><span class="dot"></span><span id="gatewayHost">gateway</span></span>
+          <a class="gw" href="https://apphub.sisp.com" target="_blank" rel="noopener" style="color:var(--brand)"><i class="ri-apps-2-line"></i> AppHub</a>
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Light / dark"><i class="ri-moon-line"></i><i class="ri-sun-line"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero + Connect -->
+    <section class="hero view view-connect" id="top">
+      <div class="hero-bg"></div>
+      <div class="wrap hero-in">
+        <div>
+          <span class="eyebrow">SISP lab storage</span>
+          <h1>Map your lab drive in one click.</h1>
+          <p class="lede">Choose a share and a drive letter, then open the MapDrive app — your PC makes the secure connection through the SISP gateway. Sign in with your plain lab username; every file you save is stamped with your identity, so ownership is never mixed up again.</p>
+          <div class="chips">
+            <span class="chip"><i class="ri-shield-check-line"></i> One lab login (LDAP)</span>
+            <span class="chip"><i class="ri-fingerprint-line"></i> Correct ownership, always</span>
+            <span class="chip"><i class="ri-lock-2-line"></i> Secure SMB</span>
+          </div>
+        </div>
+
+        <!-- The tool -->
+        <div class="connect" id="connect">
+          <div class="connect-hd">
+            <span class="ic"><i class="ri-hard-drive-3-line"></i></span>
+            <div><h2>Connect a drive</h2><p>The MapDrive app opens with these settings filled in.</p></div>
+          </div>
+          <div class="connect-bd">
+            <span class="lbl">Connect via</span>
+            <div class="modeseg" id="modeToggle" role="tablist"></div>
+            <p class="modehint" id="modeHint"></p>
+
+            <label class="lbl" for="shareSelect" style="margin-top:0.9rem">Shared folder</label>
+            <select id="shareSelect" class="ctl"></select>
+
+            <div class="grid2" style="margin-top:0.9rem">
+              <div>
+                <label class="lbl" for="driveSelect">Drive letter</label>
+                <select id="driveSelect" class="ctl"></select>
+              </div>
+              <div>
+                <label class="lbl" for="loginSelect">Sign-in format</label>
+                <select id="loginSelect" class="ctl"></select>
+              </div>
+            </div>
+
+            <div style="margin-top:0.9rem">
+              <label class="lbl" for="usernameInput">Lab username</label>
+              <input id="usernameInput" class="ctl" autocomplete="username" placeholder="e.g. kriengkraip" />
+            </div>
+
+            <div class="preview">
+              <div class="preview-row"><span class="k">Drive</span><span class="v" id="previewDrive">Z:</span></div>
+              <div class="preview-row"><span class="k">Network path</span><span class="v" id="previewUnc">—</span></div>
+              <div class="preview-row"><span class="k">Signs in as</span><span class="v" id="previewUser">—</span></div>
+            </div>
+
+            <div class="cmd">
+              <div class="cmd-hd"><span><i class="ri-terminal-box-line"></i> Manual fallback (net use)</span><button id="copyBtn" type="button"><i class="ri-clipboard-line"></i> Copy</button></div>
+              <code id="manualCommand"></code>
+            </div>
+
+            <div class="note"><i class="ri-information-line"></i><span>Sign in with your plain lab username. The gateway authenticates against LDAP and stamps your file ownership automatically. On a shared PC, disconnect when you finish.</span></div>
+
+            <button id="openBtn" class="btn btn-primary btn-lg btn-block" type="button" style="margin-top:1.1rem"><i class="ri-rocket-2-line"></i> Open in MapDrive app</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust band -->
+    <section class="section view view-connect">
+      <div class="wrap">
+        <div class="trust">
+          <div class="it"><div class="ic"><i class="ri-fingerprint-line"></i></div><h3>Ownership fixed</h3><p>The gateway maps you to your lab identity, so files are owned by you — no more mixed-up permissions.</p></div>
+          <div class="it"><div class="ic"><i class="ri-shield-keyhole-line"></i></div><h3>One login</h3><p>Your normal lab username and password. No domain prefixes to memorise.</p></div>
+          <div class="it"><div class="ic"><i class="ri-computer-line"></i></div><h3>Windows & macOS</h3><p>A tiny helper app on each machine does the secure SMB mount locally.</p></div>
+          <div class="it"><div class="ic"><i class="ri-flashlight-line"></i></div><h3>One click</h3><p>Pick a share here, press one button — the app fills everything in.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section alt view view-how" id="how">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">How it works</span><h2>Three steps, built for non-technical labs</h2><p>From zero to a mapped drive — no IT ticket required.</p></div>
+        <div class="steps">
+          <div class="step"><img src="/assets/step-install.png" alt="" /><span class="n">1</span><h3>Install the app once</h3><p>Download the Windows helper (or macOS helper) and run it once per user. It registers the one-click <code>sispdrive://</code> link.</p></div>
+          <div class="step"><img src="/assets/step-choose.png" alt="" /><span class="n">2</span><h3>Choose your share</h3><p>Pick a shared folder and a drive letter above, then enter your plain lab username.</p></div>
+          <div class="step"><img src="/assets/step-connect.png" alt="" /><span class="n">3</span><h3>Connect securely</h3><p>The drive mounts through the gateway with your identity. Saved files are owned by you — every time.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Get the app -->
+    <section class="section view view-get" id="get">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">Get the app</span><h2>Install the MapDrive helper</h2><p>Once per machine. Tiny, no admin rights needed on most setups.</p></div>
+        <div class="dl">
+          <div class="card dark">
+            <div class="top"><img src="/assets/os-windows.png" alt="Windows" /><div><h3>Windows 10 / 11</h3><div class="dl-meta">Setup EXE · one-click installer</div></div></div>
+            <p class="muted" style="line-height:1.6">Adds a Start-Menu shortcut, the <code>sispdrive://</code> handler, and native uninstallers. Optional desktop &amp; startup shortcuts.</p>
+            <div class="row">
+              <a class="btn btn-primary" href="/downloads/SISPDriveMapperSetup.exe"><i class="ri-download-2-line"></i> Download setup</a>
+              <a class="btn btn-ghost" href="/downloads/SISPDriveMapper.zip"><i class="ri-file-zip-line"></i> Portable ZIP</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="top"><img src="/assets/os-macos.png" alt="macOS" /><div><h3>macOS</h3><div class="dl-meta">.command Finder helper</div></div></div>
+            <p class="muted" style="line-height:1.6">A lightweight Finder SMB helper. macOS prompts for your lab password and can store it in Keychain. Right-click → Open the first time.</p>
+            <div class="row"><a class="btn btn-primary" href="/downloads/SISPDriveMapper-macOS.zip"><i class="ri-download-2-line"></i> Download helper</a></div>
+            <p class="dl-meta" style="margin-top:1rem"><i class="ri-information-line"></i> To remove: Start-Menu → SISP → Uninstall (Windows), or delete the helper (macOS).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shares -->
+    <section class="section alt view view-shares" id="shares">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">Available shares</span><h2>Browse the lab shares</h2><p><span id="shareCount">0</span> shared folders served through the gateway.</p></div>
+        <div class="share-tools">
+          <label class="search"><i class="ri-search-line"></i><input id="shareSearch" class="ctl" type="search" placeholder="Search sisplockers, CRCproject, Rarecyte…" /></label>
+        </div>
+        <div class="share-table"><div id="shareRows"></div></div>
+      </div>
+    </section>
+
+    <!-- Help -->
+    <section class="section view view-help" id="help">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">Help &amp; community</span><h2>Stuck? Ask the lab</h2><p>Post a question, share a fix, mark it solved. <span id="supportOpenCount">0</span> open right now.</p></div>
+        <div class="support">
+          <form id="supportForm" class="panel">
+            <h3>Ask a question</h3>
+            <label class="lbl" for="supportAuthor">Your name</label>
+            <input id="supportAuthor" class="ctl" required placeholder="Name or lab nickname" />
+            <label class="lbl" for="supportTitle" style="margin-top:0.8rem">Issue title</label>
+            <input id="supportTitle" class="ctl" required maxlength="120" placeholder="Cannot map sisplockers on Z:" />
+            <div class="grid2" style="margin-top:0.8rem">
+              <div><label class="lbl" for="supportShare">Related share</label><select id="supportShare" class="ctl"></select></div>
+              <div><label class="lbl" for="supportStatus">Status</label><select id="supportStatus" class="ctl"><option value="open">Not solved</option><option value="solved">Solved</option></select></div>
+            </div>
+            <label class="lbl" for="supportBody" style="margin-top:0.8rem">Details</label>
+            <textarea id="supportBody" class="ctl" required maxlength="2000" placeholder="Error message, selected share, drive letter, sign-in format. Don't post passwords."></textarea>
+            <button class="btn btn-primary btn-block" type="submit" style="margin-top:1rem"><i class="ri-send-plane-line"></i> Post question</button>
+          </form>
+          <div class="panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+              <h3 style="margin:0">Recent discussions</h3>
+              <button id="refreshSupport" class="btn btn-ghost" type="button" style="padding:0.45rem 0.8rem"><i class="ri-refresh-line"></i> Refresh</button>
+            </div>
+            <div id="supportList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ftr">
+      <div class="wrap ftr-in">
+        <span style="display:flex;align-items:center;gap:0.5rem"><img src="/assets/logo.png" alt="" style="height:20px" /> SISP MapDrive · part of the SISP lab platform</span>
+        <span style="display:flex;gap:1.2rem"><a href="https://apphub.sisp.com" target="_blank" rel="noopener">AppHub</a><a href="#" data-view="help">Help</a><a href="mailto:heng.kkpk@gmail.com">Contact admin</a></span>
+      </div>
+    </footer>
+
+    <div id="toast"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>

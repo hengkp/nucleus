@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "pipelines": [
+    {
+      "id": "rnaseq",
+      "name": "nf-core/rnaseq",
+      "repo": "nf-core/rnaseq",
+      "revision": "3.14.0",
+      "icon": "dna-line",
+      "category": "Transcriptomics",
+      "description": "Bulk RNA-seq: QC, trimming, alignment, and gene/transcript quantification.",
+      "schemaUrl": "https://raw.githubusercontent.com/nf-core/rnaseq/3.14.0/nextflow_schema.json",
+      "docs": "https://nf-co.re/rnaseq/3.14.0",
+      "defaults": { "cpus": 12, "memoryMb": 65536, "timeMinutes": 1440 }
+    },
+    {
+      "id": "sarek",
+      "name": "nf-core/sarek",
+      "repo": "nf-core/sarek",
+      "revision": "3.4.4",
+      "icon": "git-branch-line",
+      "category": "Somatic mutations",
+      "description": "Germline and somatic variant calling from WGS, WES, or targeted panels.",
+      "schemaUrl": "https://raw.githubusercontent.com/nf-core/sarek/3.4.4/nextflow_schema.json",
+      "docs": "https://nf-co.re/sarek/3.4.4",
+      "defaults": { "cpus": 16, "memoryMb": 98304, "timeMinutes": 2880 }
+    },
+    {
+      "id": "scrnaseq",
+      "name": "nf-core/scrnaseq",
+      "repo": "nf-core/scrnaseq",
+      "revision": "2.7.1",
+      "icon": "bubble-chart-line",
+      "category": "Single-cell",
+      "description": "Single-cell RNA-seq pre-processing to a count matrix (Alevin, STARsolo, CellRanger, Kallisto).",
+      "schemaUrl": "https://raw.githubusercontent.com/nf-core/scrnaseq/2.7.1/nextflow_schema.json",
+      "docs": "https://nf-co.re/scrnaseq/2.7.1",
+      "defaults": { "cpus": 12, "memoryMb": 65536, "timeMinutes": 1440 }
+    },
+    {
+      "id": "fetchngs",
+      "name": "nf-core/fetchngs",
+      "repo": "nf-core/fetchngs",
+      "revision": "1.12.0",
+      "icon": "download-cloud-2-line",
+      "category": "Data retrieval",
+      "description": "Fetch raw FASTQ and metadata for public sequencing data (SRA / ENA / GEO / DDBJ).",
+      "schemaUrl": "https://raw.githubusercontent.com/nf-core/fetchngs/1.12.0/nextflow_schema.json",
+      "docs": "https://nf-co.re/fetchngs/1.12.0",
+      "defaults": { "cpus": 4, "memoryMb": 16384, "timeMinutes": 720 }
+    },
+    {
+      "id": "hello",
+      "name": "Hello (smoke test)",
+      "repo": "nextflow-io/hello",
+      "revision": "master",
+      "icon": "play-circle-line",
+      "category": "Test",
+      "description": "A tiny pipeline that prints greetings. Great for a quick end-to-end test: runs in seconds, needs no parameters or containers.",
+      "schemaUrl": null,
+      "docs": "https://github.com/nextflow-io/hello",
+      "defaults": { "cpus": 1, "memoryMb": 2048, "timeMinutes": 30 }
+    }
+  ]
+}

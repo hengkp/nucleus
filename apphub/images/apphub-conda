@@ -1,0 +1,54 @@
+#!/bin/bash
+# apphub-conda — manage your PERSONAL conda envs from inside a hosted JupyterLab.
+# Every env you create here includes ipykernel + ipywidgets, so it shows up as a clickable
+# kernel in the JupyterLab Launcher (just refresh the page) with working widgets.
+#
+#   apphub-conda new <name> [pkgs...]   create a personal env (python ipykernel ipywidgets + pkgs)
+#   apphub-conda add <name> <pkgs...>   install more packages into one of your envs
+#   apphub-conda list                   list your envs and the shared (admin) envs
+#   apphub-conda rm  <name>             delete one of your envs
+#
+# Personal envs live in /workspace/.conda/envs (persistent in your locker).
+# Shared envs (created by admins) live in /opt/shared-conda/envs and are read-only.
+set -euo pipefail
+export PATH=/opt/conda/bin:${PATH:-}
+PERSONAL=/workspace/.conda/envs
+SHARED=/opt/shared-conda/envs
+MAMBA="$(command -v mamba || command -v conda)"
+
+valid() { [[ "$1" =~ ^[A-Za-z0-9._-]{1,40}$ ]] || { echo "bad env name: '$1' (use letters, digits, . _ -)"; exit 2; }; }
+
+cmd="${1:-help}"; shift || true
+case "$cmd" in
+  new|create)
+    name="${1:?usage: apphub-conda new <name> [packages...]}"; shift || true
+    valid "$name"
+    [[ -e "$SHARED/$name" ]] && { echo "'$name' is a SHARED env (already in your Launcher). Pick another name for a personal one."; exit 2; }
+    echo ">> creating personal env '$name' (python + ipykernel + ipywidgets ${*:+plus: $*})…"
+    "$MAMBA" create -y -p "$PERSONAL/$name" -c conda-forge python ipykernel ipywidgets "$@"
+    echo ">> done. Refresh JupyterLab — '$name' now appears as a kernel in the Launcher."
+    ;;
+  add|install)
+    name="${1:?usage: apphub-conda add <env> <packages...>}"; shift
+    valid "$name"
+    [[ -d "$PERSONAL/$name" ]] || { echo "no personal env '$name' (it may be a shared env, which you can't modify)"; exit 2; }
+    "$MAMBA" install -y -p "$PERSONAL/$name" -c conda-forge "$@"
+    echo ">> installed into '$name'."
+    ;;
+  rm|remove|delete)
+    name="${1:?usage: apphub-conda rm <name>}"
+    valid "$name"
+    [[ -d "$PERSONAL/$name" ]] || { echo "no personal env '$name' to remove"; exit 2; }
+    rm -rf "${PERSONAL:?}/${name:?}"
+    echo ">> removed personal env '$name'. Refresh JupyterLab to update the Launcher."
+    ;;
+  list|ls)
+    echo "Your personal envs (writable, in /workspace/.conda/envs):"
+    if [[ -d "$PERSONAL" ]] && compgen -G "$PERSONAL/*" >/dev/null; then ls -1 "$PERSONAL" | sed 's/^/  • /'; else echo "  (none yet — create one with: apphub-conda new myenv)"; fi
+    echo "Shared envs (read-only, provided by admins):"
+    if [[ -d "$SHARED" ]] && compgen -G "$SHARED/*" >/dev/null; then ls -1 "$SHARED" | sed 's/^/  • /'; else echo "  (none yet)"; fi
+    ;;
+  *)
+    sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+esac

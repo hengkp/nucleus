@@ -1,0 +1,56 @@
+#!/bin/bash
+# apphub-conda-admin — manage the SHARED (public) conda env pool that every hosted JupyterLab
+# user can see in their Launcher. Run on node1 as an admin (needs sudo: writes the NFS pool).
+#
+#   sudo apphub-conda-admin new <name> [pkgs...]   create a shared env (python ipykernel ipywidgets + pkgs)
+#   sudo apphub-conda-admin add <name> <pkgs...>   add packages to a shared env
+#   sudo apphub-conda-admin list                   list shared envs
+#   sudo apphub-conda-admin rm  <name>             delete a shared env
+#
+# Envs are created INSIDE the jupyterlab.sif's mamba, at the same /opt/shared-conda path the
+# runner binds them under in user jobs, so prefixes match and kernels resolve cleanly. Files are
+# made world-readable so users can launch them but not modify them (the runner binds them ro).
+set -Eeuo pipefail
+SHARED="${APPHUB_SHARED_CONDA:-/mnt/sisplockers/.apphub-conda}"
+SIF="${APPHUB_IMAGE_DIR:-/mnt/sisplockers/.apphub-images}/jupyterlab.sif"
+SING="$(command -v apptainer || command -v singularity)"
+[[ -n "$SING" ]] || { echo "no apptainer/singularity on $(hostname)"; exit 70; }
+[[ -f "$SIF" ]] || { echo "image not found: $SIF (build it first)"; exit 71; }
+mkdir -p "$SHARED/envs" "$SHARED/pkgs"
+
+valid() { [[ "$1" =~ ^[A-Za-z0-9._-]{1,40}$ ]] || { echo "bad env name: '$1'"; exit 2; }; }
+# Run a conda/mamba command inside the image with the shared pool bound rw at the canonical path.
+incond() {
+  export APPTAINERENV_CONDA_PKGS_DIRS=/opt/shared-conda/pkgs SINGULARITYENV_CONDA_PKGS_DIRS=/opt/shared-conda/pkgs
+  export APPTAINERENV_HOME=/tmp SINGULARITYENV_HOME=/tmp
+  "$SING" exec --writable-tmpfs --bind "$SHARED:/opt/shared-conda" "$SIF" "$@"
+}
+
+cmd="${1:-help}"; shift || true
+case "$cmd" in
+  new|create)
+    name="${1:?usage: apphub-conda-admin new <name> [packages...]}"; shift || true
+    valid "$name"
+    echo ">> creating SHARED env '$name' (python + ipykernel + ipywidgets ${*:+plus: $*})…"
+    incond mamba create -y -p "/opt/shared-conda/envs/$name" -c conda-forge python ipykernel ipywidgets "$@"
+    chmod -R a+rX "$SHARED/envs/$name"
+    echo ">> done. '$name' is now visible to all hosted JupyterLab users (they refresh the Launcher)."
+    ;;
+  add|install)
+    name="${1:?usage: apphub-conda-admin add <env> <packages...>}"; shift
+    valid "$name"
+    incond mamba install -y -p "/opt/shared-conda/envs/$name" -c conda-forge "$@"
+    chmod -R a+rX "$SHARED/envs/$name"
+    echo ">> installed into shared env '$name'."
+    ;;
+  rm|remove|delete)
+    name="${1:?usage: apphub-conda-admin rm <name>}"; valid "$name"
+    rm -rf "${SHARED:?}/envs/${name:?}"; echo ">> removed shared env '$name'."
+    ;;
+  list|ls)
+    ls -1 "$SHARED/envs" 2>/dev/null | sed 's/^/  • /' || echo "  (no shared envs yet)"
+    ;;
+  *)
+    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+esac

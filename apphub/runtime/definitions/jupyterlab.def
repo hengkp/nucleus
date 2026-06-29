@@ -1,0 +1,29 @@
+Bootstrap: docker
+From: quay.io/jupyter/datascience-notebook:python-3.11
+
+%labels
+    org.sisp.apphub.template jupyterlab
+    org.sisp.apphub.description SISP AppHub JupyterLab runtime
+
+%post
+    mamba install -y -c conda-forge \
+        jupyterlab \
+        ipywidgets \
+        pandas \
+        numpy \
+        scipy \
+        scikit-learn \
+        matplotlib \
+        seaborn \
+        plotly \
+        scanpy \
+        biopython \
+        r-irkernel \
+        && mamba clean -a -y
+
+%environment
+    export JUPYTER_ENABLE_LAB=yes
+    export MPLCONFIGDIR=/tmp/matplotlib
+
+%runscript
+    exec jupyter lab "$@"

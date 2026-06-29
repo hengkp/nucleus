@@ -1,0 +1,273 @@
+{
+  "generatedAt": "2026-06-27T03:44:41.937979+00:00",
+  "sourceDocument": "apphub/docs/design/DESIGN_DIRECTION.md#6-gpt-image-20-prompt-pack",
+  "outputBaseDirectory": "apphub/frontend/public/brand/",
+  "generator": "built-in image_gen with local chroma-key alpha post-processing for transparent assets",
+  "chosenLogo": "logo-c.png",
+  "assets": [
+    {
+      "file": "logo-a.png",
+      "sourcePromptName": "1 ? Primary logomark",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A minimalist geometric logo mark for 'SISP AppHub', a scientific HPC application hub. An abstract hexagonal node/cluster motif suggesting connected compute nodes forming a subtle 'A' or hub shape. Flat vector, single-weight lines with one soft teal-to-deep-slate gradient (teal #11695f). Clean, balanced, scalable to a 16px favicon. Transparent background, no text, generous padding.\"\n\nPrimary logomark prompt, candidate A. Create this asset at 1024x1024. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested.",
+      "requestedSize": "1024x1024",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "bytes": 211179,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0aa9f18c18bb012b016a3f42ea16008191960180e38cb14b25.png"
+    },
+    {
+      "file": "logo-b.png",
+      "sourcePromptName": "1 ? Primary logomark",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A minimalist geometric logo mark for 'SISP AppHub', a scientific HPC application hub. An abstract hexagonal node/cluster motif suggesting connected compute nodes forming a subtle 'A' or hub shape. Flat vector, single-weight lines with one soft teal-to-deep-slate gradient (teal #11695f). Clean, balanced, scalable to a 16px favicon. Transparent background, no text, generous padding.\"\n\nPrimary logomark prompt, candidate B. Create this asset at 1024x1024. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested.",
+      "requestedSize": "1024x1024",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "bytes": 187734,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_03fbac43b2622aa6016a3f433dc92c8191abdc4c50112f5f17.png"
+    },
+    {
+      "file": "logo-c.png",
+      "sourcePromptName": "1 ? Primary logomark",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A minimalist geometric logo mark for 'SISP AppHub', a scientific HPC application hub. An abstract hexagonal node/cluster motif suggesting connected compute nodes forming a subtle 'A' or hub shape. Flat vector, single-weight lines with one soft teal-to-deep-slate gradient (teal #11695f). Clean, balanced, scalable to a 16px favicon. Transparent background, no text, generous padding.\"\n\nPrimary logomark prompt, candidate C. Create this asset at 1024x1024. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested.",
+      "requestedSize": "1024x1024",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "bytes": 202541,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_03fbac43b2622aa6016a3f436817248191aca60a5104e09623.png"
+    },
+    {
+      "file": "logo.png",
+      "sourcePromptName": "1 ? Primary logomark",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A minimalist geometric logo mark for 'SISP AppHub', a scientific HPC application hub. An abstract hexagonal node/cluster motif suggesting connected compute nodes forming a subtle 'A' or hub shape. Flat vector, single-weight lines with one soft teal-to-deep-slate gradient (teal #11695f). Clean, balanced, scalable to a 16px favicon. Transparent background, no text, generous padding.\"\n\nChosen primary logomark: candidate C. Create this asset at 1024x1024. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested.",
+      "requestedSize": "1024x1024",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "bytes": 202541,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_03fbac43b2622aa6016a3f436817248191aca60a5104e09623.png"
+    },
+    {
+      "file": "favicon-32.png",
+      "sourcePromptName": "1 ? Primary logomark",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A minimalist geometric logo mark for 'SISP AppHub', a scientific HPC application hub. An abstract hexagonal node/cluster motif suggesting connected compute nodes forming a subtle 'A' or hub shape. Flat vector, single-weight lines with one soft teal-to-deep-slate gradient (teal #11695f). Clean, balanced, scalable to a 16px favicon. Transparent background, no text, generous padding.\"\n\nDownscale of chosen primary logomark candidate C from the 1024x1024 transparent logo output.",
+      "requestedSize": "32x32",
+      "pixelDimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "bytes": 1519,
+      "generatedSource": "C:/Users/user/sisp-mapdrive/apphub/frontend/public/brand/logo.png"
+    },
+    {
+      "file": "wordmark.png",
+      "sourcePromptName": "2 ? Wordmark lockup",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Horizontal logo lockup: the hexagonal hub mark at left, 'AppHub' wordmark right in a geometric sans (Inter-like), 600 weight, deep slate #131a19. 'SISP' as a smaller teal tag above or beside. Crisp vector, transparent background, balanced spacing for a top-left app header.\"\n\nCreate this asset at 1600x400, horizontal 4:1. Render the text exactly as: SISP and AppHub. Do not add, omit, or misspell any letters. Use only teal #11695f, deep slate #131a19, and white/transparent anti-aliasing in the subject. Avoid red, pink, purple, and magenta anywhere in the subject. For this source render, place the logo lockup on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the lockup fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No watermark and no extra text. Retry used because the first accepted wordmark had a key-color artifact; the generator returned a white field, which was removed locally.",
+      "requestedSize": "1600x400",
+      "pixelDimensions": {
+        "width": 1600,
+        "height": 400
+      },
+      "bytes": 139035,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_06aab82c68f5a605016a3f47babecc8191aa61423af86b6382.png"
+    },
+    {
+      "file": "icons/jupyterlab.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 140753,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/rstudio.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 98868,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/galaxy.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 168622,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/streamlit.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 108514,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/dash.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 128099,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/shiny.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 112636,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/fastapi.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 143752,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/gradio.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 88018,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "icons/host-app.png",
+      "sourcePromptName": "3 ? App template icons (one per template, consistent set)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A set of 9 matching app-tile icons in one consistent flat-vector style, rounded-square tiles with a soft teal #11695f → slate gradient and a white line glyph centered: (1) notebook/code brackets [JupyterLab], (2) R bar-chart [RStudio], (3) flask/molecule [Galaxy], (4) Streamlit ribbon, (5) Dash dashboard grid, (6) Shiny spark, (7) API plug/brackets [FastAPI], (8) Gradio slider, (9) cube/box [host-your-app]. Single 2px line weight, identical padding and corner radius, transparent background, retina.\"\n\nCreate a clean 3x3 sprite sheet at 1536x1536 with one icon per 512x512 cell in exactly the numbered order: top row JupyterLab, RStudio, Galaxy; middle row Streamlit, Dash, Shiny; bottom row FastAPI, Gradio, host-your-app. Do not include labels or any text. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested. Final file is cropped from its matching sprite-sheet cell.",
+      "requestedSize": "512x512",
+      "pixelDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "bytes": 157376,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4402f2b48191b18c5a6880dae21d.png"
+    },
+    {
+      "file": "login-hero.png",
+      "sourcePromptName": "4 ? Login hero / brand panel background",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Abstract background for a login side-panel: dark teal-to-slate gradient (#0c4f47 → #131a19) with a faint geometric mesh of connected nodes and thin lines suggesting an HPC cluster, very subtle, low-contrast, no text. Soft glow accents in teal. Calm, premium, scientific. 1200×1600 portrait.\"\n\nCreate this filled background asset at 1024x1536 portrait. No transparent background. No text, no watermark, no logos, no UI controls.",
+      "requestedSize": "1024x1536",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "bytes": 1121459,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f445402b08191a6af6a70dd48d556.png"
+    },
+    {
+      "file": "bg-light.png",
+      "sourcePromptName": "5 ? Dashboard ambient background (light + dark)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Extremely subtle seamless background texture for an app canvas: faint dotted/grid pattern with occasional thin connecting lines, 3–4% opacity, warm-slate on near-white (light variant) and teal-on-near-black (dark variant). Must not distract from foreground cards. Seamless tile.\"\n\nCreate the light variant at 1536x1024, filled background. Use near-white/warm-slate canvas with the pattern at very low opacity. No text, no watermark, no UI controls.",
+      "requestedSize": "1536x1024",
+      "pixelDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "bytes": 768955,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f44a4f364819182d7a82ef1dcdafa.png"
+    },
+    {
+      "file": "bg-dark.png",
+      "sourcePromptName": "5 ? Dashboard ambient background (light + dark)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Extremely subtle seamless background texture for an app canvas: faint dotted/grid pattern with occasional thin connecting lines, 3–4% opacity, warm-slate on near-white (light variant) and teal-on-near-black (dark variant). Must not distract from foreground cards. Seamless tile.\"\n\nCreate the dark variant at 1536x1024, filled background. Use near-black/deep slate canvas with faint teal grid/dots at very low opacity. No text, no watermark, no UI controls.",
+      "requestedSize": "1536x1024",
+      "pixelDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "bytes": 1092643,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f44debcf88191816717abdaa0d84f.png"
+    },
+    {
+      "file": "empty-state.png",
+      "sourcePromptName": "6 ? Empty-state spot illustration",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"A small friendly flat-vector spot illustration for an empty dashboard: a stylized rocket or notebook on a launch pad made of simple geometric shapes, teal/slate palette matching #11695f, light line work, optimistic but minimal, transparent background, ~400px.\"\n\nCreate this asset at 1024x1024. For this source render, place the asset on a perfectly flat solid #ff00ff chroma-key background for background removal. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the subject fully separated from the background with crisp edges and generous padding. Do not use #ff00ff anywhere in the subject. No cast shadow, no contact shadow, no reflection, no watermark, and no extra text unless explicitly requested.",
+      "requestedSize": "1024x1024",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "bytes": 445850,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4521b22081918dd21444d3c5c2a4.png"
+    },
+    {
+      "file": "thumbnails/jupyterlab.png",
+      "sourcePromptName": "7 ? Template thumbnails (catalog header banners, optional)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Wide thumbnail banner for an [JupyterLab / RStudio / Galaxy] app card: abstract representation of [Python notebooks / R analysis / genomics pipeline] in flat geometric vector, teal-slate palette, soft gradient, no realistic screenshots, 640×240, room for a label overlay.\"\n\nCreate the JupyterLab / Python notebooks variant at 1024x384, filled background. Abstract notebook cells, code brackets, and connected compute-node geometry, with open negative space for a label overlay. No text, no watermark, no logos, no UI screenshots.",
+      "requestedSize": "1024x384",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 384
+      },
+      "bytes": 288535,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f455009dc8191b8461bd29a8d3b0c.png"
+    },
+    {
+      "file": "thumbnails/rstudio.png",
+      "sourcePromptName": "7 ? Template thumbnails (catalog header banners, optional)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Wide thumbnail banner for an [JupyterLab / RStudio / Galaxy] app card: abstract representation of [Python notebooks / R analysis / genomics pipeline] in flat geometric vector, teal-slate palette, soft gradient, no realistic screenshots, 640×240, room for a label overlay.\"\n\nCreate the RStudio / R analysis variant at 1024x384, filled background. Abstract bar charts, analysis curves, and connected compute-node geometry, with open negative space for a label overlay. No text, no watermark, no logos, no UI screenshots.",
+      "requestedSize": "1024x384",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 384
+      },
+      "bytes": 311833,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f4588e00881919baaa4d98e31b6e2.png"
+    },
+    {
+      "file": "thumbnails/galaxy.png",
+      "sourcePromptName": "7 ? Template thumbnails (catalog header banners, optional)",
+      "finalPrompt": "House style for all assets: modern scientific-tech, calm, precise; SISP teal #11695f + deep slate; soft depth; geometric not skeuomorphic; flat vector with subtle gradient; consistent 2px-ish line weight to echo Remix Icon; transparent background unless stated. Generate at 2× for retina; export PNG (+ trace logo/icons to SVG).\n\n\"Wide thumbnail banner for an [JupyterLab / RStudio / Galaxy] app card: abstract representation of [Python notebooks / R analysis / genomics pipeline] in flat geometric vector, teal-slate palette, soft gradient, no realistic screenshots, 640×240, room for a label overlay.\"\n\nCreate the Galaxy / genomics pipeline variant at 1024x384, filled background. Abstract pipeline nodes, DNA/sequence glyphs, and connected compute-node geometry, with open negative space for a label overlay. No text, no watermark, no logos, no UI screenshots.",
+      "requestedSize": "1024x384",
+      "pixelDimensions": {
+        "width": 1024,
+        "height": 384
+      },
+      "bytes": 316525,
+      "generatedSource": "C:/Users/user/.codex/generated_images/019f071c-52cd-79f2-994b-02132f47e464/ig_0cdb6311c4dfe114016a3f45b5a54481919d38dcf818ac4177.png"
+    }
+  ]
+}

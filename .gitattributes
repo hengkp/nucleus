@@ -1,0 +1,17 @@
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.sh text eol=lf
+*.command text eol=lf
+macos/**/Contents/MacOS/* text eol=lf
+*.js text eol=lf
+*.cs text eol=crlf
+*.iss text eol=crlf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.png binary
+*.ico binary
+*.exe binary
+*.zip binary

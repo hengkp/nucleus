@@ -1,0 +1,11 @@
+installer/build/
+mapdrive-web.zip
+*.log
+*.tmp
+*.bak
+__pycache__/
+*.pyc
+apphub/server/data/
+# never commit real secrets / local env
+**/.env
+.env

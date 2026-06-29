@@ -1,0 +1,142 @@
+/* Self-hosted Google Fonts (no external CDN on an internal lab tool) */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+/* Remix Icon webfont for the dev shell. ADR-006: production subsets to inline SVGs;
+   the <Icon> component is the single seam to swap later. */
+@import 'remixicon/fonts/remixicon.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ----------------------------------------------------------------------------
+   Design tokens — semantic, theme-aware. Raw hex lives ONLY here.
+   Source of truth: docs/design/DESIGN_DIRECTION.md §3.1
+---------------------------------------------------------------------------- */
+:root {
+  --bg: #f7f9f9;
+  --surface: #ffffff;
+  --surface-2: #eef3f2;
+  --border: #dce4e2;
+  --ink: #131a19;
+  --ink-muted: #5d6b68;
+  --brand: #11695f;
+  --brand-strong: #0c4f47;
+  --brand-tint: #e2f1ee;
+  --accent-blue: #1b7fbd;
+
+  --ok: #1f9d57;
+  --warn: #c98a16;
+  --err: #c0392b;
+  --queued: #5d6b68;
+
+  --focus-ring: rgba(27, 127, 189, 0.3);
+  color-scheme: light;
+}
+
+html.dark {
+  --bg: #0d1413;
+  --surface: #131d1b;
+  --surface-2: #1a2624;
+  --border: #25332f;
+  --ink: #e7efed;
+  --ink-muted: #8fa09c;
+  --brand: #2bb3a3;
+  --brand-strong: #46c7b7;
+  --brand-tint: #11332e;
+  --accent-blue: #4fb0e6;
+
+  --ok: #34d27f;
+  --warn: #e0a93a;
+  --err: #f06a5d;
+  --queued: #8fa09c;
+
+  --focus-ring: rgba(79, 176, 230, 0.35);
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    font-size: 0.9375rem; /* 15px base — comfortable on desktop + mobile */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Don't let mobile Safari auto-inflate some text and not others. */
+    -webkit-text-size-adjust: 100%;
+    /* Faint ambient hex texture behind the app surfaces (theme-aware, very subtle). */
+    background-image: url('/brand/bg-light.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+  html.dark body {
+    background-image: url('/brand/bg-dark.png');
+  }
+  /* One consistent focus ring everywhere (WCAG: visible, theme-aware) */
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Numeric / code data uses the mono family for alignment */
+  .tabular {
+    @apply font-mono tabular-nums;
+  }
+  ::selection {
+    background: var(--brand-tint);
+    color: var(--ink);
+  }
+}
+
+@layer components {
+  /* Skeleton shimmer used by <Skeleton> */
+  .skeleton {
+    @apply relative overflow-hidden bg-surface-2 rounded-md;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--ink) 6%, transparent),
+      transparent
+    );
+    animation: shimmer 1.4s infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Thin, unobtrusive scrollbars that respect the theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}

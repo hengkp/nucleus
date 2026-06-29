@@ -1,0 +1,14 @@
+{
+  "name": "sisp-apphub-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "sync:templates": "node scripts/sync-templates.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}

@@ -1,0 +1,21 @@
+# AppHub role groups — apply with:
+#   ldapadd -x -D "cn=admin,dc=siriraj,dc=local" -W -f 10-role-groups.ldif
+# Structure matches the live directory (verified 2026-06-27): groups are posixGroup with
+# memberUid, under ou=group,dc=siriraj,dc=local (alongside the existing cn=sisp, gid 100000).
+# The AppHub backend maps these cn values to roles:
+#   sisp-admins -> admin, apphub-power -> power, everyone else -> researcher.
+# Edit memberUid lines to set who is admin / power user, then re-apply (ldapmodify) as needed.
+
+dn: cn=apphub-power,ou=group,dc=siriraj,dc=local
+objectClass: posixGroup
+objectClass: top
+cn: apphub-power
+gidNumber: 100100
+memberUid: kriengkraip
+
+dn: cn=sisp-admins,ou=group,dc=siriraj,dc=local
+objectClass: posixGroup
+objectClass: top
+cn: sisp-admins
+gidNumber: 100200
+memberUid: kriengkraip

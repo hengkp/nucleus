@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SISP — Hosted vs Main App Latency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --brand:#11695f;--brand2:#1b8076;--ink:#0f1a18;--muted:#5d6b68;
+    --surface:#fff;--bg:#f4f8f7;--border:#e0e8e6;--tint:#e2f1ee;
+    --main:#c98a2b;--maing:linear-gradient(90deg,#d8a24a,#c98a2b);
+    --edge:#1b8076;--edgeg:linear-gradient(90deg,#2bb3a3,#11695f);
+    --direct:#3a7;--directg:linear-gradient(90deg,#5cc99a,#2e9b5f);
+    --sh:0 1px 2px rgba(16,38,34,.05),0 10px 30px rgba(16,38,34,.07);
+  }
+  [data-theme="dark"]{--ink:#eaf2f0;--muted:#9fb1ad;--surface:#15201e;--bg:#0c1312;--border:#28332f;--tint:rgba(43,179,163,.12);--sh:0 10px 30px rgba(0,0,0,.45);}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 clamp(.9rem,3vw,1.5rem)}
+  .mono{font-family:"JetBrains Mono",monospace}
+  header.hero{background:linear-gradient(135deg,#0a3f39,#11695f 62%,#1b8076);color:#fff;padding:clamp(1.8rem,5vw,3rem) 0;position:relative;overflow:hidden}
+  header.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(700px 240px at 88% -10%,rgba(52,194,176,.45),transparent 70%)}
+  .hero .wrap{position:relative;z-index:1}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8fe6d8}
+  h1{font-size:clamp(1.5rem,5.5vw,2.6rem);margin:.45rem 0 0;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .sub{color:rgba(255,255,255,.86);margin:.6rem 0 0;max-width:44rem;font-size:clamp(.9rem,2.6vw,1rem)}
+  .meta{margin-top:1rem;font-size:.78rem;color:rgba(255,255,255,.72);display:flex;gap:.5rem 1.1rem;flex-wrap:wrap}
+  .toggle{position:absolute;top:1rem;right:1rem;z-index:2;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:9px;padding:.42rem .7rem;cursor:pointer;font-size:.78rem;font-weight:600}
+  section{padding:clamp(1.4rem,4vw,2.4rem) 0}
+  h2{font-size:clamp(1.15rem,3.4vw,1.45rem);font-weight:800;letter-spacing:-.01em;margin:0 0 .3rem}
+  .lead{color:var(--muted);margin:0 0 1.2rem;max-width:46rem;font-size:clamp(.86rem,2.5vw,.95rem)}
+  .kpis{display:grid;gap:.8rem;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:720px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:clamp(.85rem,2.5vw,1.1rem);box-shadow:var(--sh)}
+  .kpi .v{font-size:clamp(1.4rem,5vw,1.8rem);font-weight:800;color:var(--brand);line-height:1}
+  .kpi .l{font-size:.74rem;color:var(--muted);margin-top:.4rem}
+  .kpi .l b{color:var(--ink)}
+  .cards{display:grid;gap:1rem;grid-template-columns:1fr}
+  @media(min-width:720px){.cards{grid-template-columns:1fr 1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:clamp(1rem,3vw,1.4rem);box-shadow:var(--sh)}
+  .card h3{margin:0;font-size:1.05rem;font-weight:800;display:flex;align-items:center;gap:.5rem}
+  .card .speed{margin:.5rem 0 1rem;font-size:.84rem;color:var(--muted)}
+  .card .speed b{color:var(--brand);font-size:1.05rem}
+  .bar-row{margin:.55rem 0}
+  .bar-row .top{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.25rem;gap:.5rem}
+  .bar-row .top .nm{font-weight:600}
+  .bar-row .top .nm small{display:block;color:var(--muted);font-weight:500;font-size:.68rem}
+  .bar-row .top .val{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .track{background:var(--bg);border:1px solid var(--border);border-radius:8px;height:26px;overflow:hidden}
+  .fill{height:100%;border-radius:7px;transition:width .7s cubic-bezier(.2,.8,.2,1);min-width:3px}
+  .fill.main{background:var(--maing)} .fill.edge{background:var(--edgeg)} .fill.direct{background:var(--directg)}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem}
+  .seg button{border:0;background:var(--surface);color:var(--muted);padding:.5rem .95rem;cursor:pointer;font-weight:600;font-size:.82rem;-webkit-tap-highlight-color:transparent}
+  .seg button.on{background:var(--brand);color:#fff}
+  .legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.76rem;color:var(--muted);margin:.2rem 0 1rem}
+  .legend i{display:inline-block;width:.8rem;height:.8rem;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;border:1px solid var(--border)}
+  table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--surface);min-width:460px}
+  th,td{padding:.6rem .7rem;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+  th{font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  tbody tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;font-size:.66rem;font-weight:700;padding:.1rem .45rem;border-radius:999px;background:var(--tint);color:var(--brand)}
+  .note{font-size:.82rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.15rem}
+  .note b{color:var(--ink)}
+  footer{padding:1.6rem 0;color:var(--muted);font-size:.78rem;border-top:1px solid var(--border)}
+  .tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);padding:.3rem .55rem;border-radius:6px;font-size:.72rem;opacity:0;transition:opacity .12s;z-index:50}
+</style>
+</head>
+<body>
+<button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">◐</button>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">SISP Lab Platform · Responsiveness</div>
+  <h1>Hosted apps vs the main apps</h1>
+  <p class="sub">Head-to-head HTTP latency: AppHub-hosted <b>jupyter-&lt;user&gt;</b> / <b>rstudio-&lt;user&gt;</b> versus the legacy <b>jupyter.sisp.com</b> / <b>rstudio.sisp.com</b> — measured at the live nginx edge.</p>
+  <div class="meta"><span>📅 2026‑06‑28</span><span>🔁 30 samples / endpoint</span><span>📍 measured from node1</span><span id="metah"></span></div>
+</div></header>
+
+<section><div class="wrap">
+  <div class="kpis" id="kpis"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Side‑by‑side</h2>
+  <p class="lead">Each app compared three ways: the <b>main</b> app, the <b>hosted</b> app through the gateway+Authelia edge, and the <b>raw hosted app</b> (container, no proxy). Lower is better.</p>
+  <div class="seg" id="seg">
+    <button class="on" data-metric="avg">Average</button>
+    <button data-metric="p95">p95</button>
+    <button data-metric="ttfb">TTFB</button>
+    <button data-metric="max">Max</button>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--main)"></i>Main app</span>
+    <span><i style="background:var(--edge)"></i>Hosted · edge (gateway+SSO)</span>
+    <span><i style="background:var(--direct)"></i>Hosted · raw app</span>
+  </div>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>All numbers</h2>
+  <p class="lead">Milliseconds. Every endpoint returned HTTP 302 (the unauthenticated landing/redirect) and was measured identically.</p>
+  <div class="tablewrap"><table id="tbl"><thead><tr>
+    <th>Endpoint</th><th>n</th><th>min</th><th>avg</th><th>p50</th><th>p95</th><th>max</th><th>TTFB</th>
+  </tr></thead><tbody></tbody></table></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>How to read this</h2>
+  <div class="note">
+    <p><b>What's measured.</b> Time to first byte and total time for the first HTTPS request a browser makes, over the live edge (TLS + nginx + any auth redirect). The hosted "edge" path goes through the per‑instance <span class="mono">*.app.sisp.com</span> vhost + Authelia SSO; the hosted "raw app" path hits the container directly on its compute node to isolate the app itself.</p>
+    <p style="margin-top:.7rem"><b>What it isn't.</b> This is network/proxy responsiveness, not in‑app work — opening a notebook, spawning a kernel, or an R session is separate and dominated by the app, not the path. A 302 here is the expected first response for all four endpoints.</p>
+    <p style="margin-top:.7rem"><b>Takeaway.</b> The new hosting path is faster to first byte than the legacy apps, and the gateway+SSO overhead is small (single‑digit ms). The raw hosted app answers in ~1 ms, so almost all of the hosted edge time is TLS + SSO, not the app.</p>
+  </div>
+</div></section>
+
+<footer><div class="wrap">SISP Lab Platform · hosted‑vs‑main latency · 2026‑06‑28 · raw samples embedded in this file.</div></footer>
+<div class="tip" id="tip"></div>
+
+<script id="data" type="text/csv">
+endpoint,sample,http_code,ttfb_s,total_s
+Jupyter (main),1,302,0.034824,0.034860
+Jupyter (main),2,302,0.027795,0.027828
+Jupyter (main),3,302,0.024518,0.024558
+Jupyter (main),4,302,0.023246,0.023279
+Jupyter (main),5,302,0.023212,0.023248
+Jupyter (main),6,302,0.023466,0.023526
+Jupyter (main),7,302,0.023239,0.023281
+Jupyter (main),8,302,0.023825,0.023859
+Jupyter (main),9,302,0.024559,0.024619
+Jupyter (main),10,302,0.023475,0.023514
+Jupyter (main),11,302,0.023116,0.023151
+Jupyter (main),12,302,0.023188,0.023234
+Jupyter (main),13,302,0.022991,0.023068
+Jupyter (main),14,302,0.022311,0.022355
+Jupyter (main),15,302,0.021671,0.021700
+Jupyter (main),16,302,0.021111,0.021137
+Jupyter (main),17,302,0.022847,0.022878
+Jupyter (main),18,302,0.022313,0.022363
+Jupyter (main),19,302,0.023115,0.023153
+Jupyter (main),20,302,0.023272,0.023345
+Jupyter (main),21,302,0.022964,0.022995
+Jupyter (main),22,302,0.022966,0.022997
+Jupyter (main),23,302,0.022215,0.022245
+Jupyter (main),24,302,0.022511,0.022538
+Jupyter (main),25,302,0.022759,0.022788
+Jupyter (main),26,302,0.023131,0.023175
+Jupyter (main),27,302,0.023182,0.023216
+Jupyter (main),28,302,0.022636,0.022664
+Jupyter (main),29,302,0.022388,0.022418
+Jupyter (main),30,302,0.019649,0.019685
+Jupyter (hosted edge),1,302,0.008007,0.008047
+Jupyter (hosted edge),2,302,0.008479,0.008542
+Jupyter (hosted edge),3,302,0.007991,0.008036
+Jupyter (hosted edge),4,302,0.007848,0.007895
+Jupyter (hosted edge),5,302,0.006264,0.006300
+Jupyter (hosted edge),6,302,0.007035,0.007074
+Jupyter (hosted edge),7,302,0.006372,0.006406
+Jupyter (hosted edge),8,302,0.007158,0.007204
+Jupyter (hosted edge),9,302,0.006360,0.006397
+Jupyter (hosted edge),10,302,0.007097,0.007142
+Jupyter (hosted edge),11,302,0.007469,0.007510
+Jupyter (hosted edge),12,302,0.007521,0.007584
+Jupyter (hosted edge),13,302,0.007542,0.007582
+Jupyter (hosted edge),14,302,0.007959,0.008003
+Jupyter (hosted edge),15,302,0.008209,0.008255
+Jupyter (hosted edge),16,302,0.007403,0.007461
+Jupyter (hosted edge),17,302,0.006341,0.006376
+Jupyter (hosted edge),18,302,0.007204,0.007243
+Jupyter (hosted edge),19,302,0.007539,0.007576
+Jupyter (hosted edge),20,302,0.007229,0.007271
+Jupyter (hosted edge),21,302,0.006594,0.006634
+Jupyter (hosted edge),22,302,0.006980,0.007022
+Jupyter (hosted edge),23,302,0.006229,0.006267
+Jupyter (hosted edge),24,302,0.007056,0.007097
+Jupyter (hosted edge),25,302,0.007280,0.007323
+Jupyter (hosted edge),26,302,0.006924,0.006971
+Jupyter (hosted edge),27,302,0.007570,0.007611
+Jupyter (hosted edge),28,302,0.008093,0.008142
+Jupyter (hosted edge),29,302,0.006502,0.006538
+Jupyter (hosted edge),30,302,0.007030,0.007076
+Jupyter (hosted direct),1,302,0.001552,0.001604
+Jupyter (hosted direct),2,302,0.001080,0.001116
+Jupyter (hosted direct),3,302,0.001022,0.001045
+Jupyter (hosted direct),4,302,0.000964,0.001016
+Jupyter (hosted direct),5,302,0.000966,0.001027
+Jupyter (hosted direct),6,302,0.001091,0.001124
+Jupyter (hosted direct),7,302,0.000994,0.001044
+Jupyter (hosted direct),8,302,0.001321,0.001358
+Jupyter (hosted direct),9,302,0.000980,0.001002
+Jupyter (hosted direct),10,302,0.000960,0.001009
+Jupyter (hosted direct),11,302,0.000970,0.000990
+Jupyter (hosted direct),12,302,0.000971,0.001033
+Jupyter (hosted direct),13,302,0.001032,0.001084
+Jupyter (hosted direct),14,302,0.000972,0.001013
+Jupyter (hosted direct),15,302,0.001075,0.001149
+Jupyter (hosted direct),16,302,0.000897,0.000946
+Jupyter (hosted direct),17,302,0.000998,0.001057
+Jupyter (hosted direct),18,302,0.001013,0.001047
+Jupyter (hosted direct),19,302,0.000907,0.000937
+Jupyter (hosted direct),20,302,0.000828,0.000881
+Jupyter (hosted direct),21,302,0.001078,0.001129
+Jupyter (hosted direct),22,302,0.000951,0.001008
+Jupyter (hosted direct),23,302,0.000928,0.000977
+Jupyter (hosted direct),24,302,0.000966,0.000987
+Jupyter (hosted direct),25,302,0.000705,0.000722
+Jupyter (hosted direct),26,302,0.000881,0.000902
+Jupyter (hosted direct),27,302,0.000882,0.000897
+Jupyter (hosted direct),28,302,0.000956,0.001008
+Jupyter (hosted direct),29,302,0.000942,0.000999
+Jupyter (hosted direct),30,302,0.000875,0.000929
+RStudio (main),1,302,0.019383,0.019425
+RStudio (main),2,302,0.015347,0.015383
+RStudio (main),3,302,0.019633,0.019721
+RStudio (main),4,302,0.015495,0.015531
+RStudio (main),5,302,0.015239,0.015281
+RStudio (main),6,302,0.020104,0.020175
+RStudio (main),7,302,0.019525,0.019609
+RStudio (main),8,302,0.015714,0.015750
+RStudio (main),9,302,0.015362,0.015398
+RStudio (main),10,302,0.015572,0.015607
+RStudio (main),11,302,0.015890,0.015934
+RStudio (main),12,302,0.016036,0.016089
+RStudio (main),13,302,0.015383,0.015422
+RStudio (main),14,302,0.015898,0.015940
+RStudio (main),15,302,0.018021,0.018118
+RStudio (main),16,302,0.015541,0.015579
+RStudio (main),17,302,0.019500,0.019577
+RStudio (main),18,302,0.018664,0.018758
+RStudio (main),19,302,0.018294,0.018342
+RStudio (main),20,302,0.016619,0.016676
+RStudio (main),21,302,0.015500,0.015541
+RStudio (main),22,302,0.010989,0.011115
+RStudio (main),23,302,0.018568,0.018653
+RStudio (main),24,302,0.018644,0.018719
+RStudio (main),25,302,0.018111,0.018165
+RStudio (main),26,302,0.017788,0.017829
+RStudio (main),27,302,0.018545,0.018589
+RStudio (main),28,302,0.017224,0.017261
+RStudio (main),29,302,0.017049,0.017085
+RStudio (main),30,302,0.019518,0.019564
+RStudio (hosted edge),1,302,0.007892,0.007935
+RStudio (hosted edge),2,302,0.008132,0.008178
+RStudio (hosted edge),3,302,0.008683,0.008736
+RStudio (hosted edge),4,302,0.006904,0.006947
+RStudio (hosted edge),5,302,0.007780,0.007834
+RStudio (hosted edge),6,302,0.007742,0.007784
+RStudio (hosted edge),7,302,0.007246,0.007282
+RStudio (hosted edge),8,302,0.008279,0.008335
+RStudio (hosted edge),9,302,0.007518,0.007566
+RStudio (hosted edge),10,302,0.007893,0.007948
+RStudio (hosted edge),11,302,0.006773,0.006810
+RStudio (hosted edge),12,302,0.007671,0.007715
+RStudio (hosted edge),13,302,0.006687,0.006721
+RStudio (hosted edge),14,302,0.007478,0.007520
+RStudio (hosted edge),15,302,0.006970,0.007005
+RStudio (hosted edge),16,302,0.007966,0.008006
+RStudio (hosted edge),17,302,0.007706,0.007745
+RStudio (hosted edge),18,302,0.008326,0.008381
+RStudio (hosted edge),19,302,0.007459,0.007498
+RStudio (hosted edge),20,302,0.007963,0.008006
+RStudio (hosted edge),21,302,0.008277,0.008322
+RStudio (hosted edge),22,302,0.008145,0.008191
+RStudio (hosted edge),23,302,0.007607,0.007644
+RStudio (hosted edge),24,302,0.007151,0.007187
+RStudio (hosted edge),25,302,0.007739,0.007779
+RStudio (hosted edge),26,302,0.007545,0.007583
+RStudio (hosted edge),27,302,0.007015,0.007054
+RStudio (hosted edge),28,302,0.007848,0.007889
+RStudio (hosted edge),29,302,0.006935,0.006969
+RStudio (hosted edge),30,302,0.008057,0.008105
+RStudio (hosted direct),1,302,0.001090,0.001205
+RStudio (hosted direct),2,302,0.001029,0.001133
+RStudio (hosted direct),3,302,0.000978,0.001060
+RStudio (hosted direct),4,302,0.001132,0.001169
+RStudio (hosted direct),5,302,0.001173,0.001295
+RStudio (hosted direct),6,302,0.000955,0.001022
+RStudio (hosted direct),7,302,0.001071,0.001155
+RStudio (hosted direct),8,302,0.001183,0.001286
+RStudio (hosted direct),9,302,0.001140,0.001192
+RStudio (hosted direct),10,302,0.001037,0.001123
+RStudio (hosted direct),11,302,0.001009,0.001089
+RStudio (hosted direct),12,302,0.000968,0.001054
+RStudio (hosted direct),13,302,0.001022,0.001106
+RStudio (hosted direct),14,302,0.000992,0.001070
+RStudio (hosted direct),15,302,0.000952,0.001066
+RStudio (hosted direct),16,302,0.000998,0.001106
+RStudio (hosted direct),17,302,0.000976,0.001056
+RStudio (hosted direct),18,302,0.000947,0.001025
+RStudio (hosted direct),19,302,0.001015,0.001117
+RStudio (hosted direct),20,302,0.001024,0.001099
+RStudio (hosted direct),21,302,0.001103,0.001209
+RStudio (hosted direct),22,302,0.001015,0.001128
+RStudio (hosted direct),23,302,0.001117,0.001213
+RStudio (hosted direct),24,302,0.001115,0.001211
+RStudio (hosted direct),25,302,0.000926,0.001005
+RStudio (hosted direct),26,302,0.001153,0.001207
+RStudio (hosted direct),27,302,0.001057,0.001156
+RStudio (hosted direct),28,302,0.000958,0.001042
+RStudio (hosted direct),29,302,0.000976,0.001056
+RStudio (hosted direct),30,302,0.000968,0.001085
+</script>
+<script>
+const RAW=document.getElementById('data').textContent.trim().split('\n').slice(1);
+const g={};
+for(const line of RAW){const p=line.split(',');if(p.length<5)continue;const e=p[0];(g[e]=g[e]||{tot:[],tf:[],code:p[2]});g[e].tot.push(+p[4]*1000);g[e].tf.push(+p[3]*1000);}
+const pct=(a,q)=>{const s=[...a].sort((x,y)=>x-y);return s[Math.min(s.length-1,Math.floor(s.length*q))];};
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const f=x=>x<1?x.toFixed(2):x.toFixed(1);
+function stat(e){const v=g[e];if(!v)return null;const t=v.tot;return{n:t.length,code:v.code,min:Math.min(...t),avg:avg(t),p50:pct(t,.5),p95:pct(t,.95),max:Math.max(...t),ttfb:avg(v.tf)};}
+
+const GROUPS=[
+  {app:'JupyterLab',icon:'📓',rows:[
+    {key:'Jupyter (main)',label:'Main',sub:'jupyter.sisp.com',cls:'main'},
+    {key:'Jupyter (hosted edge)',label:'Hosted · edge',sub:'jupyter-&lt;user&gt;.app · gateway+SSO',cls:'edge'},
+    {key:'Jupyter (hosted direct)',label:'Hosted · raw app',sub:'container, no proxy',cls:'direct'}]},
+  {app:'RStudio',icon:'📊',rows:[
+    {key:'RStudio (main)',label:'Main',sub:'rstudio.sisp.com',cls:'main'},
+    {key:'RStudio (hosted edge)',label:'Hosted · edge',sub:'rstudio-&lt;user&gt;.app · gateway+SSO',cls:'edge'},
+    {key:'RStudio (hosted direct)',label:'Hosted · raw app',sub:'container, no proxy',cls:'direct'}]},
+];
+const tip=document.getElementById('tip');
+
+// KPIs
+const jm=stat('Jupyter (main)'),je=stat('Jupyter (hosted edge)'),jd=stat('Jupyter (hosted direct)');
+const rm=stat('RStudio (main)'),re=stat('RStudio (hosted edge)'),rd=stat('RStudio (hosted direct)');
+document.getElementById('kpis').innerHTML=[
+  ['Jupyter speed‑up',(jm.avg/je.avg).toFixed(1)+'×',`hosted edge <b>${f(je.avg)}ms</b> vs main <b>${f(jm.avg)}ms</b>`],
+  ['RStudio speed‑up',(rm.avg/re.avg).toFixed(1)+'×',`hosted edge <b>${f(re.avg)}ms</b> vs main <b>${f(rm.avg)}ms</b>`],
+  ['Gateway + SSO cost','~'+f(((je.avg-jd.avg)+(re.avg-rd.avg))/2)+' ms',`edge minus raw app`],
+  ['Raw hosted app','~'+f((jd.avg+rd.avg)/2)+' ms',`container first byte`],
+].map(k=>`<div class="kpi"><div class="v">${k[1]}</div><div class="l"><b>${k[0]}</b><br>${k[2]}</div></div>`).join('');
+document.getElementById('metah').textContent='⚡ '+Object.keys(g).length+' endpoints';
+
+// Cards (grouped bars)
+function render(metric){
+  const all=Object.keys(g).map(e=>stat(e)[metric]);
+  const max=Math.max(...all);
+  document.getElementById('cards').innerHTML=GROUPS.map(grp=>{
+    const m=stat(grp.rows[0].key),e=stat(grp.rows[1].key);
+    const bars=grp.rows.map(r=>{const s=stat(r.key);if(!s)return '';const w=Math.max(2,(s[metric]/max)*100);
+      return `<div class="bar-row"><div class="top"><span class="nm">${r.label}<small>${r.sub}</small></span><span class="val">${f(s[metric])} ms</span></div>
+        <div class="track"><div class="fill ${r.cls}" style="width:${w}%" data-v="${r.label}: ${f(s[metric])} ms"></div></div></div>`;}).join('');
+    return `<div class="card"><h3>${grp.icon} ${grp.app}</h3>
+      <div class="speed">Hosted is <b>${(m.avg/e.avg).toFixed(1)}× faster</b> to first byte than the main app (by average).</div>${bars}</div>`;
+  }).join('');
+  document.querySelectorAll('.fill').forEach(el=>{
+    el.onmousemove=ev=>{tip.style.opacity=1;tip.textContent=el.dataset.v;tip.style.left=(ev.clientX+12)+'px';tip.style.top=(ev.clientY-10)+'px';};
+    el.onmouseleave=()=>tip.style.opacity=0;});
+}
+render('avg');
+document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render(b.dataset.metric);});
+
+// Table
+document.querySelector('#tbl tbody').innerHTML=Object.keys(g).map(e=>{const s=stat(e);
+  return `<tr><td><b>${e.replace(/ \(/,'<br><span class=mono style="font-size:.7rem;color:var(--muted)">').replace(/\)$/,'</span>')}</b></td>
+    <td>${s.n}</td><td>${f(s.min)}</td><td><b>${f(s.avg)}</b></td><td>${f(s.p50)}</td><td>${f(s.p95)}</td><td>${f(s.max)}</td><td>${f(s.ttfb)}</td></tr>`;}).join('');
+</script>
+</body>
+</html>

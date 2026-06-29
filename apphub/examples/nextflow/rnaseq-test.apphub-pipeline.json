@@ -1,0 +1,13 @@
+{
+  "pipelineId": "rnaseq",
+  "repo": "nf-core/rnaseq",
+  "revision": "3.14.0",
+  "runName": "rnaseq-test",
+  "outdir": "pipeline-examples/rnaseq/results",
+  "params": {},
+  "profiles": "test",
+  "configText": "",
+  "cpus": 12,
+  "memoryMb": 65536,
+  "timeMinutes": 720
+}

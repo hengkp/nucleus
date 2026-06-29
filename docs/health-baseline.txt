@@ -1,0 +1,38 @@
+## services (node1)
+slapd        active
+nginx        active
+postgresql   active
+slurmctld    active
+slurmd       active
+docker       active
+## slurm nodes (none should be down/drain* unexpectedly; node1 drng is intended)
+node1 drng
+node2 mix
+node3 idle
+node4 idle
+## ldap resolves a user
+ldap getent: OK
+## key listening ports
+0.0.0.0:389
+0.0.0.0:443
+0.0.0.0:6817
+0.0.0.0:6818
+0.0.0.0:80
+127.0.0.1:5432
+127.0.0.1:8792
+[::]:389
+[::]:443
+[::]:80
+## existing apphub scaffold :8792
+scaffold /api/session http=200
+## public app vhosts (via nginx, -k; expect 2xx/3xx/401, NOT 000/502)
+apphub.sisp.com        https=302
+zulip.sisp.com         https=301
+leantime.sisp.com      https=302
+## load
+ 13:27:58 up 30 days,  1:08,  5 users,  load average: 0.13, 0.22, 0.36
+## disk on sisplockers mount + root
+Filesystem Use% Mounted
+192.168.0.103:/Pool-1/Columbus-Storage/sisplockers 35% /mnt/sisplockers
+/dev/mapper/ubuntu--vg-lv0 84% /
+DONE

@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "jupyterlab",
+      "name": "JupyterLab",
+      "category": "Notebook",
+      "description": "Interactive Python/R notebook session for analysis work.",
+      "image": "jupyterlab.sif",
+      "command": [
+        "jupyter",
+        "lab",
+        "--ip=0.0.0.0",
+        "--port={port}",
+        "--no-browser",
+        "--ServerApp.base_url=/",
+        "--ServerApp.token=",
+        "--ServerApp.password="
+      ],
+      "defaultCpus": 2,
+      "defaultMemoryMb": 8192,
+      "defaultTimeMinutes": 480,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 1440,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" },
+        { "source": "{home}", "target": "/home/{user}", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": false
+    },
+    {
+      "id": "rstudio",
+      "name": "RStudio Server",
+      "category": "Notebook",
+      "description": "RStudio session for R analysis and package development.",
+      "image": "rstudio.sif",
+      "command": [
+        "bash",
+        "-lc",
+        "mkdir -p /workspace/.rstudio/run /workspace/.rstudio/lib /workspace/.rstudio/tmp && rserver --server-daemonize=0 --www-address=0.0.0.0 --www-port={port} --auth-none=1 --server-data-dir=/workspace/.rstudio/lib --server-pid-file=/workspace/.rstudio/run/rserver.pid --secure-cookie-key-file=/workspace/.rstudio/secure-cookie-key"
+      ],
+      "defaultCpus": 2,
+      "defaultMemoryMb": 8192,
+      "defaultTimeMinutes": 480,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 1440,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" },
+        { "source": "{home}", "target": "/home/{user}", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": false
+    },
+    {
+      "id": "streamlit",
+      "name": "Streamlit",
+      "category": "App",
+      "description": "No-code launch target for Streamlit apps stored in a workspace folder.",
+      "image": "python-apps.sif",
+      "command": [
+        "streamlit",
+        "run",
+        "{entrypoint}",
+        "--server.address=0.0.0.0",
+        "--server.port={port}",
+        "--server.headless=true"
+      ],
+      "defaultEntrypoint": "app.py",
+      "defaultCpus": 2,
+      "defaultMemoryMb": 4096,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": true
+    },
+    {
+      "id": "dash",
+      "name": "Dash",
+      "category": "App",
+      "description": "Python Dash application from a workspace entrypoint.",
+      "image": "python-apps.sif",
+      "command": [
+        "python",
+        "{entrypoint}"
+      ],
+      "defaultEntrypoint": "app.py",
+      "defaultCpus": 2,
+      "defaultMemoryMb": 4096,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "environment": {
+        "PORT": "{port}",
+        "HOST": "0.0.0.0"
+      },
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": true
+    },
+    {
+      "id": "shiny",
+      "name": "Shiny",
+      "category": "App",
+      "description": "R Shiny application from the selected workspace folder.",
+      "image": "rstudio.sif",
+      "command": [
+        "R",
+        "-e",
+        "shiny::runApp('/workspace', host='0.0.0.0', port={port})"
+      ],
+      "defaultCpus": 2,
+      "defaultMemoryMb": 4096,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": false
+    },
+    {
+      "id": "fastapi",
+      "name": "Flask/FastAPI",
+      "category": "App",
+      "description": "Python web API using uvicorn or gunicorn from a workspace module.",
+      "image": "python-apps.sif",
+      "command": [
+        "uvicorn",
+        "{entrypoint}",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "{port}"
+      ],
+      "defaultEntrypoint": "app:app",
+      "defaultCpus": 2,
+      "defaultMemoryMb": 4096,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": true
+    },
+    {
+      "id": "gradio",
+      "name": "Gradio",
+      "category": "App",
+      "description": "Gradio interface from a Python workspace entrypoint.",
+      "image": "python-apps.sif",
+      "command": [
+        "python",
+        "{entrypoint}"
+      ],
+      "defaultEntrypoint": "app.py",
+      "defaultCpus": 2,
+      "defaultMemoryMb": 8192,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "environment": {
+        "GRADIO_SERVER_NAME": "0.0.0.0",
+        "GRADIO_SERVER_PORT": "{port}"
+      },
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": true
+    },
+    {
+      "id": "static-html",
+      "name": "Static HTML",
+      "category": "Static",
+      "description": "Serve an existing workspace folder as a static web site.",
+      "image": "python-apps.sif",
+      "command": [
+        "python",
+        "-m",
+        "http.server",
+        "{port}",
+        "--bind",
+        "0.0.0.0"
+      ],
+      "defaultCpus": 1,
+      "defaultMemoryMb": 1024,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": true
+    },
+    {
+      "id": "galaxy-tool",
+      "name": "Galaxy Tool Dev",
+      "category": "Tooling",
+      "description": "Workspace for developing or testing Galaxy-adjacent tools.",
+      "image": "galaxy-tool-dev.sif",
+      "command": [
+        "bash",
+        "-lc",
+        "mkdir -p /workspace/.planemo && planemo serve --host 0.0.0.0 --port {port} /workspace"
+      ],
+      "defaultCpus": 2,
+      "defaultMemoryMb": 4096,
+      "defaultTimeMinutes": 240,
+      "maxCpus": 112,
+      "maxMemoryMb": 515072,
+      "maxTimeMinutes": 720,
+      "primaryPort": "http",
+      "volumes": [
+        { "source": "{workspace}", "target": "/workspace", "mode": "rw" }
+      ],
+      "workingDirectory": "/workspace",
+      "enabled": false
+    }
+  ]
+}

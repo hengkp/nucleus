@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 2,
+  "templates": [
+    {
+      "id": "jupyterlab",
+      "name": "JupyterLab",
+      "category": "Notebook",
+      "description": "Interactive notebooks. Shared lab envs appear as kernels by their name (python3, nextflow, ...), your own as <env> (mine). Manage your own from the terminal: apphub-conda new|list|add|rm",
+      "icon": "terminal-box-line",
+      "image": "jupyterlab.sif",
+      "preinstalled": ["Python 3.11", "numpy", "pandas", "scanpy", "ipywidgets", "conda/mamba"],
+      "defaults": { "cpus": 2, "memoryMb": 8192, "timeMinutes": 480 },
+      "limits": { "maxCpus": 64, "maxMemoryMb": 262144, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "rstudio",
+      "name": "RStudio",
+      "category": "Notebook",
+      "description": "RStudio session for R analysis and package work.",
+      "icon": "bar-chart-box-line",
+      "image": "rstudio.sif",
+      "preinstalled": ["R 4.4", "tidyverse", "BiocManager"],
+      "defaults": { "cpus": 2, "memoryMb": 8192, "timeMinutes": 480 },
+      "limits": { "maxCpus": 64, "maxMemoryMb": 262144, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "rstudio-seurat",
+      "name": "RStudio · Seurat",
+      "category": "Notebook",
+      "description": "Seurat single-cell toolkit ready to go.",
+      "icon": "microscope-line",
+      "image": "rstudio-seurat.sif",
+      "preinstalled": ["Seurat 5", "SeuratObject", "presto", "harmony"],
+      "defaults": { "cpus": 4, "memoryMb": 32768, "timeMinutes": 480 },
+      "limits": { "maxCpus": 64, "maxMemoryMb": 393216, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "streamlit",
+      "name": "Streamlit",
+      "category": "App",
+      "description": "Launch a Streamlit app from a workspace folder.",
+      "icon": "layout-masonry-line",
+      "image": "python-apps.sif",
+      "needsEntrypoint": true,
+      "defaults": { "cpus": 2, "memoryMb": 4096, "timeMinutes": 240 },
+      "limits": { "maxCpus": 32, "maxMemoryMb": 131072, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "gradio",
+      "name": "Gradio",
+      "category": "App",
+      "description": "Serve a Gradio interface from a Python entrypoint.",
+      "icon": "slideshow-line",
+      "image": "python-apps.sif",
+      "needsEntrypoint": true,
+      "defaults": { "cpus": 2, "memoryMb": 8192, "timeMinutes": 240 },
+      "limits": { "maxCpus": 32, "maxMemoryMb": 131072, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "fastapi",
+      "name": "Flask / FastAPI",
+      "category": "App",
+      "description": "Python web API via uvicorn from a workspace module.",
+      "icon": "plug-line",
+      "image": "python-apps.sif",
+      "needsEntrypoint": true,
+      "defaults": { "cpus": 2, "memoryMb": 4096, "timeMinutes": 240 },
+      "limits": { "maxCpus": 32, "maxMemoryMb": 131072, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "static-html",
+      "name": "Static site",
+      "category": "Static",
+      "description": "Serve a workspace folder as a static website.",
+      "icon": "html5-line",
+      "image": "python-apps.sif",
+      "defaults": { "cpus": 1, "memoryMb": 1024, "timeMinutes": 240 },
+      "limits": { "maxCpus": 8, "maxMemoryMb": 16384, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "batch-job",
+      "name": "Batch job / Run a script",
+      "category": "Tooling",
+      "description": "Run any command or script as a SLURM job across node2-4 — no web UI; output goes to your workspace and the job's logs. Track it in the Job Queue.",
+      "icon": "terminal-line",
+      "kind": "batch",
+      "image": "python-apps.sif",
+      "defaults": { "cpus": 4, "memoryMb": 16384, "timeMinutes": 240 },
+      "limits": { "maxCpus": 112, "maxMemoryMb": 515600, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "custom-app",
+      "name": "Custom Container (web app)",
+      "category": "Tooling",
+      "description": "Bring your own Apptainer/Singularity .sif and serve a web app from it. You give the image path in your locker and a start command that listens on $PORT.",
+      "icon": "box-3-line",
+      "kind": "app",
+      "needsEntrypoint": true,
+      "byoImage": true,
+      "image": null,
+      "defaults": { "cpus": 2, "memoryMb": 8192, "timeMinutes": 240 },
+      "limits": { "maxCpus": 64, "maxMemoryMb": 262144, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
+      "id": "custom-batch",
+      "name": "Custom Container (no browser)",
+      "category": "Tooling",
+      "description": "Bring your own Apptainer/Singularity .sif and run a command inside it as a SLURM job. No web UI; output goes to your locker and the job logs.",
+      "icon": "box-3-line",
+      "kind": "batch",
+      "byoImage": true,
+      "image": null,
+      "defaults": { "cpus": 4, "memoryMb": 16384, "timeMinutes": 240 },
+      "limits": { "maxCpus": 112, "maxMemoryMb": 515600, "maxTimeMinutes": 4320 },
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+# Authelia auth gateway for AppHub. Runs on node1 (has Docker). Bound to loopback; nginx
+# fronts it (nginx-apphub.conf). Secrets via .env (see .env.example) — never commit real ones.
+services:
+  authelia:
+    image: authelia/authelia:4.38
+    container_name: sisp-authelia
+    restart: unless-stopped
+    network_mode: host                 # listens on 127.0.0.1:9091 (see configuration.yml)
+    volumes:
+      - ./configuration.yml:/config/configuration.yml:ro
+      - authelia-data:/var/lib/authelia
+    env_file:
+      - .env
+    # config auto-loaded from /config/configuration.yml (mounted above)
+volumes:
+  authelia-data:

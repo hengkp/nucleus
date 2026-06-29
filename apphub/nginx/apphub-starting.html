@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="refresh" content="6" />
+<title>Starting your app...</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f5f8fa; color: #0f1b22; padding: 24px;
+  }
+  @media (prefers-color-scheme: dark) { body { background: #0b1117; color: #e9f0f4; } .card { background: #111a21 !important; border-color: #223038 !important; } .muted { color: #93a4ad !important; } }
+  .card {
+    width: 100%; max-width: 460px; background: #ffffff; border: 1px solid #e1e8ee;
+    border-radius: 16px; padding: 40px 32px; text-align: center;
+    box-shadow: 0 12px 40px rgba(16, 32, 29, 0.10);
+  }
+  .spinner {
+    width: 52px; height: 52px; margin: 0 auto 24px; border-radius: 50%;
+    border: 4px solid rgba(13, 148, 136, 0.18); border-top-color: #0d9488;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  h1 { font-size: 20px; margin: 0 0 10px; font-weight: 600; }
+  p { margin: 0; line-height: 1.6; font-size: 15px; }
+  .muted { color: #566570; }
+  .dots::after { content: ''; animation: dots 1.4s steps(4, end) infinite; }
+  @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+  .late { display: none; margin-top: 22px; padding-top: 20px; border-top: 1px solid #e1e8ee; }
+  @media (prefers-color-scheme: dark) { .late { border-color: #223038; } }
+  .late.show { display: block; }
+  a.btn {
+    display: inline-block; margin-top: 12px; text-decoration: none;
+    background: #0d9488; color: #fff; font-weight: 600; font-size: 14px;
+    padding: 10px 18px; border-radius: 10px;
+  }
+  a.btn:hover { background: #0f766e; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="spinner" role="status" aria-label="Loading"></div>
+    <h1>Your app is starting<span class="dots"></span></h1>
+    <p class="muted">This usually takes up to a minute. The page will refresh by itself, so you can sit tight and wait for it to open.</p>
+    <div class="late" id="late">
+      <p class="muted">This is taking a little longer than usual. You can keep waiting, or head back to your dashboard and open the app from there.</p>
+      <a class="btn" id="home" href="https://apphub.sisp.com">Back to AppHub</a>
+    </div>
+  </div>
+<script>
+  (function () {
+    // Point the fallback link at the right console (internal vs external).
+    try {
+      var ext = location.host.indexOf('sisp.freeddns.org') !== -1;
+      document.getElementById('home').href = ext ? 'https://apphub.sisp.freeddns.org:8443/' : 'https://apphub.sisp.com/';
+    } catch (e) {}
+    // Count attempts per app so we can show a gentle "taking longer" note after a while.
+    try {
+      var key = 'apphub_start_' + location.host + location.pathname;
+      var n = (parseInt(sessionStorage.getItem(key) || '0', 10) || 0) + 1;
+      sessionStorage.setItem(key, String(n));
+      if (n >= 9) document.getElementById('late').classList.add('show');
+    } catch (e) {}
+    // Reload to retry the app. When it is up, this loads the real app instead of this page.
+    setTimeout(function () { location.reload(); }, 5000);
+  })();
+</script>
+</body>
+</html>

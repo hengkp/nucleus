@@ -1,0 +1,44 @@
+[Unit]
+Description=SISP AppHub portal
+After=network-online.target postgresql.service slurmctld.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=apphub
+Group=apphub
+WorkingDirectory=/opt/sisp-apphub/server
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=8792
+Environment=WEB_ROOT=/var/www/apphub.sisp.com
+Environment=APPHUB_RUNTIME_ROOT=/mnt/sisplockers/apphub/runtime
+Environment=APPHUB_TEMPLATE_PATH=/mnt/sisplockers/apphub/runtime/templates.json
+Environment=APPHUB_RUNNER_PATH=/mnt/sisplockers/apphub/runtime/wrappers/apphub-runner.sh
+Environment=APPHUB_SBATCH_WRAPPER=/opt/sisp-apphub/runtime/wrappers/apphub-sbatch-as-user.sh
+Environment=APPHUB_SCANCEL_WRAPPER=/opt/sisp-apphub/runtime/wrappers/apphub-sbatch-as-user.sh
+Environment=APPHUB_JOB_ROOT=/var/lib/sisp-apphub/jobs
+Environment=APPHUB_LOG_ROOT=/var/lib/sisp-apphub/logs
+Environment=APPHUB_PORT_RANGE=31000-31999
+Environment=APPHUB_SLURM_MODE=slurm
+Environment=APPHUB_CLUSTER_NODES=node1,node2,node3,node4
+Environment=APPHUB_DEFAULT_NODES=node2,node3,node4
+Environment=APPHUB_APP_DOMAIN=app.sisp.com
+Environment=APPHUB_BASE_URL=https://apphub.sisp.com
+Environment=APPHUB_MAPDRIVE_URL=https://mapdrive.sisp.com
+Environment=APPHUB_WORKSPACE_BASE=/mnt/sisplockers/apphub/workspaces
+Environment=APPHUB_IMAGE_ROOT=/mnt/sisplockers/apphub/images
+Environment=APPHUB_TRUSTED_AUTH_HEADER=x-remote-user
+Environment=APPHUB_TRUSTED_GROUPS_HEADER=x-remote-groups
+Environment=APPHUB_NGINX_ROUTE_MAP=/etc/nginx/apphub/routes.map
+Environment="APPHUB_NGINX_RELOAD_CMD=sudo -n /usr/local/sbin/apphub-nginx-reload"
+EnvironmentFile=-/etc/sisp-apphub/apphub.env
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=3
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/sisp-apphub /etc/nginx/apphub
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+#!/bin/zsh
+SCRIPT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+HELPER="${SCRIPT_DIR}/SISPDriveMapper.command"
+
+if [ ! -f "${HELPER}" ]; then
+  osascript -e 'display alert "SISP Drive Mapper" message "SISPDriveMapper.command was not found next to this app bundle."'
+  exit 1
+fi
+
+chmod +x "${HELPER}" 2>/dev/null || true
+osascript -e "tell application \"Terminal\" to do script \"$(printf '%q' "${HELPER}")\"" -e 'tell application "Terminal" to activate'

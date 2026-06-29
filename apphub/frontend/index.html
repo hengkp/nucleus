@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/brand/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/brand/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="SISP AppHub — launch lab analysis apps across the cluster, no terminal required." />
+    <title>SISP AppHub</title>
+    <!--
+      No-FOUC theme boot. Externalized (not inline) so it works under a strict CSP
+      (script-src 'self') per ADR-006. Sets .dark before first paint.
+    -->
+    <script src="/theme-boot.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

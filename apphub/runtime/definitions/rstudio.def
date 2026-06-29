@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: rocker/rstudio:4.4.2
+
+%labels
+    org.sisp.apphub.template rstudio
+    org.sisp.apphub.description SISP AppHub RStudio Server runtime
+
+%post
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        libxml2-dev \
+        libfontconfig1-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libfreetype6-dev \
+        libpng-dev \
+        libtiff5-dev \
+        libjpeg-dev \
+        pandoc
+    R -q -e "install.packages(c('tidyverse','data.table','shiny','rmarkdown','devtools','BiocManager'), repos='https://cloud.r-project.org')"
+    R -q -e "BiocManager::install(c('Biostrings','GenomicRanges','DESeq2'), ask=FALSE, update=FALSE)"
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export DISABLE_AUTH=true
+    export RSTUDIO_DISABLE_AUTH=1
+
+%runscript
+    exec rserver "$@"

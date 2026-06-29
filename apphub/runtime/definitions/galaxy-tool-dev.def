@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: python:3.11-slim
+
+%labels
+    org.sisp.apphub.template galaxy-tool
+    org.sisp.apphub.description SISP AppHub Galaxy tool development runtime
+
+%post
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        bash \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
+        libffi-dev \
+        libssl-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        zlib1g-dev
+    pip install --no-cache-dir --upgrade pip
+    pip install --no-cache-dir \
+        planemo \
+        bioblend \
+        galaxy-tool-util \
+        galaxy-tool-test-data \
+        pytest \
+        black \
+        ruff
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export PYTHONUNBUFFERED=1
+    export PLANEMO_HOME=/workspace/.planemo
+
+%runscript
+    exec planemo "$@"

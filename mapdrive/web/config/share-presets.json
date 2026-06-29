@@ -1,0 +1,335 @@
+{
+  "defaultDrive": "Z:",
+  "defaultMode": "gateway",
+  "loginFormats": [
+    "username only",
+    "username@siriraj.local",
+    "SIRIRAJ\\username"
+  ],
+  "modes": {
+    "gateway": {
+      "label": "Recommended",
+      "sublabel": "SISP gateway · node1",
+      "hint": "Connects through the SISP gateway. File ownership is always correct. Sign in with your plain lab username.",
+      "server": "192.168.0.25",
+      "defaultLoginFormat": "username only",
+      "shares": [
+        {
+          "name": "sisplockers",
+          "unc": "\\\\192.168.0.25\\sisplockers",
+          "nasPath": "All lab lockers via the gateway — your files plus others' where they've shared them",
+          "nfs": true
+        },
+        {
+          "name": "Aj-Adisak",
+          "unc": "\\\\192.168.0.25\\Aj-Adisak",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "Aj-Uraiwan",
+          "unc": "\\\\192.168.0.25\\Aj-Uraiwan",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "amphunc",
+          "unc": "\\\\192.168.0.25\\amphunc",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "CCADR",
+          "unc": "\\\\192.168.0.25\\CCADR",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "CIK",
+          "unc": "\\\\192.168.0.25\\CIK",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "CRCproject",
+          "unc": "\\\\192.168.0.25\\CRCproject",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "Migration",
+          "unc": "\\\\192.168.0.25\\Migration",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "MMproject",
+          "unc": "\\\\192.168.0.25\\MMproject",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "MutationProfile",
+          "unc": "\\\\192.168.0.25\\MutationProfile",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "Neoantigen",
+          "unc": "\\\\192.168.0.25\\Neoantigen",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "nikon",
+          "unc": "\\\\192.168.0.25\\nikon",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "Orientia",
+          "unc": "\\\\192.168.0.25\\Orientia",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "pacbio",
+          "unc": "\\\\192.168.0.25\\pacbio",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "PELproject",
+          "unc": "\\\\192.168.0.25\\PELproject",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "Rarecyte-folder",
+          "unc": "\\\\192.168.0.25\\Rarecyte-folder",
+          "nasPath": "Project share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "admin_dept",
+          "unc": "\\\\192.168.0.25\\admin_dept",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "admin_sp",
+          "unc": "\\\\192.168.0.25\\admin_sp",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "filing",
+          "unc": "\\\\192.168.0.25\\filing",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "hr",
+          "unc": "\\\\192.168.0.25\\hr",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "it_others",
+          "unc": "\\\\192.168.0.25\\it_others",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "postgraduate",
+          "unc": "\\\\192.168.0.25\\postgraduate",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "purchasing",
+          "unc": "\\\\192.168.0.25\\purchasing",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "research",
+          "unc": "\\\\192.168.0.25\\research",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        },
+        {
+          "name": "undergraduate",
+          "unc": "\\\\192.168.0.25\\undergraduate",
+          "nasPath": "Department share via the gateway",
+          "nfs": true
+        }
+      ]
+    },
+    "direct": {
+      "label": "Direct",
+      "sublabel": "Infortrend NAS · 192.168.0.103",
+      "hint": "Connects straight to the NAS. Use for department and project shares. Sign in as SIRIRAJ\\username.",
+      "server": "192.168.0.103",
+      "defaultLoginFormat": "SIRIRAJ\\username",
+      "shares": [
+        {
+          "name": "sisplockers",
+          "unc": "\\\\192.168.0.103\\sisplockers",
+          "nasPath": "/Pool-1/Columbus-Storage/sisplockers",
+          "nfs": true
+        },
+        {
+          "name": "Aj-Adisak",
+          "unc": "\\\\192.168.0.103\\Aj-Adisak",
+          "nasPath": "/Pool-1/NAS-Storage/Aj-Adisak",
+          "nfs": true
+        },
+        {
+          "name": "Aj-Uraiwan",
+          "unc": "\\\\192.168.0.103\\Aj-Uraiwan",
+          "nasPath": "/Pool-1/NAS-Storage/Aj-Uraiwan",
+          "nfs": true
+        },
+        {
+          "name": "amphunc",
+          "unc": "\\\\192.168.0.103\\amphunc",
+          "nasPath": "/Pool-1/Bioinfo-Storage/amphunc",
+          "nfs": true
+        },
+        {
+          "name": "CCADR",
+          "unc": "\\\\192.168.0.103\\CCADR",
+          "nasPath": "/Pool-1/NAS-Storage/CCADR",
+          "nfs": true
+        },
+        {
+          "name": "CIK",
+          "unc": "\\\\192.168.0.103\\CIK",
+          "nasPath": "/Pool-1/NAS-Storage/CIK",
+          "nfs": true
+        },
+        {
+          "name": "Columbus-folder",
+          "unc": "\\\\192.168.0.103\\Columbus-folder",
+          "nasPath": "/Pool-1/Columbus-Storage/Columbus-folder",
+          "nfs": false
+        },
+        {
+          "name": "CRCproject",
+          "unc": "\\\\192.168.0.103\\CRCproject",
+          "nasPath": "/Pool-1/Bioinfo-Storage/CRCproject",
+          "nfs": true
+        },
+        {
+          "name": "Migration",
+          "unc": "\\\\192.168.0.103\\Migration",
+          "nasPath": "/Pool-1/NAS-Storage/Migration",
+          "nfs": true
+        },
+        {
+          "name": "MMproject",
+          "unc": "\\\\192.168.0.103\\MMproject",
+          "nasPath": "/Pool-1/Columbus-Storage/MMproject",
+          "nfs": true
+        },
+        {
+          "name": "MutationProfile",
+          "unc": "\\\\192.168.0.103\\MutationProfile",
+          "nasPath": "/Pool-1/Biobank-Storage/MutationProfile",
+          "nfs": true
+        },
+        {
+          "name": "Neoantigen",
+          "unc": "\\\\192.168.0.103\\Neoantigen",
+          "nasPath": "/Pool-1/NAS-Storage/Neoantigen",
+          "nfs": true
+        },
+        {
+          "name": "nikon",
+          "unc": "\\\\192.168.0.103\\nikon",
+          "nasPath": "/Pool-1/Columbus-Storage/nikon",
+          "nfs": true
+        },
+        {
+          "name": "Orientia",
+          "unc": "\\\\192.168.0.103\\Orientia",
+          "nasPath": "/Pool-1/NAS-Storage/Orientia",
+          "nfs": true
+        },
+        {
+          "name": "pacbio",
+          "unc": "\\\\192.168.0.103\\pacbio",
+          "nasPath": "/Pool-1/Bioinfo-Storage/pacbio",
+          "nfs": true
+        },
+        {
+          "name": "PELproject",
+          "unc": "\\\\192.168.0.103\\PELproject",
+          "nasPath": "/Pool-1/NAS-Storage/PELproject",
+          "nfs": true
+        },
+        {
+          "name": "Rarecyte-folder",
+          "unc": "\\\\192.168.0.103\\Rarecyte-folder",
+          "nasPath": "/Pool-1/Rarecyte-Storage/Rarecyte-folder",
+          "nfs": true
+        },
+        {
+          "name": "admin_dept",
+          "unc": "\\\\192.168.0.103\\admin_dept",
+          "nasPath": "/Pool-1/Pharm-Storage/admin_dept",
+          "nfs": true
+        },
+        {
+          "name": "admin_sp",
+          "unc": "\\\\192.168.0.103\\admin_sp",
+          "nasPath": "/Pool-1/Pharm-Storage/admin_sp",
+          "nfs": true
+        },
+        {
+          "name": "filing",
+          "unc": "\\\\192.168.0.103\\filing",
+          "nasPath": "/Pool-1/Pharm-Storage/filing",
+          "nfs": true
+        },
+        {
+          "name": "hr",
+          "unc": "\\\\192.168.0.103\\hr",
+          "nasPath": "/Pool-1/Pharm-Storage/hr",
+          "nfs": true
+        },
+        {
+          "name": "it_others",
+          "unc": "\\\\192.168.0.103\\it_others",
+          "nasPath": "/Pool-1/Pharm-Storage/it_others",
+          "nfs": true
+        },
+        {
+          "name": "postgraduate",
+          "unc": "\\\\192.168.0.103\\postgraduate",
+          "nasPath": "/Pool-1/Pharm-Storage/postgraduate",
+          "nfs": true
+        },
+        {
+          "name": "purchasing",
+          "unc": "\\\\192.168.0.103\\purchasing",
+          "nasPath": "/Pool-1/Pharm-Storage/purchasing",
+          "nfs": true
+        },
+        {
+          "name": "research",
+          "unc": "\\\\192.168.0.103\\research",
+          "nasPath": "/Pool-1/Pharm-Storage/research",
+          "nfs": true
+        },
+        {
+          "name": "undergraduate",
+          "unc": "\\\\192.168.0.103\\undergraduate",
+          "nasPath": "/Pool-1/Pharm-Storage/undergraduate",
+          "nfs": true
+        }
+      ]
+    }
+  }
+}

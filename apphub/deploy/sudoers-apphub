@@ -1,0 +1,3 @@
+# Install as /etc/sudoers.d/apphub with mode 0440 after reviewing paths.
+apphub ALL=(root) NOPASSWD: /opt/sisp-apphub/runtime/wrappers/apphub-sbatch-as-user.sh submit *, /opt/sisp-apphub/runtime/wrappers/apphub-sbatch-as-user.sh cancel *
+apphub ALL=(root) NOPASSWD: /usr/local/sbin/apphub-nginx-reload

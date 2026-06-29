@@ -1,0 +1,59 @@
+# SISP MapDrive CIFS gateway — node1 variant (ldapsam against the LOCAL OpenLDAP).
+# Differences from gateway/smb.conf (the node2 design): ldap://127.0.0.1 (loopback, no LDAPS
+# needed), and the lockers are the already-mounted NFS path /mnt/sisplockers. Per-user %U
+# isolation + oplocks-off NFS coherence + SMB signing + netatalk fruit stack are unchanged.
+[global]
+    workgroup = SIRIRAJ
+    server string = SISP MapDrive Gateway
+    netbios name = NAS
+    server role = standalone server
+    security = user
+
+    passdb backend = ldapsam:ldap://127.0.0.1
+    ldap suffix = dc=siriraj,dc=local
+    ldap user suffix = ou=People
+    ldap group suffix = ou=group
+    ldap admin dn = cn=samba-pwsync,dc=siriraj,dc=local
+    ldap ssl = off
+    ldap passwd sync = no
+
+    # uid/gid come from SSSD/NSS — the directory's real posix numbers (match SLURM jobs).
+    idmap config * : backend = tdb
+    idmap config * : range = 3000-7999
+
+    # Correctness over browse-perf across the NFS backhaul.
+    oplocks = no
+    level2 oplocks = no
+    kernel oplocks = no
+    smb2 leases = no
+
+    server min protocol = SMB2_10
+    client min protocol = SMB2_10
+    server signing = mandatory
+    smb encrypt = desired
+    restrict anonymous = 2
+    map to guest = Never
+
+    # macOS Finder metadata via netatalk sidecars (NFS export lacks user.* xattrs — S1 WARN).
+    vfs objects = catia fruit
+    fruit:metadata = netatalk
+    fruit:resource = file
+    fruit:posix_rename = yes
+    fruit:nfs_aces = no
+
+    log file = /var/log/samba/%m.log
+    max log size = 5000
+    log level = 1 auth:3
+
+# Full lockers tree (like the direct NAS share): users see every locker and can read/write
+# others' where the locker's own permissions allow it (collaboration). smbd runs as the
+# connecting user, so file ownership stays correct and a private (0700) locker is still
+# private — access is decided by the filesystem, exactly like a direct mount.
+[sisplockers]
+    comment = Lab lockers (all users)
+    path = /mnt/sisplockers
+    valid users = @sisp
+    browseable = yes
+    read only = no
+    create mask = 0644
+    directory mask = 0755

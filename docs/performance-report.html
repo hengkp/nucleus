@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SISP Platform — Performance Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --brand:#11695f;--brand2:#0c4f47;--tint:#e2f1ee;--ink:#0f1a18;--muted:#5d6b68;
+    --surface:#fff;--bg:#f6f9f8;--border:#e0e8e6;--old:#c98a2b;--oldt:#fbf1df;
+    --new:#11695f;--newt:#e2f1ee;--warn:#c0392b;--ok:#2e9b5f;
+    --sh:0 1px 2px rgba(16,38,34,.06),0 8px 24px rgba(16,38,34,.06);
+  }
+  [data-theme="dark"]{--ink:#eaf2f0;--muted:#9fb1ad;--surface:#15201e;--bg:#0d1413;--border:#283431;--tint:rgba(43,179,163,.12);--new:#34c2b0;--oldt:rgba(201,138,43,.14);--newt:rgba(52,194,176,.14);--sh:0 8px 24px rgba(0,0,0,.4);}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 1.25rem}
+  .mono{font-family:"JetBrains Mono",monospace}
+  a{color:var(--brand)}
+  header.hero{background:linear-gradient(135deg,#0a3f39,#11695f 60%,#1b8076);color:#fff;padding:3rem 0 2.5rem;position:relative;overflow:hidden}
+  header.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(900px 300px at 85% -20%,rgba(52,194,176,.4),transparent 70%)}
+  .hero .wrap{position:relative;z-index:1}
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8fe6d8}
+  h1{font-size:clamp(1.9rem,4vw,2.8rem);margin:.5rem 0 0;font-weight:800;letter-spacing:-.02em}
+  .sub{color:rgba(255,255,255,.85);margin-top:.6rem;max-width:46rem}
+  .meta{margin-top:1.1rem;font-size:.8rem;color:rgba(255,255,255,.7);display:flex;gap:1.2rem;flex-wrap:wrap}
+  .toggle{position:absolute;top:1.2rem;right:1.2rem;z-index:2;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:.4rem .7rem;cursor:pointer;font-size:.8rem;font-weight:600}
+  section{padding:2.4rem 0}
+  h2{font-size:1.4rem;font-weight:800;letter-spacing:-.01em;margin:0 0 .3rem}
+  .lead{color:var(--muted);margin:0 0 1.4rem;max-width:48rem}
+  .kpis{display:grid;gap:1rem;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:760px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem;box-shadow:var(--sh)}
+  .kpi .v{font-size:1.7rem;font-weight:800;color:var(--brand)}
+  .kpi .l{font-size:.76rem;color:var(--muted);margin-top:.2rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem;box-shadow:var(--sh)}
+  .chart-controls{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden}
+  .seg button{border:0;background:var(--surface);color:var(--muted);padding:.45rem .9rem;cursor:pointer;font-weight:600;font-size:.82rem}
+  .seg button.on{background:var(--brand);color:#fff}
+  .bar-row{display:grid;grid-template-columns:13rem 1fr;align-items:center;gap:.8rem;margin:.45rem 0}
+  @media(max-width:640px){.bar-row{grid-template-columns:8.5rem 1fr}}
+  .bar-row .nm{font-size:.82rem;font-weight:600;text-align:right;color:var(--ink)}
+  .bar-row .nm small{display:block;font-weight:500;color:var(--muted);font-size:.68rem}
+  .track{background:var(--bg);border-radius:7px;height:30px;position:relative;overflow:hidden;border:1px solid var(--border)}
+  .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:.55rem;color:#fff;font-size:.76rem;font-weight:700;transition:width .6s cubic-bezier(.2,.8,.2,1);white-space:nowrap;min-width:2.5rem}
+  .fill.old{background:linear-gradient(90deg,#d8a24a,#c98a2b)}
+  .fill.new{background:linear-gradient(90deg,#11695f,#1b8076)}
+  table{width:100%;border-collapse:collapse;font-size:.84rem}
+  th,td{padding:.6rem .7rem;text-align:right;border-bottom:1px solid var(--border)}
+  th:first-child,td:first-child{text-align:left}
+  th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);cursor:pointer;user-select:none}
+  th:hover{color:var(--brand)}
+  tbody tr:hover{background:var(--tint)}
+  .pill{display:inline-block;font-size:.68rem;font-weight:700;padding:.12rem .5rem;border-radius:999px}
+  .pill.old{background:var(--oldt);color:var(--old)}
+  .pill.new{background:var(--newt);color:var(--new)}
+  .pill.ok{background:var(--newt);color:var(--ok)}
+  .pill.err{background:rgba(192,57,43,.12);color:var(--warn)}
+  .find{display:grid;gap:.8rem}
+  .find .it{display:flex;gap:.7rem;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:10px;padding:.9rem 1rem}
+  .find .it.warn{border-left-color:var(--warn)}
+  .find .it .ic{font-size:1.1rem}
+  .find .it b{display:block;font-size:.92rem}
+  .find .it span{color:var(--muted);font-size:.86rem}
+  .note{font-size:.82rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem}
+  footer{padding:2rem 0;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border)}
+  .tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);padding:.3rem .55rem;border-radius:6px;font-size:.74rem;opacity:0;transition:opacity .12s;z-index:50}
+</style>
+</head>
+<body>
+<button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">◐ theme</button>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">SISP Lab Platform</div>
+  <h1>Performance &amp; Responsiveness Report</h1>
+  <p class="sub">Latency of the legacy main apps (JupyterHub, RStudio, Galaxy) versus the new AppHub hosting platform and the node1 CIFS gateway — measured at the HTTP layer through the live nginx/Authelia edge.</p>
+  <div class="meta"><span>📅 2026‑06‑28</span><span>🔁 25 samples / endpoint</span><span>📍 from node1 (control plane)</span><span id="metah"></span></div>
+</div></header>
+
+<section><div class="wrap">
+  <div class="kpis" id="kpis"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Response time by endpoint</h2>
+  <p class="lead">Lower is better. Bars show the average; toggle between total round‑trip and time‑to‑first‑byte. Teal = new platform, amber = legacy main apps.</p>
+  <div class="card">
+    <div class="chart-controls">
+      <div class="seg"><button class="on" data-metric="avg">Average</button><button data-metric="p95">p95</button><button data-metric="ttfb">TTFB</button></div>
+    </div>
+    <div id="chart"></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Full statistics</h2>
+  <p class="lead">All times in milliseconds. Click a column to sort.</p>
+  <div class="card" style="overflow-x:auto">
+    <table id="tbl"><thead><tr>
+      <th data-k="endpoint">Endpoint</th><th data-k="cat">Type</th><th data-k="code">HTTP</th>
+      <th data-k="min">min</th><th data-k="avg">avg</th><th data-k="p50">p50</th><th data-k="p95">p95</th><th data-k="max">max</th><th data-k="ttfb">TTFB</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Key findings</h2>
+  <div class="find" id="finds"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Methodology &amp; notes</h2>
+  <div class="note">
+    <p><b>How measured.</b> 25 sequential HTTPS requests per endpoint from node1 via the live nginx edge (TLS + proxy + first byte), using <span class="mono">curl</span> timing. The "main" apps and "edge" endpoints traverse the full nginx → (Authelia) → upstream path a real browser uses; "AppHub API" and "Hosted app direct" hit the backend/compute node without the edge to isolate the proxy overhead.</p>
+    <p style="margin-top:.7rem"><b>What the numbers are.</b> A first/unauthenticated request typically returns a 302 (to login) or the SPA HTML — this reflects edge + app responsiveness, <i>not</i> the heavier in‑app work (a JupyterHub server spawn, a Galaxy job). Those are application‑internal and out of scope for this network‑latency report.</p>
+    <p style="margin-top:.7rem"><b>Caveats.</b> Galaxy returned <span class="mono">502</span> during the run (its upstream wasn't responding — worth a separate health check). A throttled 84 GB conda sync to shared NFS was running in the background, so absolute numbers are a mild upper bound. Single‑host vantage (node1); real client latency adds WAN/Wi‑Fi.</p>
+  </div>
+</div></section>
+
+<footer><div class="wrap">SISP Lab Platform · performance report · generated 2026‑06‑28 · data embedded in this file (open the source to audit the raw samples).</div></footer>
+<div class="tip" id="tip"></div>
+
+<script id="data" type="text/csv">
+ENDPOINT,SAMPLE,HTTP_CODE,TTFB_S,TOTAL_S
+Jupyter (main),1,302,0.033725,0.033749
+Jupyter (main),2,302,0.024270,0.024323
+Jupyter (main),3,302,0.023457,0.023497
+Jupyter (main),4,302,0.022858,0.022886
+Jupyter (main),5,302,0.023410,0.023443
+Jupyter (main),6,302,0.022150,0.022191
+Jupyter (main),7,302,0.021799,0.021829
+Jupyter (main),8,302,0.021850,0.021909
+Jupyter (main),9,302,0.023555,0.023597
+Jupyter (main),10,302,0.022737,0.022770
+Jupyter (main),11,302,0.022222,0.022254
+Jupyter (main),12,302,0.021972,0.022000
+Jupyter (main),13,302,0.023420,0.023455
+Jupyter (main),14,302,0.022732,0.022764
+Jupyter (main),15,302,0.022314,0.022346
+Jupyter (main),16,302,0.021971,0.022018
+Jupyter (main),17,302,0.023244,0.023278
+Jupyter (main),18,302,0.022954,0.022986
+Jupyter (main),19,302,0.022799,0.022833
+Jupyter (main),20,302,0.022510,0.022538
+Jupyter (main),21,302,0.023285,0.023322
+Jupyter (main),22,302,0.023366,0.023398
+Jupyter (main),23,302,0.022447,0.022541
+Jupyter (main),24,302,0.022532,0.022565
+Jupyter (main),25,302,0.023347,0.023388
+RStudio (main),1,302,0.024654,0.024751
+RStudio (main),2,302,0.012103,0.012202
+RStudio (main),3,302,0.019574,0.019627
+RStudio (main),4,302,0.019374,0.019424
+RStudio (main),5,302,0.019942,0.020099
+RStudio (main),6,302,0.019362,0.019407
+RStudio (main),7,302,0.020047,0.020139
+RStudio (main),8,302,0.011679,0.011758
+RStudio (main),9,302,0.019845,0.019940
+RStudio (main),10,302,0.012844,0.012936
+RStudio (main),11,302,0.012277,0.012354
+RStudio (main),12,302,0.012380,0.012419
+RStudio (main),13,302,0.017171,0.017224
+RStudio (main),14,302,0.016322,0.016367
+RStudio (main),15,302,0.017551,0.017625
+RStudio (main),16,302,0.019928,0.019982
+RStudio (main),17,302,0.016777,0.016822
+RStudio (main),18,302,0.021209,0.021350
+RStudio (main),19,302,0.020327,0.020425
+RStudio (main),20,302,0.020194,0.020370
+RStudio (main),21,302,0.011666,0.011732
+RStudio (main),22,302,0.009969,0.010119
+RStudio (main),23,302,0.014348,0.014409
+RStudio (main),24,302,0.014984,0.015046
+RStudio (main),25,302,0.014690,0.014752
+Galaxy (main),1,502,0.017342,0.017381
+Galaxy (main),2,502,0.013912,0.013947
+Galaxy (main),3,502,0.014349,0.014387
+Galaxy (main),4,502,0.013594,0.013626
+Galaxy (main),5,502,0.017191,0.017231
+Galaxy (main),6,502,0.014895,0.014940
+Galaxy (main),7,502,0.014253,0.014288
+Galaxy (main),8,502,0.013925,0.013955
+Galaxy (main),9,502,0.013980,0.014012
+Galaxy (main),10,502,0.014235,0.014269
+Galaxy (main),11,502,0.017486,0.017527
+Galaxy (main),12,502,0.016199,0.016230
+Galaxy (main),13,502,0.015851,0.015880
+Galaxy (main),14,502,0.016724,0.016764
+Galaxy (main),15,502,0.017009,0.017046
+Galaxy (main),16,502,0.019431,0.019470
+Galaxy (main),17,502,0.016557,0.016598
+Galaxy (main),18,502,0.016289,0.016319
+Galaxy (main),19,502,0.015654,0.015682
+Galaxy (main),20,502,0.016510,0.016546
+Galaxy (main),21,502,0.016538,0.016566
+Galaxy (main),22,502,0.016332,0.016366
+Galaxy (main),23,502,0.018041,0.018085
+Galaxy (main),24,502,0.016235,0.016270
+Galaxy (main),25,502,0.015993,0.016028
+AppHub SPA (new),1,200,0.019951,0.019995
+AppHub SPA (new),2,200,0.017858,0.017903
+AppHub SPA (new),3,200,0.015447,0.015484
+AppHub SPA (new),4,200,0.015975,0.016016
+AppHub SPA (new),5,200,0.015321,0.015355
+AppHub SPA (new),6,200,0.018298,0.018344
+AppHub SPA (new),7,200,0.017890,0.017941
+AppHub SPA (new),8,200,0.016880,0.016947
+AppHub SPA (new),9,200,0.016746,0.016793
+AppHub SPA (new),10,200,0.018452,0.018501
+AppHub SPA (new),11,200,0.019282,0.019326
+AppHub SPA (new),12,200,0.016444,0.016486
+AppHub SPA (new),13,200,0.019145,0.019194
+AppHub SPA (new),14,200,0.019097,0.019143
+AppHub SPA (new),15,200,0.019326,0.019370
+AppHub SPA (new),16,200,0.019103,0.019147
+AppHub SPA (new),17,200,0.019037,0.019081
+AppHub SPA (new),18,200,0.018679,0.018726
+AppHub SPA (new),19,200,0.019007,0.019052
+AppHub SPA (new),20,200,0.019246,0.019292
+AppHub SPA (new),21,200,0.019058,0.019101
+AppHub SPA (new),22,200,0.018482,0.018529
+AppHub SPA (new),23,200,0.018373,0.018414
+AppHub SPA (new),24,200,0.018390,0.018427
+AppHub SPA (new),25,200,0.019104,0.019151
+MapDrive SPA (new),1,200,0.023099,0.023233
+MapDrive SPA (new),2,200,0.018862,0.018968
+MapDrive SPA (new),3,200,0.018734,0.018823
+MapDrive SPA (new),4,200,0.018260,0.018340
+MapDrive SPA (new),5,200,0.017327,0.017409
+MapDrive SPA (new),6,200,0.018413,0.018508
+MapDrive SPA (new),7,200,0.018465,0.018565
+MapDrive SPA (new),8,200,0.018776,0.018854
+MapDrive SPA (new),9,200,0.019331,0.019434
+MapDrive SPA (new),10,200,0.019113,0.019197
+MapDrive SPA (new),11,200,0.019055,0.019153
+MapDrive SPA (new),12,200,0.018410,0.018499
+MapDrive SPA (new),13,200,0.018718,0.018812
+MapDrive SPA (new),14,200,0.019166,0.019253
+MapDrive SPA (new),15,200,0.018553,0.018647
+MapDrive SPA (new),16,200,0.018548,0.018648
+MapDrive SPA (new),17,200,0.019125,0.019210
+MapDrive SPA (new),18,200,0.019334,0.019424
+MapDrive SPA (new),19,200,0.018255,0.018337
+MapDrive SPA (new),20,200,0.019186,0.019274
+MapDrive SPA (new),21,200,0.018732,0.018828
+MapDrive SPA (new),22,200,0.018565,0.018651
+MapDrive SPA (new),23,200,0.018452,0.018534
+MapDrive SPA (new),24,200,0.018640,0.018731
+MapDrive SPA (new),25,200,0.018641,0.018766
+AppHub API (new),1,200,0.001480,0.001535
+AppHub API (new),2,200,0.000673,0.000698
+AppHub API (new),3,200,0.000812,0.000856
+AppHub API (new),4,200,0.000518,0.000542
+AppHub API (new),5,200,0.000577,0.000602
+AppHub API (new),6,200,0.000567,0.000591
+AppHub API (new),7,200,0.000605,0.000636
+AppHub API (new),8,200,0.000735,0.000772
+AppHub API (new),9,200,0.000600,0.000632
+AppHub API (new),10,200,0.000568,0.000594
+AppHub API (new),11,200,0.000571,0.000595
+AppHub API (new),12,200,0.000633,0.000669
+AppHub API (new),13,200,0.000541,0.000572
+AppHub API (new),14,200,0.000546,0.000572
+AppHub API (new),15,200,0.000566,0.000591
+AppHub API (new),16,200,0.000420,0.000460
+AppHub API (new),17,200,0.000562,0.000595
+AppHub API (new),18,200,0.000589,0.000625
+AppHub API (new),19,200,0.000544,0.000569
+AppHub API (new),20,200,0.000565,0.000593
+AppHub API (new),21,200,0.000555,0.000585
+AppHub API (new),22,200,0.000613,0.000651
+AppHub API (new),23,200,0.000555,0.000587
+AppHub API (new),24,200,0.000552,0.000584
+AppHub API (new),25,200,0.000541,0.000567
+Hosted app edge (new),1,302,0.007759,0.007815
+Hosted app edge (new),2,302,0.005654,0.005695
+Hosted app edge (new),3,302,0.007662,0.007704
+Hosted app edge (new),4,302,0.007822,0.007863
+Hosted app edge (new),5,302,0.008138,0.008183
+Hosted app edge (new),6,302,0.007744,0.007791
+Hosted app edge (new),7,302,0.008032,0.008075
+Hosted app edge (new),8,302,0.007507,0.007554
+Hosted app edge (new),9,302,0.008314,0.008359
+Hosted app edge (new),10,302,0.007777,0.007817
+Hosted app edge (new),11,302,0.007361,0.007396
+Hosted app edge (new),12,302,0.008240,0.008288
+Hosted app edge (new),13,302,0.008142,0.008184
+Hosted app edge (new),14,302,0.007975,0.008017
+Hosted app edge (new),15,302,0.007576,0.007620
+Hosted app edge (new),16,302,0.007706,0.007749
+Hosted app edge (new),17,302,0.008002,0.008050
+Hosted app edge (new),18,302,0.008100,0.008140
+Hosted app edge (new),19,302,0.007385,0.007427
+Hosted app edge (new),20,302,0.007608,0.007660
+Hosted app edge (new),21,302,0.008493,0.008541
+Hosted app edge (new),22,302,0.007309,0.007346
+Hosted app edge (new),23,302,0.008560,0.008626
+Hosted app edge (new),24,302,0.008203,0.008255
+Hosted app edge (new),25,302,0.007943,0.007986
+Hosted app direct (new),1,200,0.009881,0.009911
+Hosted app direct (new),2,200,0.006542,0.006583
+Hosted app direct (new),3,200,0.005933,0.005970
+Hosted app direct (new),4,200,0.005761,0.005807
+Hosted app direct (new),5,200,0.005821,0.005893
+Hosted app direct (new),6,200,0.005506,0.005546
+Hosted app direct (new),7,200,0.005261,0.005327
+Hosted app direct (new),8,200,0.005742,0.005799
+Hosted app direct (new),9,200,0.004925,0.004962
+Hosted app direct (new),10,200,0.005852,0.005890
+Hosted app direct (new),11,200,0.005132,0.005170
+Hosted app direct (new),12,200,0.005920,0.005985
+Hosted app direct (new),13,200,0.005039,0.005077
+Hosted app direct (new),14,200,0.005927,0.005995
+Hosted app direct (new),15,200,0.005795,0.005862
+Hosted app direct (new),16,200,0.006069,0.006104
+Hosted app direct (new),17,200,0.005240,0.005273
+Hosted app direct (new),18,200,0.006014,0.006052
+Hosted app direct (new),19,200,0.005760,0.005835
+Hosted app direct (new),20,200,0.005400,0.005434
+Hosted app direct (new),21,200,0.005461,0.005499
+Hosted app direct (new),22,200,0.005320,0.005383
+Hosted app direct (new),23,200,0.006616,0.006682
+Hosted app direct (new),24,200,0.005157,0.005197
+Hosted app direct (new),25,200,0.005186,0.005250
+</script>
+<script>
+const RAW = document.getElementById('data').textContent.trim().split('\n').slice(1);
+const NEWSET = new Set(['AppHub SPA (new)','MapDrive SPA (new)','AppHub API (new)','Hosted app edge (new)','Hosted app direct (new)']);
+const SUBS = {'Jupyter (main)':'jupyter.sisp.com','RStudio (main)':'rstudio.sisp.com','Galaxy (main)':'galaxy.sisp.com','AppHub SPA (new)':'apphub.sisp.com','MapDrive SPA (new)':'mapdrive.sisp.com','AppHub API (new)':'backend :8793','Hosted app edge (new)':'*.app.sisp.com + Authelia','Hosted app direct (new)':'compute node:port'};
+const g={};
+for(const line of RAW){const p=line.split(',');if(p.length<5)continue;const e=p[0];(g[e]=g[e]||{code:p[2],tot:[],tf:[]});g[e].tot.push(+p[4]*1000);g[e].tf.push(+p[3]*1000);}
+const pct=(a,q)=>{const s=[...a].sort((x,y)=>x-y);return s[Math.min(s.length-1,Math.floor(s.length*q))];};
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const stats=Object.entries(g).map(([e,d])=>({endpoint:e,cat:NEWSET.has(e)?'new':'old',sub:SUBS[e]||'',code:d.code,n:d.tot.length,
+  min:Math.min(...d.tot),avg:avg(d.tot),p50:pct(d.tot,.5),p95:pct(d.tot,.95),max:Math.max(...d.tot),ttfb:avg(d.tf)}));
+const f1=x=>x<1?x.toFixed(2):x.toFixed(1);
+
+// KPIs
+const fastest=[...stats].sort((a,b)=>a.avg-b.avg)[0];
+const edge=stats.find(s=>s.endpoint==='Hosted app edge (new)'), direct=stats.find(s=>s.endpoint==='Hosted app direct (new)');
+const ovh=edge&&direct?(edge.avg-direct.avg):0;
+const newAvg=avg(stats.filter(s=>s.cat==='new'&&s.code!=='502').map(s=>s.avg));
+const oldAvg=avg(stats.filter(s=>s.cat==='old'&&s.code!=='502').map(s=>s.avg));
+document.getElementById('kpis').innerHTML=[
+  ['Fastest endpoint',f1(fastest.avg)+' ms',fastest.endpoint],
+  ['Gateway + Authelia overhead','~'+f1(ovh)+' ms','edge vs direct hosted app'],
+  ['New platform avg',f1(newAvg)+' ms','SPA + hosted (excl. 502)'],
+  ['Legacy apps avg',f1(oldAvg)+' ms','Jupyter + RStudio (excl. 502)'],
+].map(k=>`<div class="kpi"><div class="v">${k[1]}</div><div class="l"><b>${k[0]}</b><br>${k[2]}</div></div>`).join('');
+document.getElementById('metah').textContent='⚡ '+stats.length+' endpoints';
+
+// Chart
+const tip=document.getElementById('tip');
+function chart(metric){
+  const rows=[...stats].sort((a,b)=>a[metric]-b[metric]);
+  const max=Math.max(...rows.map(r=>r[metric]));
+  document.getElementById('chart').innerHTML=rows.map(r=>{
+    const w=Math.max(4,(r[metric]/max)*100);
+    return `<div class="bar-row"><div class="nm">${r.endpoint.replace(/ \((main|new)\)/,'')}<small>${r.sub}</small></div>
+      <div class="track"><div class="fill ${r.cat}" style="width:${w}%" data-v="${f1(r[metric])} ms · ${r.endpoint}">${f1(r[metric])} ms</div></div></div>`;
+  }).join('');
+  document.querySelectorAll('.fill').forEach(el=>{
+    el.onmousemove=e=>{tip.style.opacity=1;tip.textContent=el.dataset.v;tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-10)+'px';};
+    el.onmouseleave=()=>tip.style.opacity=0;
+  });
+}
+chart('avg');
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');chart(b.dataset.metric);});
+
+// Table
+let sortK='avg',sortAsc=true;
+function tbl(){
+  const rows=[...stats].sort((a,b)=>{const x=a[sortK],y=b[sortK];const c=(typeof x==='number')?x-y:String(x).localeCompare(String(y));return sortAsc?c:-c;});
+  document.querySelector('#tbl tbody').innerHTML=rows.map(r=>`<tr>
+    <td><b>${r.endpoint.replace(/ \((main|new)\)/,'')}</b><br><span class="mono" style="font-size:.72rem;color:var(--muted)">${r.sub}</span></td>
+    <td><span class="pill ${r.cat}">${r.cat==='new'?'NEW':'legacy'}</span></td>
+    <td><span class="pill ${r.code==='200'||r.code==='302'?'ok':'err'}">${r.code}</span></td>
+    <td>${f1(r.min)}</td><td><b>${f1(r.avg)}</b></td><td>${f1(r.p50)}</td><td>${f1(r.p95)}</td><td>${f1(r.max)}</td><td>${f1(r.ttfb)}</td></tr>`).join('');
+}
+tbl();
+document.querySelectorAll('#tbl th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(k===sortK)sortAsc=!sortAsc;else{sortK=k;sortAsc=true;}tbl();});
+
+// Findings
+document.getElementById('finds').innerHTML=[
+  ['ok','rocket-2','The new platform is faster at the edge','Hosted apps respond in ~'+f1(direct.avg)+' ms (direct) and ~'+f1(edge.avg)+' ms through the gateway+Authelia — quicker than the legacy apps (Jupyter ~'+f1(stats.find(s=>s.endpoint==='Jupyter (main)').avg)+' ms, RStudio ~'+f1(stats.find(s=>s.endpoint==='RStudio (main)').avg)+' ms).'],
+  ['ok','shield','The gateway adds almost nothing','Authelia SSO + the per‑instance nginx vhost cost only ~'+f1(ovh)+' ms on top of the raw app — negligible for users.'],
+  ['ok','flashlight','The AppHub control plane is instant','The backend API answers in ~'+f1(stats.find(s=>s.endpoint==='AppHub API (new)').avg)+' ms, so the dashboard/launch UI feels immediate.'],
+  ['warn','alert','Galaxy returned HTTP 502','galaxy.sisp.com\'s upstream was not responding during the run — its measured time is an nginx error page, not real app latency. Worth a separate health check / restart.'],
+  ['ok','timer','"Slow" complaints are app‑internal, not network','The proxy/edge is single‑digit‑to‑~20 ms everywhere. Perceived slowness comes from in‑app work — JupyterHub server spawn (now bumped to a 120 s timeout) and runtime package installs (now pre‑baked in the hosted images), not the network path.'],
+].map(f=>`<div class="it ${f[0]==='warn'?'warn':''}"><span class="ic">${f[0]==='warn'?'⚠️':'✅'}</span><div><b>${f[2]}</b><span>${f[3]}</span></div></div>`).join('');
+</script>
+</body>
+</html>

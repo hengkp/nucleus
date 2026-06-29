@@ -1,0 +1,11 @@
+# apphub terminal rcfile — makes the hosted JupyterLab Terminal behave like the terminal on
+# jupyter.sisp.com. terminado launches `bash --rcfile <this>`; we source the user's real ~/.bashrc
+# (conda init, `conda activate python3`, aliases, their colored PS1), then drop the container
+# runtime's one-shot PROMPT_COMMAND (`PS1="Apptainer> "; unset PROMPT_COMMAND`) which would
+# otherwise overwrite the prompt to "Apptainer> " on the first prompt.
+if [ -f "$HOME/.bashrc" ]; then . "$HOME/.bashrc"; fi
+unset PROMPT_COMMAND
+# Insurance: if no .bashrc set a prompt, build a sane one (with the active conda env prefix).
+case "${PS1:-}" in ""|"Apptainer> "|"Singularity> ")
+  PS1="${CONDA_DEFAULT_ENV:+(${CONDA_DEFAULT_ENV##*/}) }\u@\h:\w\$ " ;;
+esac

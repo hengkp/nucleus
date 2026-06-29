@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SISP AppHub</title>
+    <link rel="stylesheet" href="styles.css?v=20260626-clearapps" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div>
+            <strong>SISP AppHub</strong>
+            <small>No-code lab apps</small>
+          </div>
+        </div>
+        <nav class="nav" aria-label="Primary">
+          <button class="active" data-view="home" type="button">Home</button>
+          <button data-view="apps" type="button">My apps</button>
+          <button data-view="drives" type="button">My drives</button>
+          <button data-view="support" type="button">Support</button>
+          <button data-view="admin" class="admin-only" type="button">Admin</button>
+        </nav>
+        <div class="user-panel">
+          <span id="userName">Signed out</span>
+          <button id="logoutBtn" type="button">Sign out</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1 id="viewTitle">Home</h1>
+            <p id="viewSubtitle">Launch and manage Slurm-backed apps.</p>
+          </div>
+          <button id="refreshBtn" type="button">Refresh</button>
+        </header>
+
+        <section id="loginPanel" class="login-panel hidden">
+          <div class="login-box">
+            <h2>Sign in</h2>
+            <p>Production sign-in is handled by the SISP LDAP gateway.</p>
+            <form id="devLoginForm">
+              <label>
+                Username
+                <input name="username" value="demo" autocomplete="username" />
+              </label>
+              <button type="submit">Use development login</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="message" class="message hidden" role="status"></section>
+
+        <section id="homeView" class="view">
+          <div class="status-strip" aria-label="Cluster status overview">
+            <div><strong id="runningCount">0</strong><span>running</span></div>
+            <div><strong id="queuedCount">0</strong><span>queued</span></div>
+            <div><strong id="failedCount">0</strong><span>failed</span></div>
+            <div><strong id="approvalCount">0</strong><span>approvals</span></div>
+          </div>
+          <div class="grid">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Launch app</h2>
+              </div>
+              <div id="launchNotice" class="notice hidden" role="status"></div>
+              <form id="launchForm" class="form-grid">
+                <label>
+                  App name
+                  <input name="name" required maxlength="80" placeholder="crc-dashboard" />
+                </label>
+                <label>
+                  Template
+                  <select name="templateId" required></select>
+                </label>
+                <div id="templateSummary" class="template-summary wide"></div>
+                <label>
+                  <span id="cpuFieldLabel">CPU</span>
+                  <input name="cpus" type="number" min="1" max="64" value="2" />
+                </label>
+                <label>
+                  <span id="ramFieldLabel">RAM (GB)</span>
+                  <input name="memoryGb" type="number" min="1" step="1" value="4" />
+                </label>
+                <label>
+                  Time limit
+                  <select name="timeLimitMinutes">
+                    <option value="0" selected>No limit</option>
+                    <option value="120">2 hours</option>
+                    <option value="240">4 hours</option>
+                    <option value="480">8 hours</option>
+                    <option value="1440">24 hours</option>
+                  </select>
+                </label>
+                <label>
+                  Visibility
+                  <select name="visibility">
+                    <option value="private">Private</option>
+                    <option value="team">Team</option>
+                  </select>
+                </label>
+                <label class="wide">
+                  Workspace folder
+                  <input name="workspacePath" placeholder="projects/my-app" />
+                </label>
+                <label class="wide">
+                  Entrypoint
+                  <input name="entrypoint" placeholder="app.py or app:app" />
+                </label>
+                <button id="launchSubmitBtn" class="primary wide" type="submit">Launch</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="appsView" class="view hidden">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>My apps</h2>
+              <button id="clearAppsBtn" type="button">Clear stopped/failed</button>
+            </div>
+            <div id="appsTable" class="table-wrap"></div>
+          </div>
+          <pre id="logsBox" class="logs hidden"></pre>
+        </section>
+
+        <section id="drivesView" class="view hidden">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>My drives</h2>
+              <a id="mapDriveLink" class="button-link" href="https://mapdrive.sisp.com">Open MapDrive</a>
+            </div>
+            <div id="driveInfo" class="drive-grid"></div>
+          </div>
+        </section>
+
+        <section id="supportView" class="view hidden">
+          <div class="grid two">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>New support post</h2>
+              </div>
+              <form id="supportForm" class="form-grid">
+                <label class="wide">
+                  Title
+                  <input name="title" required maxlength="140" />
+                </label>
+                <label class="wide">
+                  Details
+                  <textarea name="body" required rows="6"></textarea>
+                </label>
+                <label>
+                  Status
+                  <select name="status">
+                    <option value="open">Open</option>
+                    <option value="admin-needed">Admin needed</option>
+                  </select>
+                </label>
+                <label>
+                  App context
+                  <select name="appId"></select>
+                </label>
+                <button class="primary wide" type="submit">Post</button>
+              </form>
+            </section>
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Community</h2>
+              </div>
+              <div id="supportThreads" class="list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="adminView" class="view hidden">
+          <div class="grid two">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Live apps</h2>
+                <button id="reconcileBtn" type="button">Reconcile</button>
+              </div>
+              <div id="adminApps" class="table-wrap"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Routes</h2>
+              </div>
+              <div id="adminRoutes" class="table-wrap"></div>
+            </section>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Audit</h2>
+            </div>
+            <div id="auditLog" class="table-wrap"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js?v=20260626-clearapps" type="module"></script>
+  </body>
+</html>

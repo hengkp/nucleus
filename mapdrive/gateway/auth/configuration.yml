@@ -1,0 +1,76 @@
+# Authelia — LDAP auth gateway for SISP AppHub.
+# Authenticates against the existing OpenLDAP (dc=siriraj,dc=local) and, via nginx
+# auth_request, injects Remote-User / Remote-Groups that nginx forwards to AppHub as
+# X-Remote-User / X-Remote-Groups (the backend's header-trust contract, ADR-001).
+# Authelia v4.38+ config. Secrets come from env/secret files, never inline.
+
+theme: light
+server:
+  address: 'tcp://127.0.0.1:9091'
+
+log:
+  level: info
+  format: text
+
+# --- Identity provider: the lab OpenLDAP -------------------------------------
+authentication_backend:
+  password_reset:
+    disable: true            # passwords are managed in LDAP elsewhere (no rotation policy)
+  ldap:
+    implementation: custom
+    address: 'ldap://192.168.0.25:389'
+    # StartTLS strongly recommended once the internal CA is in place (BUILD_PLAN P1):
+    # address: 'ldaps://192.168.0.25:636'
+    start_tls: false
+    base_dn: 'dc=siriraj,dc=local'
+    additional_users_dn: 'ou=People'
+    users_filter: '(&({username_attribute}={input})(objectClass=posixAccount))'
+    username_attribute: 'uid'
+    display_name_attribute: 'cn'
+    # VERIFIED 2026-06-27: groups are posixGroup/memberUid under ou=group (cn=sisp gid 100000).
+    # Role groups cn=apphub-power / cn=sisp-admins are added by ldap/10-role-groups.ldif.
+    additional_groups_dn: 'ou=group'
+    groups_filter: '(&(memberUid={username})(objectClass=posixGroup))'
+    group_name_attribute: 'cn'
+    user: 'cn=apphub-ro,dc=siriraj,dc=local'   # read-only service bind
+    # password supplied via AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD (env/secret)
+
+# --- Sessions ----------------------------------------------------------------
+session:
+  name: authelia_session
+  same_site: lax
+  expiration: '8h'
+  inactivity: '2h'
+  cookies:
+    - domain: 'sisp.com'
+      authelia_url: 'https://auth.sisp.com'
+      default_redirection_url: 'https://apphub.sisp.com'
+  # redis recommended for multi-process durability; file/memory ok for a single node.
+
+# --- Access control ----------------------------------------------------------
+access_control:
+  default_policy: deny
+  rules:
+    # The portal itself + per-instance app vhosts: any authenticated lab member (sisp group).
+    - domain: 'apphub.sisp.com'
+      policy: one_factor
+      subject: ['group:sisp']
+    - domain: '*.app.sisp.com'
+      policy: one_factor
+      subject: ['group:sisp']
+
+# --- Storage + notifier (minimal single-node defaults) -----------------------
+storage:
+  local:
+    path: '/var/lib/authelia/db.sqlite3'
+  # encryption_key via AUTHELIA_STORAGE_ENCRYPTION_KEY
+
+notifier:
+  filesystem:
+    filename: '/var/lib/authelia/notification.txt'
+
+# JWT/session/storage secrets are provided via env (see .env.example):
+#   AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET
+#   AUTHELIA_SESSION_SECRET
+#   AUTHELIA_STORAGE_ENCRYPTION_KEY
+#   AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD

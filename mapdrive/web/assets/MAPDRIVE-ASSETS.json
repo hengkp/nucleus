@@ -1,0 +1,67 @@
+[
+  {
+    "filename": "web/assets/logo.png",
+    "prompt": "Use case: logo-brand. Asset type: SISP MapDrive logomark PNG, final target 1024x1024, transparent after processing. Primary request: an abstract mark for SISP MapDrive: a network drive / plug motif fused into a hexagonal cluster node, same hexagon-cluster family as AppHub, minimal and scalable to 16px. Style/medium: modern scientific-tech, calm, flat geometric vector look, single-weight ~2px line work, soft depth, high-quality polished app/brand asset. Composition/framing: centered icon, generous padding, balanced square composition, crisp edges, readable as a tiny favicon. Color palette: SISP teal #11695f to deep slate gradient, subtle teal tint, no other dominant colors. Constraints: no text, no letters, no watermark, no mockup, no paper texture. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "1024x1024"
+  },
+  {
+    "filename": "web/assets/wordmark.png",
+    "prompt": "Use case: logo-brand. Asset type: SISP MapDrive wordmark PNG, final target 1600x400, transparent after processing. Primary request: the SISP MapDrive wordmark: the abstract MapDrive mark at left, followed by the exact word MapDrive in Inter SemiBold 600 deep slate, with a small SISP teal tag near the wordmark. Exact text: MapDrive and SISP only. Style/medium: modern scientific-tech brand wordmark, calm flat geometric vector, professional SaaS product identity, same hexagon-cluster family as AppHub. Composition/framing: wide horizontal composition, centered vertically, logo mark left, MapDrive text large and crisp, SISP tag smaller in teal, generous transparent padding. Color palette: SISP teal #11695f, deep slate #131a19, subtle teal-to-slate gradient only on mark. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "1600x400"
+  },
+  {
+    "filename": "web/assets/hero.png",
+    "prompt": "Use case: stylized-concept. Asset type: SISP MapDrive landing page hero background PNG, final target 1600x1000, filled. Primary request: dark teal to deep slate gradient with a faint geometric mesh of connected hexagon nodes, network drive nodes, and plug nodes; low contrast; no text. Style/medium: modern scientific-tech, calm flat geometric vector background with subtle soft depth, professional SaaS hero art. Composition/framing: wide 16:10 hero background, abstract mesh flowing diagonally with open negative space for web UI overlay, no central logo, no hard vignette. Color palette: SISP teal #11695f fading into deep slate #131a19 and #0c2422, faint lines in muted teal and slate. Constraints: filled background, no transparent areas, no words, no letters, no UI screenshots, no people, no watermark; keep pattern low contrast and suitable behind text/cards.",
+    "size": "1600x1000"
+  },
+  {
+    "filename": "web/assets/bg-light.png",
+    "prompt": "Use case: stylized-concept. Asset type: SISP MapDrive ambient light background PNG, final target 1536x1024, filled seamless faint pattern. Primary request: very faint seamless light background pattern for SISP MapDrive: pale off-white and teal-tinted surface with barely visible connected hexagon cluster lines, drive nodes, and plug nodes. Style/medium: modern scientific-tech, calm flat geometric vector pattern, subtle soft depth, premium web UI texture. Composition/framing: tileable/seamless background, evenly distributed motif, no central icon, no text, low visual weight. Color palette: warm white #f7f9f9, surface white #ffffff, brand tint #e2f1ee, SISP teal #11695f at very low opacity, slate muted #5d6b68 at very low opacity. Constraints: filled background, no transparent areas, no words, no letters, no watermark; extremely faint so UI cards and text can sit on top; avoid obvious repeats, avoid high contrast.",
+    "size": "1536x1024"
+  },
+  {
+    "filename": "web/assets/bg-dark.png",
+    "prompt": "Use case: stylized-concept. Asset type: SISP MapDrive ambient dark background PNG, final target 1536x1024, filled seamless faint pattern. Primary request: very faint seamless dark background pattern for SISP MapDrive: deep slate surface with barely visible connected hexagon cluster lines, drive nodes, and plug nodes. Style/medium: modern scientific-tech, calm flat geometric vector pattern, subtle soft depth, premium dark-mode web UI texture. Composition/framing: tileable/seamless background, evenly distributed motif, no central icon, no text, low visual weight. Color palette: deep slate #131a19 and #0c2422, muted teal #11695f at very low opacity, cool slate #5d6b68 at very low opacity. Constraints: filled background, no transparent areas, no words, no letters, no watermark; extremely faint so UI cards and text can sit on top; avoid obvious repeats, avoid high contrast.",
+    "size": "1536x1024"
+  },
+  {
+    "filename": "web/assets/step-install.png",
+    "prompt": "Use case: illustration-story. Asset type: SISP MapDrive how-it-works spot illustration, step-install.png, final target 800x800, transparent after processing. Primary request: flat teal/slate spot illustration of installing the MapDrive app: a small desktop installer window, download arrow, and app tile with drive-and-hexagon glyph. Style/medium: modern scientific-tech, calm flat geometric vector, ~2px single-weight lines, soft depth, same SISP MapDrive/AppHub hexagon-cluster motif. Composition/framing: centered square spot illustration, simple shapes, generous padding, no text labels. Color palette: SISP teal #11695f, deep slate #131a19, brand tint #e2f1ee, subtle accent blue #1b7fbd, restrained highlights. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "800x800"
+  },
+  {
+    "filename": "web/assets/step-choose.png",
+    "prompt": "Use case: illustration-story. Asset type: SISP MapDrive how-it-works spot illustration, step-choose.png, final target 800x800, transparent after processing. Primary request: flat teal/slate spot illustration of choosing a folder/share: a clean folder card with a highlighted share row, small search/select control, and connected hexagon nodes. Style/medium: modern scientific-tech, calm flat geometric vector, ~2px single-weight lines, soft depth, same SISP MapDrive/AppHub hexagon-cluster motif. Composition/framing: centered square spot illustration, simple layered UI/folder shapes, generous padding, no readable text. Color palette: SISP teal #11695f, deep slate #131a19, brand tint #e2f1ee, subtle accent blue #1b7fbd, restrained highlights. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "800x800"
+  },
+  {
+    "filename": "web/assets/step-connect.png",
+    "prompt": "Use case: illustration-story. Asset type: SISP MapDrive how-it-works spot illustration, step-connect.png, final target 800x800, transparent after processing. Primary request: flat teal/slate spot illustration of a network drive connecting to a SISP hexagon cluster with a green success check. Style/medium: modern scientific-tech, calm flat geometric vector, ~2px single-weight lines, soft depth, same SISP MapDrive/AppHub hexagon-cluster motif. Composition/framing: centered square spot illustration, drive device connected by clean lines to hexagon nodes, green check badge, generous padding, no text. Color palette: SISP teal #11695f, deep slate #131a19, brand tint #e2f1ee, connected green #2e9b5f, subtle accent blue #1b7fbd. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "800x800"
+  },
+  {
+    "filename": "web/assets/os-windows.png",
+    "prompt": "Use case: logo-brand. Asset type: SISP MapDrive Windows OS download badge glyph, os-windows.png, final target 256x256, transparent after processing. Primary request: clean teal-tinted Windows OS glyph for a download card: four-pane window symbol with subtle rounded edges and SISP teal/slate styling. Style/medium: modern scientific-tech, calm flat geometric vector, crisp icon, soft depth, compatible with the MapDrive hexagon-cluster visual system. Composition/framing: centered square icon, generous padding, readable at 24px, no enclosing text label. Color palette: SISP teal #11695f to deep slate #131a19 gradient, tiny accent blue #1b7fbd highlight only if useful. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "256x256"
+  },
+  {
+    "filename": "web/assets/os-macos.png",
+    "prompt": "Use case: logo-brand. Asset type: SISP MapDrive macOS download badge glyph, os-macos.png, final target 256x256, transparent after processing. Primary request: clean teal-tinted macOS glyph for a download card: simplified Finder-style smiling face in a rounded-square outline, subtle command-key detail, SISP teal/slate styling. Style/medium: modern scientific-tech, calm flat geometric vector, crisp icon, soft depth, compatible with the MapDrive hexagon-cluster visual system. Composition/framing: centered square icon, generous padding, readable at 24px, no enclosing text label. Color palette: SISP teal #11695f to deep slate #131a19 gradient, brand tint #e2f1ee, tiny accent blue #1b7fbd highlight only if useful. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "256x256"
+  },
+  {
+    "filename": "web/assets/connected.png",
+    "prompt": "Use case: illustration-story. Asset type: SISP MapDrive success empty-state illustration, connected.png, final target 640x640, transparent after processing. Primary request: a mapped network drive with a green check badge, connected to a small SISP hexagon cluster, friendly success/empty state visual. Style/medium: modern scientific-tech, calm flat geometric vector, ~2px single-weight lines, soft depth, same SISP MapDrive/AppHub hexagon-cluster motif. Composition/framing: centered square illustration, drive in foreground, cluster connection behind or above, clear green check, generous padding, no text. Color palette: SISP teal #11695f, deep slate #131a19, brand tint #e2f1ee, connected green #2e9b5f, subtle accent blue #1b7fbd. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "640x640"
+  },
+  {
+    "filename": "windows-app/assets/app-icon.png",
+    "prompt": "Use case: logo-brand. Asset type: SISP MapDrive Windows app icon PNG, final target 1024x1024, transparent outside tile after processing. Primary request: rounded-square app tile for SISP MapDrive, teal-to-deep-slate gradient tile, a white line glyph of a hard-drive linked to a hexagon node, centered, crisp at 32px. Style/medium: modern scientific-tech, calm flat geometric vector, soft depth, high-quality polished app icon, same hexagon-cluster family as AppHub. Composition/framing: centered rounded-square tile with comfortable padding, icon glyph prominent and legible, no perspective mockup. Color palette: tile gradient from SISP teal #11695f to deep slate, white glyph, subtle darker slate line depth. Constraints: no text, no letters, no watermark, no extra symbols. Generated on flat #ff00ff chroma-key background for alpha removal.",
+    "size": "1024x1024"
+  },
+  {
+    "filename": "windows-app/assets/app-icon.ico",
+    "prompt": "Derived from windows-app/assets/app-icon.png and exported as a multi-resolution Windows icon using the same app-icon prompt.",
+    "size": "16x16, 32x32, 48x48, 256x256"
+  }
+]
