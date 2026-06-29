@@ -93,6 +93,17 @@ case "$TEMPLATE" in
     [[ -f "$CIMG" ]] || { echo "container image not found: $CIMG"; exit 71; }
     bind_data_shares
     RUN_SH=1; run "$CIMG" "${CMD_OVERRIDE:?command required}" ;;
+  vscode)
+    # VS Code in the browser (code-server). Bind the whole lockers tree + data shares like the
+    # notebook apps so the editor reaches other lockers (per OS perms) and shared NAS data. HOME +
+    # XDG dirs live in the locker so settings/extensions persist. Authelia gates the per-instance
+    # vhost at the edge, so --auth none is safe (same model as jupyter/rstudio).
+    WS_SRC="$LOCKERS_ROOT"; WS_DST="$LOCKERS_ROOT"; WS_PWD="$WS"; bind_data_shares
+    run "$(img code-server.sif)" "
+      export HOME='$WS' XDG_CONFIG_HOME='$WS/.config' XDG_DATA_HOME='$WS/.local/share' SHELL=/bin/bash
+      mkdir -p '$WS/.config' '$WS/.local/share'
+      exec code-server --bind-addr 0.0.0.0:${PORT} --auth none --disable-telemetry --disable-update-check '$WS'
+    " ;;
   static-html)
     run "$(img python-apps.sif)" "python -m http.server ${PORT} --bind 0.0.0.0 --directory /workspace" ;;
   streamlit)

@@ -38,6 +38,18 @@
       "enabled": true
     },
     {
+      "id": "vscode",
+      "name": "VS Code",
+      "category": "App",
+      "description": "Visual Studio Code in your browser (code-server) — opens on your locker with the NAS shares mounted. Install extensions, edit and run code on the cluster instead of your laptop.",
+      "icon": "code-box-line",
+      "image": "code-server.sif",
+      "preinstalled": ["code-server", "Node.js", "git"],
+      "defaults": { "cpus": 2, "memoryMb": 8192, "timeMinutes": 480 },
+      "limits": { "maxCpus": 32, "maxMemoryMb": 262144, "maxTimeMinutes": 4320 },
+      "enabled": true
+    },
+    {
       "id": "streamlit",
       "name": "Streamlit",
       "category": "App",
