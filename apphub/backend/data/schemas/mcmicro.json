@@ -18,6 +18,7 @@
       "properties": {
         "start-at": { "type": "string", "default": "registration", "enum": ["illumination", "registration", "background", "dearray", "segmentation", "watershed", "quantification", "downstream"], "description": "First stage to run." },
         "stop-at": { "type": "string", "default": "quantification", "enum": ["illumination", "registration", "background", "dearray", "segmentation", "quantification", "downstream"], "description": "Last stage to run." },
+        "registration-engine": { "type": "string", "default": "palom", "enum": ["palom", "ashlar"], "description": "Registration engine. palom accepts pre-stitched .ome.tiff (e.g. Akoya); ashlar stitches raw tiles." },
         "tma": { "type": "boolean", "default": false, "description": "Input is a tissue microarray (TMA) rather than a whole-slide image." },
         "viz": { "type": "boolean", "default": false, "description": "Generate an Auto-Minerva visualization." },
         "qc-files": { "type": "string", "default": "inherit", "enum": ["copy", "move", "link", "symlink", "inherit"], "description": "How QC files are pulled from the work directories." }
@@ -50,7 +51,8 @@
       "title": "Module options (advanced)",
       "description": "Extra command-line flags passed straight through to each tool.",
       "properties": {
-        "ashlar-opts": { "type": "string", "description": "Extra ASHLAR registration flags, e.g. \"-m 50 --flip-y\"." },
+        "ashlar-opts": { "type": "string", "description": "Extra ASHLAR registration flags, e.g. \"-m 30 --flip-y\"." },
+        "palom-opts": { "type": "string", "description": "Extra palom flags, e.g. \"--level 0 --ref-index 0 --max-pyramid-levels 2\"." },
         "unmicst-opts": { "type": "string", "description": "Extra UnMICST flags." },
         "mesmer-opts": { "type": "string", "description": "Extra Mesmer flags." },
         "cellpose-opts": { "type": "string", "description": "Extra Cellpose flags." },

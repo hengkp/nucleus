@@ -52,14 +52,14 @@
     {
       "id": "mcmicro",
       "name": "MCMICRO",
-      "repo": "labsyspharm/mcmicro",
+      "repo": "hengkp/mcmicro",
       "revision": "master",
       "icon": "microscope-line",
       "category": "Imaging",
-      "description": "Multiplexed tissue imaging: stitching/registration, segmentation, and single-cell quantification. Fill the parameter form (input folder, stages, segmentation, downstream) or layer a custom config.",
+      "description": "Multiplexed tissue imaging (SiSP build with palom registration): registration, segmentation, single-cell quantification. Accepts pre-stitched Akoya .ome.tiff via palom. Point the input at a project folder (raw/ + markers.csv).",
       "schemaUrl": null,
       "localSchema": "mcmicro.json",
-      "docs": "https://mcmicro.org",
+      "docs": "https://github.com/hengkp/mcmicro",
       "defaults": { "cpus": 16, "memoryMb": 98304, "timeMinutes": 2880 }
     },
     {
