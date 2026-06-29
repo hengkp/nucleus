@@ -94,15 +94,20 @@ case "$TEMPLATE" in
     bind_data_shares
     RUN_SH=1; run "$CIMG" "${CMD_OVERRIDE:?command required}" ;;
   vscode)
-    # VS Code in the browser (code-server). Bind the whole lockers tree + data shares like the
-    # notebook apps so the editor reaches other lockers (per OS perms) and shared NAS data. HOME +
-    # XDG dirs live in the locker so settings/extensions persist. Authelia gates the per-instance
-    # vhost at the edge, so --auth none is safe (same model as jupyter/rstudio).
+    # VS Code in the browser (code-server). Open the real root "/" so the Explorer browses the whole
+    # bound tree (lockers + NAS shares) like JupyterLab's root_dir=/, while the default terminal cwd
+    # is the user's locker (like preferred_dir=$WS). Bind the lockers tree + data shares; HOME + XDG
+    # dirs live in the locker so settings/extensions persist. Seed default settings ONLY if the user
+    # has none yet (never clobber theirs) and exclude system dirs from the watcher so "/" stays light.
+    # Authelia gates the per-instance vhost, so --auth none is safe (same model as jupyter/rstudio).
     WS_SRC="$LOCKERS_ROOT"; WS_DST="$LOCKERS_ROOT"; WS_PWD="$WS"; bind_data_shares
+    VSCODE_SETTINGS_B64=$(printf '%s' "{\"terminal.integrated.cwd\":\"$WS\",\"files.watcherExclude\":{\"/proc/**\":true,\"/sys/**\":true,\"/dev/**\":true,\"/run/**\":true,\"/tmp/**\":true,\"/usr/**\":true,\"/var/**\":true}}" | base64 | tr -d '\n')
     run "$(img code-server.sif)" "
       export HOME='$WS' XDG_CONFIG_HOME='$WS/.config' XDG_DATA_HOME='$WS/.local/share' SHELL=/bin/bash
-      mkdir -p '$WS/.config' '$WS/.local/share'
-      exec code-server --bind-addr 0.0.0.0:${PORT} --auth none --disable-telemetry --disable-update-check '$WS'
+      ud='$WS/.local/share/code-server/User'
+      mkdir -p \"\$ud\" '$WS/.config'
+      [ -f \"\$ud/settings.json\" ] || { printf %s '$VSCODE_SETTINGS_B64' | base64 -d > \"\$ud/settings.json\"; }
+      exec code-server --bind-addr 0.0.0.0:${PORT} --auth none --disable-telemetry --disable-update-check /
     " ;;
   qupath)
     # QuPath 0.7 GUI streamed to the browser (TigerVNC + openbox + noVNC inside the image).
