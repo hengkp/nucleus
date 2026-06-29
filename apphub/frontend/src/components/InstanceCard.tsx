@@ -76,7 +76,7 @@ export function InstanceCard({
 
       <div className="mt-3 flex items-center gap-3 text-2xs text-ink-muted">
         <span className="inline-flex items-center gap-1">
-          <Icon name="server-line" /> {instance.node ?? '—'}
+          <Icon name="server-line" /> {instance.node ?? '-'}
         </span>
         <span className="tabular inline-flex items-center gap-1">
           <Icon name="cpu-line" /> {instance.cpus}

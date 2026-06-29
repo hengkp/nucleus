@@ -47,7 +47,7 @@ export function Dashboard() {
   async function extendInstance(i: Instance) {
     try {
       const next = await api.extendInstance(i.id, 720)
-      toast.push(`Extended ${i.name} — ${Math.round((next.timeLimitMinutes ?? 0) / 60)}h total`, 'ok')
+      toast.push(`Extended ${i.name} to ${Math.round((next.timeLimitMinutes ?? 0) / 60)}h total`, 'ok')
       instances.refresh()
     } catch (e) {
       toast.push(e instanceof Error ? e.message : 'Could not extend', 'err')
@@ -76,7 +76,7 @@ export function Dashboard() {
           </h2>
           {cluster.data && (
             <span className="tabular text-2xs text-ink-muted">
-              {cluster.data.totals.cpuUsed}/{cluster.data.totals.cpuTotal} CPU ·{' '}
+              {cluster.data.totals.cpuUsed}/{cluster.data.totals.cpuTotal} CPU |{' '}
               {gb(cluster.data.totals.memUsedMb)}/{gb(cluster.data.totals.memTotalMb)}
             </span>
           )}
@@ -96,7 +96,7 @@ export function Dashboard() {
               <ResourceGauge label="RAM" used={Math.round(n.memUsedMb / 1024)} total={Math.round(n.memTotalMb / 1024)} unit=" GB" />
             </div>
           ))}
-          {!cluster.data && <p className="text-sm text-ink-muted">Loading cluster…</p>}
+          {!cluster.data && <p className="text-sm text-ink-muted">Loading cluster...</p>}
         </div>
       </Card>
 
@@ -115,7 +115,7 @@ export function Dashboard() {
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-ink">{t.name}</span>
-                <span className="tabular block text-2xs text-ink-muted">{t.defaults.cpus} CPU · {gb(t.defaults.memoryMb)}</span>
+                <span className="tabular block text-2xs text-ink-muted">{t.defaults.cpus} CPU | {gb(t.defaults.memoryMb)}</span>
               </span>
             </button>
           ))}
@@ -138,7 +138,7 @@ export function Dashboard() {
           <EmptyState
             image="/brand/empty-state.png"
             title="No apps running yet"
-            description="Launch JupyterLab, RStudio, or any template to start analyzing — it runs on its own slice of the cluster."
+            description="Launch JupyterLab, RStudio, or any template to start analyzing. It runs on its own slice of the cluster."
             action={<Button variant="primary" icon="apps-2-line" onClick={() => navigate('/catalog')}>Browse the catalog</Button>}
           />
         ) : (
@@ -163,7 +163,7 @@ export function Dashboard() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-medium text-ink">{i.name}</span>
-                  <span className="block truncate text-2xs text-ink-muted">{i.templateName} · {i.owner}</span>
+                  <span className="block truncate text-2xs text-ink-muted">{i.templateName} | {i.owner}</span>
                 </span>
                 <Button size="sm" variant="secondary" icon="external-link-line" disabled={!i.url} onClick={() => i.url && window.open(i.url, '_blank', 'noopener')}>Open</Button>
               </Card>

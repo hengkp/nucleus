@@ -50,7 +50,7 @@ const TEMPLATES: Template[] = [
   },
   {
     id: 'jupyter-scrnaseq',
-    name: 'Jupyter · single-cell RNA-seq',
+    name: 'Jupyter single-cell RNA-seq',
     category: 'Notebook',
     description: 'Scanpy/anndata stack preloaded for single-cell workflows.',
     icon: 'dna-line',
@@ -72,7 +72,7 @@ const TEMPLATES: Template[] = [
   },
   {
     id: 'rstudio-seurat',
-    name: 'RStudio · Seurat',
+    name: 'RStudio Seurat',
     category: 'Notebook',
     description: 'Seurat single-cell toolkit ready to go.',
     icon: 'microscope-line',
@@ -128,7 +128,7 @@ const TEMPLATES: Template[] = [
     id: 'batch-job',
     name: 'Batch job / Run a script',
     category: 'Tooling',
-    description: 'Run any command or script as a SLURM job across the cluster — no web UI; output to your workspace + job logs.',
+    description: 'Run any command or script as a SLURM job across the cluster. No web UI; output goes to your workspace and the job logs.',
     icon: 'terminal-line',
     kind: 'batch',
     defaults: { cpus: 4, memoryMb: 16384, timeMinutes: 240 },
@@ -162,7 +162,7 @@ const instances: Instance[] = [
     id: 'inst-seurat-1',
     name: 'pbmc-reanalysis',
     templateId: 'rstudio-seurat',
-    templateName: 'RStudio · Seurat',
+    templateName: 'RStudio Seurat',
     icon: 'microscope-line',
     owner: 'kriengkraip',
     node: 'node2',
@@ -179,7 +179,7 @@ const instances: Instance[] = [
     id: 'inst-jl-1',
     name: 'qc-notebook',
     templateId: 'jupyter-scrnaseq',
-    templateName: 'Jupyter · single-cell RNA-seq',
+    templateName: 'Jupyter single-cell RNA-seq',
     icon: 'dna-line',
     owner: 'kriengkraip',
     node: 'node3',
@@ -191,7 +191,7 @@ const instances: Instance[] = [
     startedAt: null,
     timeLimitMinutes: 480,
     elapsedMinutes: 0,
-    message: 'Allocating on node3…',
+    message: 'Allocating on node3...',
   },
   {
     id: 'inst-app-1',
@@ -265,7 +265,7 @@ function tick() {
   for (const inst of instances) {
     if (inst.state === 'queued') {
       inst.state = 'starting'
-      inst.message = `Allocating on ${inst.node ?? 'a node'}…`
+      inst.message = `Allocating on ${inst.node ?? 'a node'}...`
     } else if (inst.state === 'starting') {
       inst.state = 'running'
       inst.startedAt = Date.now()
@@ -377,7 +377,7 @@ export function createMockApi(): AppHubApi {
         startedAt: null,
         timeLimitMinutes: timeMinutes,
         elapsedMinutes: 0,
-        message: 'Queued — waiting for an allocation…',
+        message: 'Queued, waiting for an allocation...',
       }
       instances.unshift(inst)
       jobs.unshift({
@@ -503,7 +503,7 @@ export function createMockApi(): AppHubApi {
       await delay(120)
       const e = mfs.get(norm(path))
       if (!e || e.type !== 'file') throw new Error('not a file')
-      return e.content ?? '(binary or empty file — open by mapping the drive)'
+      return e.content ?? '(binary or empty file, open it by mapping the drive)'
     },
     fileDownloadUrl(path) {
       return `#mock-download:${norm(path)}`
@@ -550,8 +550,8 @@ export function createMockApi(): AppHubApi {
       const c = evalVanity(name, MOCK_USER.username)
       if (!c.available) {
         if (c.reason === 'taken') throw new Error('That name is already taken')
-        if (c.reason === 'reserved') throw new Error('That name is reserved — pick another')
-        throw new Error('Name must be 2–40 chars: letters, digits, hyphens')
+        if (c.reason === 'reserved') throw new Error('That name is reserved, pick another')
+        throw new Error('Name must be 2-40 chars: letters, digits, hyphens')
       }
       const nm = name.toLowerCase()
       const existing = mockVanity.find((v) => v.name === nm && v.owner === MOCK_USER.username)
@@ -638,7 +638,7 @@ export function createMockApi(): AppHubApi {
         kind: 'batch', templateId: 'nextflow', templateName: req.pipelineId, icon: 'dna-line',
         owner: MOCK_USER.username, node: null, cpus: req.cpus ?? 12, memoryMb: req.memoryMb ?? 65536,
         state: 'queued', url: null, visibility: 'private', startedAt: null,
-        timeLimitMinutes: req.timeMinutes ?? 1440, elapsedMinutes: 0, message: 'Queued — demo run',
+        timeLimitMinutes: req.timeMinutes ?? 1440, elapsedMinutes: 0, message: 'Queued, demo run',
       }
       instances.unshift(inst)
       return structuredClone(inst)
@@ -656,7 +656,7 @@ export function createMockApi(): AppHubApi {
         `[${new Date().toISOString()}] apphub: submitting job for ${inst.name}`,
         `[slurm] allocated ${inst.cpus} CPU / ${(inst.memoryMb / 1024).toFixed(0)} GB on ${inst.node}`,
         `[apptainer] starting ${inst.templateId}.sif (--contain, loopback bind)`,
-        `[runner] listening on 127.0.0.1 — registering route ${inst.url ?? '(pending)'}`,
+        `[runner] listening on 127.0.0.1, registering route ${inst.url ?? '(pending)'}`,
         `[apphub] instance ${inst.state}`,
       ].join('\n')
     },

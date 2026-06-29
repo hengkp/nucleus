@@ -24,7 +24,7 @@ export function ResourceGauge({
         <span className="tabular text-ink-muted">
           {used}
           {unit} / {total}
-          {unit} · {p}%
+          {unit} | {p}%
         </span>
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">

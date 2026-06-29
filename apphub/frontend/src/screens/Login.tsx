@@ -47,7 +47,7 @@ export function Login() {
         <div className="relative max-w-md text-white">
           <h1 className="text-3xl font-semibold leading-tight">Your lab's analysis apps, one click away.</h1>
           <p className="mt-3 text-sm text-white/80">
-            Launch JupyterLab, RStudio, Galaxy and more across the cluster — no terminal, no setup. Each session
+            Launch JupyterLab, RStudio, Galaxy and more across the cluster, with no terminal and no setup. Each session
             runs on its own slice of compute so nothing hangs.
           </p>
           <div className="mt-8 flex flex-wrap gap-4 text-xs text-white/80">
@@ -56,7 +56,7 @@ export function Login() {
             <span className="tabular inline-flex items-center gap-1.5"><Icon name="server-line" /> 4 nodes</span>
           </div>
         </div>
-        <p className="relative text-xs text-white/70">Siriraj Integrative Systems Pharmacology · node1.sisp.com</p>
+        <p className="relative text-xs text-white/70">Siriraj Integrative Systems Pharmacology | node1.sisp.com</p>
       </div>
 
       {/* Credentials */}
@@ -74,7 +74,7 @@ export function Login() {
               {(id) => <Input id={id} autoFocus value={username} onChange={(e) => setUsername(e.target.value)} placeholder="" autoComplete="username" />}
             </Field>
             <Field label="Password">
-              {(id) => <Input id={id} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password" />}
+              {(id) => <Input id={id} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="your lab password" autoComplete="current-password" />}
             </Field>
             <Button type="submit" variant="primary" className="w-full" loading={busy} iconRight="arrow-right-line">
               Sign in
@@ -83,7 +83,7 @@ export function Login() {
 
           {IS_MOCK && (
             <p className="mt-4 rounded-md bg-surface-2 px-3 py-2 text-2xs text-ink-muted">
-              Demo mode — any credentials continue to the app.
+              Demo mode. Any credentials continue to the app.
             </p>
           )}
 

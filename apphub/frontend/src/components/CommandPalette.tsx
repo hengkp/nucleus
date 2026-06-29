@@ -24,8 +24,8 @@ export function CommandPalette() {
   const commands = useMemo<Command[]>(
     () => [
       { id: 'dash', label: 'Go to Dashboard', icon: 'dashboard-3-line', run: () => navigate('/') },
-      { id: 'catalog', label: 'Launch an app…', icon: 'apps-2-line', hint: 'Catalog', run: () => navigate('/catalog') },
-      { id: 'pipelines', label: 'Run a pipeline…', icon: 'flow-chart', hint: 'Nextflow', run: () => navigate('/pipelines') },
+      { id: 'catalog', label: 'Launch an app...', icon: 'apps-2-line', hint: 'Catalog', run: () => navigate('/catalog') },
+      { id: 'pipelines', label: 'Run a pipeline...', icon: 'flow-chart', hint: 'Nextflow', run: () => navigate('/pipelines') },
       { id: 'queue', label: 'Go to Job queue', icon: 'stack-line', run: () => navigate('/queue') },
       { id: 'files', label: 'Go to Workspace', icon: 'folder-3-line', run: () => navigate('/workspace') },
       { id: 'guide', label: 'Open the User guide', icon: 'book-open-line', run: () => navigate('/guide') },
@@ -105,7 +105,7 @@ export function CommandPalette() {
               else if (e.key === 'Enter' && filtered[active]) { e.preventDefault(); choose(filtered[active]) }
               else if (e.key === 'Escape') setOpen(false)
             }}
-            placeholder="Type a command or search…"
+            placeholder="Type a command or search..."
             className="h-12 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-muted/70"
           />
           <kbd className="rounded border border-border px-1.5 py-0.5 text-2xs text-ink-muted">esc</kbd>

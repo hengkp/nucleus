@@ -27,7 +27,7 @@ export function InstanceDetail() {
 
   async function stop() {
     await api.stopInstance(id)
-    toast.push('Stopping…', 'info')
+    toast.push('Stopping...', 'info')
     inst.refresh()
   }
   async function extend() {
@@ -76,7 +76,7 @@ export function InstanceDetail() {
         <Card className="p-4 lg:col-span-1">
           <h2 className="mb-3 text-sm font-semibold text-ink">Details</h2>
           <div className="space-y-3">
-            <Meta icon="server-line" label="Node" value={i.node ?? '—'} />
+            <Meta icon="server-line" label="Node" value={i.node ?? '-'} />
             <Meta icon="cpu-line" label="CPU" value={`${i.cpus} cores`} />
             <Meta icon="ram-2-line" label="Memory" value={gb(i.memoryMb)} />
             <Meta icon="timer-line" label="Time" value={remaining(i.elapsedMinutes, i.timeLimitMinutes)} />
@@ -98,7 +98,7 @@ export function InstanceDetail() {
             {i.state === 'running' && <Badge tone="ok">live</Badge>}
           </div>
           <pre className="tabular max-h-80 overflow-auto bg-[var(--surface-2)] p-4 text-xs leading-relaxed text-ink-muted">
-            {logs.data ?? 'Loading logs…'}
+            {logs.data ?? 'Loading logs...'}
           </pre>
         </Card>
       </div>

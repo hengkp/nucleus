@@ -186,7 +186,7 @@ export function Pipelines() {
   function importConfig(json: Record<string, unknown>) {
     const id = String(json?.pipelineId || '')
     const p = (pipelines.data ?? []).find((x) => x.id === id)
-    if (!p) { toast.push('That config is for a pipeline not in your catalog — add it first.', 'err'); return }
+    if (!p) { toast.push('That config is for a pipeline not in your catalog, add it first.', 'err'); return }
     if (sel && sel.id === p.id) {
       setValues((v) => ({ ...v, ...((json.params as Record<string, unknown>) || {}) }))
       setRunName(String(json.runName || '')); setOutdir(String(json.outdir || '')); setProfiles(String(json.profiles || '')); setConfigText(String(json.configText || '')); setConfigFileName('')
@@ -216,7 +216,7 @@ export function Pipelines() {
   }
   async function removePipeline(p: Pipeline, ev: MouseEvent) {
     ev.stopPropagation()
-    const ok = await confirm({ title: 'Remove pipeline', message: <>Remove <b className="text-ink">{p.name}</b> from your pipelines? This only takes it out of your catalog — it does not delete any run output.</>, confirmLabel: 'Remove', tone: 'danger' })
+    const ok = await confirm({ title: 'Remove pipeline', message: <>Remove <b className="text-ink">{p.name}</b> from your pipelines? This only takes it out of your catalog, and it does not delete any run output.</>, confirmLabel: 'Remove', tone: 'danger' })
     if (!ok) return
     try { await api.removePipeline(p.id); toast.push(`Removed ${p.name}`, 'info'); pipelines.refresh() }
     catch (e) { toast.push(e instanceof Error ? e.message : 'Remove failed', 'err') }
@@ -261,7 +261,7 @@ export function Pipelines() {
             <Input id={id} type="number" value={val === undefined ? '' : String(val)} onChange={(e) => set(name, e.target.value === '' ? '' : Number(e.target.value))} />
           ) : isPath ? (
             <div className="flex items-center gap-2">
-              <Input id={id} value={val === undefined ? '' : String(val)} placeholder={def.default !== undefined ? String(def.default) : '/mnt/… or a path/URL'} onChange={(e) => set(name, e.target.value)} />
+              <Input id={id} value={val === undefined ? '' : String(val)} placeholder={def.default !== undefined ? String(def.default) : '/mnt/... or a path/URL'} onChange={(e) => set(name, e.target.value)} />
               <Button type="button" size="sm" variant="secondary" icon="folder-open-line" onClick={() => setBrowseParam({ name, mode: fmt === 'directory-path' ? 'dir' : 'file' })}>Browse</Button>
             </div>
           ) : (
@@ -311,7 +311,7 @@ export function Pipelines() {
         <button id="pipeline-top" onClick={() => setSel(null)} className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:text-brand-strong">
           <Icon name="arrow-left-line" /> All pipelines
         </button>
-        <PageHeader title={sel.name} subtitle={`${sel.description}  ·  rev ${sel.revision}`} />
+        <PageHeader title={sel.name} subtitle={`${sel.description}  |  rev ${sel.revision}`} />
 
         {loadingSchema ? (
           <div className="space-y-2"><Skeleton className="h-9" /><Skeleton className="h-9" /><Skeleton className="h-9" /></div>
@@ -372,7 +372,7 @@ export function Pipelines() {
                       <Icon name="information-line" className="mt-0.5 text-brand" />
                       <span><b>No parameter form for this pipeline.</b> It does not publish a <span className="font-mono text-xs">nextflow_schema.json</span>, so AppHub cannot build a form automatically.</span>
                     </div>
-                    <p className="pl-6 text-xs text-ink-muted">You can still run it: set options with the custom config below. To get a form, add a <span className="font-mono">nextflow_schema.json</span> to the pipeline repo (<a className="text-brand hover:text-brand-strong" href="https://nf-co.re/docs/contributing/pipelines/parameters" target="_blank" rel="noreferrer">nf-core schema docs ↗</a>), or re-add the pipeline with a direct schema URL.</p>
+                    <p className="pl-6 text-xs text-ink-muted">You can still run it: set options with the custom config below. To get a form, add a <span className="font-mono">nextflow_schema.json</span> to the pipeline repo (<a className="text-brand hover:text-brand-strong" href="https://nf-co.re/docs/contributing/pipelines/parameters" target="_blank" rel="noreferrer">nf-core schema docs</a>), or re-add the pipeline with a direct schema URL.</p>
                   </Card>
                 </div>
               ) : (
@@ -433,7 +433,7 @@ export function Pipelines() {
 
               {/* Launch bar */}
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface-2/50 p-4">
-                <p className="text-xs text-ink-muted">Runs as a SLURM job using Singularity · {cpus} CPU · {memGb} GB · up to {hours}h.</p>
+                <p className="text-xs text-ink-muted">Runs as a SLURM job using Singularity | {cpus} CPU | {memGb} GB | up to {hours}h.</p>
                 <Button variant="primary" icon="play-line" loading={busy} onClick={launch}>Launch run</Button>
               </div>
             </div>
@@ -499,7 +499,7 @@ export function Pipelines() {
     <>
       <PageHeader
         title="Pipelines"
-        subtitle="Run Nextflow / nf-core pipelines on the cluster — pick one, fill the form, click run."
+        subtitle="Run Nextflow / nf-core pipelines on the cluster. Pick one, fill the form, and click run."
         actions={<Button variant="primary" icon="add-line" onClick={() => setShowAdd((s) => !s)}>Add a pipeline</Button>}
       />
 
@@ -521,9 +521,9 @@ export function Pipelines() {
             <div className={cn('flex items-start gap-2 rounded-md border px-3 py-2 text-xs',
               probing ? 'border-border text-ink-muted' : probe?.found ? 'border-ok/40 bg-ok/5 text-ink' : 'border-warn/40 bg-warn/5 text-ink')}>
               {probing ? (
-                <><Icon name="loader-4-line" className="mt-0.5 animate-spin text-ink-muted" /><span>Checking the repo for a parameter form…</span></>
+                <><Icon name="loader-4-line" className="mt-0.5 animate-spin text-ink-muted" /><span>Checking the repo for a parameter form...</span></>
               ) : probe?.found ? (
-                <><Icon name="checkbox-circle-fill" className="mt-0.5 text-ok" /><span>Parameter form found — <b>{probe.sections}</b> section{probe.sections === 1 ? '' : 's'}. The launch form will be built automatically.</span></>
+                <><Icon name="checkbox-circle-fill" className="mt-0.5 text-ok" /><span>Parameter form found: <b>{probe.sections}</b> section{probe.sections === 1 ? '' : 's'}. The launch form will be built automatically.</span></>
               ) : (
                 <><Icon name="error-warning-line" className="mt-0.5 text-warn" /><span>No <span className="font-mono">nextflow_schema.json</span> found{probe?.reason === 'unreachable' ? ' (could not reach the URL)' : ''}. You can still add and run it with a custom config, or paste a Schema URL above.</span></>
               )}
@@ -533,7 +533,7 @@ export function Pipelines() {
           <div>
             <div className="flex items-center justify-between">
               <span className="block text-xs font-medium text-ink">Icon</span>
-              <a href="https://remixicon.com/" target="_blank" rel="noreferrer" className="text-2xs font-medium text-brand hover:text-brand-strong">Browse all icons ↗</a>
+              <a href="https://remixicon.com/" target="_blank" rel="noreferrer" className="text-2xs font-medium text-brand hover:text-brand-strong">Browse all icons</a>
             </div>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {PIPELINE_ICONS.map((ic) => (
@@ -562,7 +562,7 @@ export function Pipelines() {
       {pipelines.loading && !pipelines.data ? (
         <div className="grid gap-4 sm:grid-cols-2">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />)}</div>
       ) : filtered.length === 0 ? (
-        <EmptyState icon="flow-chart" title={query ? 'No matching pipelines' : 'No pipelines yet'} description={query ? 'Try a different search term.' : 'Use “Add a pipeline” to point AppHub at a Git repo.'} />
+        <EmptyState icon="flow-chart" title={query ? 'No matching pipelines' : 'No pipelines yet'} description={query ? 'Try a different search term.' : 'Use "Add a pipeline" to point AppHub at a Git repo.'} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {filtered.map((p) => (
@@ -596,7 +596,7 @@ export function Pipelines() {
                 </span>
               </div>
             ))}
-            <button onClick={() => nav('/queue')} className={cn('block w-full px-4 py-2 text-center text-2xs text-ink-muted hover:bg-surface-2')}>See all in the Job queue →</button>
+            <button onClick={() => nav('/queue')} className={cn('block w-full px-4 py-2 text-center text-2xs text-ink-muted hover:bg-surface-2')}>See all in the Job queue</button>
           </Card>
         </>
       )}

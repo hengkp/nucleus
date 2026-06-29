@@ -48,7 +48,7 @@ function DrivePasswordModal({ open, onClose }: { open: boolean; onClose: () => v
       <div className="space-y-4 p-5">
         <p className="text-sm text-ink-muted">
           Enter your <span className="font-medium text-ink">lab password</span> to enable mapping your files as a
-          network drive. This does <span className="font-medium text-ink">not</span> change your password — it just lets
+          network drive. This does <span className="font-medium text-ink">not</span> change your password, it just lets
           the file gateway recognize you.
         </p>
         <Field label="Lab password" error={err}>
@@ -102,7 +102,7 @@ export function Settings() {
           <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
             <div><dt className="text-2xs text-ink-muted">Name</dt><dd className="text-sm text-ink">{u?.displayName}</dd></div>
             <div><dt className="text-2xs text-ink-muted">Username</dt><dd className="tabular text-sm text-ink">{u?.username}</dd></div>
-            <div><dt className="text-2xs text-ink-muted">UID</dt><dd className="tabular text-sm text-ink">{u?.uid ?? '—'}</dd></div>
+            <div><dt className="text-2xs text-ink-muted">UID</dt><dd className="tabular text-sm text-ink">{u?.uid ?? '-'}</dd></div>
             <div><dt className="text-2xs text-ink-muted">Role</dt><dd className="text-sm capitalize text-ink">{u?.role}</dd></div>
             <div className="sm:col-span-2">
               <dt className="mb-1 text-2xs text-ink-muted">Groups</dt>
@@ -115,7 +115,7 @@ export function Settings() {
           <Icon name="key-2-line" className="mt-0.5 text-ink-muted" />
           <div className="flex-1">
             <p className="text-sm font-medium text-ink">Network-drive access</p>
-            <p className="text-xs text-ink-muted">Enable mapping your locker as a drive on Windows/macOS. Uses your existing lab password — nothing is changed.</p>
+            <p className="text-xs text-ink-muted">Enable mapping your locker as a drive on Windows/macOS. Uses your existing lab password, and nothing is changed.</p>
           </div>
           <Button variant="secondary" icon="hard-drive-2-line" onClick={() => setDrivePwOpen(true)}>Enable</Button>
         </Card>

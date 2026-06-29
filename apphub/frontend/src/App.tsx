@@ -21,7 +21,7 @@ function Splash() {
     <div className="flex h-full items-center justify-center bg-bg">
       <div className="flex items-center gap-3 text-ink-muted">
         <img src="/brand/logo.png" alt="" className="h-8 w-8 animate-pulse-ring" />
-        <span className="text-sm">Loading AppHub…</span>
+        <span className="text-sm">Loading AppHub...</span>
       </div>
     </div>
   )

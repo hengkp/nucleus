@@ -70,7 +70,7 @@ export function FolderInput({
             {loading && <Icon name="loader-4-line" className="animate-spin" />}
           </div>
           {matches.length === 0 ? (
-            <div className="px-3 py-2 text-2xs text-ink-muted">{loading ? 'Loading…' : 'No matching subfolders'}</div>
+            <div className="px-3 py-2 text-2xs text-ink-muted">{loading ? 'Loading...' : 'No matching subfolders'}</div>
           ) : (
             matches.map((d) => (
               <button key={d} type="button" onClick={() => pick(d)} className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs text-ink hover:bg-surface-2">

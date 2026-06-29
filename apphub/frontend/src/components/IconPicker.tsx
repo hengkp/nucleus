@@ -39,7 +39,7 @@ export function IconPicker({
       <div className="mt-2 flex items-center gap-2">
         <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder || 'or type a Remix Icon name, e.g. rocket-2-line'} />
         <a href="https://remixicon.com/" target="_blank" rel="noreferrer" className="whitespace-nowrap text-2xs font-medium text-brand hover:text-brand-strong">
-          Browse all ↗
+          Browse all
         </a>
       </div>
     </div>

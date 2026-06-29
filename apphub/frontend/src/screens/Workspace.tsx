@@ -148,11 +148,11 @@ export function Workspace() {
     a.remove()
   }
   function downloadOne(e: FileEntry) { triggerDownload(api.fileDownloadUrl(join(path, e.name)), e.name) }
-  function downloadZip(e: FileEntry) { triggerDownload(api.fileZipUrl(join(path, e.name)), `${e.name}.zip`); toast.push(`Zipping "${e.name}"…`, 'info') }
+  function downloadZip(e: FileEntry) { triggerDownload(api.fileZipUrl(join(path, e.name)), `${e.name}.zip`); toast.push(`Zipping "${e.name}"...`, 'info') }
   function downloadEntry(e: FileEntry) { e.type === 'dir' ? downloadZip(e) : downloadOne(e) }
   async function openPreview(e: FileEntry) {
     if (e.size > TEXT_PREVIEW_LIMIT || !TEXT_EXT.test(e.name)) {
-      toast.push('Preview is for small text files — use Download instead.', 'info')
+      toast.push('Preview is for small text files. Use Download instead.', 'info')
       return
     }
     try {
@@ -174,7 +174,7 @@ export function Workspace() {
           sha256,
           onProgress: (frac) => setUploads((u) => u.map((x) => (x.name === file.name ? { ...x, pct: Math.round(frac * 100) } : x))),
         })
-        const verified = sha256 ? (sha256 === res.sha256 ? ' · hash verified ✓' : ' · HASH MISMATCH') : ' · server-hashed ✓'
+        const verified = sha256 ? (sha256 === res.sha256 ? ' | hash verified' : ' | HASH MISMATCH') : ' | server-hashed'
         setUploads((u) => u.map((x) => (x.name === file.name ? { ...x, pct: 100, state: 'done', msg: `${fmtSize(res.size)}${verified}` } : x)))
       } catch (e) {
         setUploads((u) => u.map((x) => (x.name === file.name ? { ...x, state: 'error', msg: e instanceof Error ? e.message : 'failed' } : x)))
@@ -191,7 +191,7 @@ export function Workspace() {
     <>
       <PageHeader
         title="Workspace"
-        subtitle="Manage the files and folders in your private locker — create, upload, rename, download and delete."
+        subtitle="Manage the files and folders in your private locker. Create, upload, rename, download, and delete."
         actions={<a href="https://mapdrive.sisp.com" target="_blank" rel="noopener"><Button variant="secondary" icon="hard-drive-2-line">Map as a drive</Button></a>}
       />
 
@@ -204,7 +204,7 @@ export function Workspace() {
               <p className="text-sm font-semibold text-ink">Your locker</p>
               <Badge tone="ok"><Icon name="checkbox-circle-fill" className="text-2xs" /> ownership OK</Badge>
             </div>
-            <p className="mt-0.5 text-xs text-ink-muted">Stored on the lab NAS, private to you. Every change runs as your lab identity — uploads are hash-verified.</p>
+            <p className="mt-0.5 text-xs text-ink-muted">Stored on the lab NAS, private to you. Every change runs as your lab identity, and uploads are hash-verified.</p>
           </div>
         </div>
         <p className="tabular select-all text-2xs text-ink-muted">\\nas.sisp.com\sisplockers\{user}</p>
@@ -286,8 +286,8 @@ export function Workspace() {
                   {e.type === 'file'
                     ? fmtSize(e.size)
                     : e.name in dirSizes
-                      ? (dirSizes[e.name] < 0 ? '—' : fmtSize(dirSizes[e.name]))
-                      : <span className="text-ink-muted/60">…</span>}
+                      ? (dirSizes[e.name] < 0 ? '-' : fmtSize(dirSizes[e.name]))
+                      : <span className="text-ink-muted/60">...</span>}
                 </span>
                 <span className="tabular text-2xs text-ink-muted">{e.mtime ? new Date(e.mtime * 1000).toLocaleString() : ''}</span>
                 <span className="text-right">
@@ -310,12 +310,12 @@ export function Workspace() {
               </div>
             </div>
             <pre className="tabular max-h-[60vh] overflow-auto p-4 text-2xs leading-5 text-ink">{preview.text}</pre>
-            {preview.truncated && <p className="border-t border-border px-4 py-1.5 text-2xs text-ink-muted">Preview truncated — download for the full file.</p>}
+            {preview.truncated && <p className="border-t border-border px-4 py-1.5 text-2xs text-ink-muted">Preview truncated. Download for the full file.</p>}
           </Card>
         )}
       </div>
 
-      <p className="mt-2 text-2xs text-ink-muted">Large files stream directly to and from the NAS and are integrity-checked (SHA-256) on every transfer — nothing is held in browser memory.</p>
+      <p className="mt-2 text-2xs text-ink-muted">Large files stream directly to and from the NAS and are integrity-checked (SHA-256) on every transfer, and nothing is held in browser memory.</p>
     </>
   )
 }

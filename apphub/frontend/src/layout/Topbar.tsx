@@ -36,8 +36,8 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
         className="hidden h-9 w-72 items-center gap-2 rounded-md border border-border bg-surface-2/60 px-3 text-left text-sm text-ink-muted hover:border-brand/40 sm:flex"
       >
         <Icon name="search-line" />
-        <span className="flex-1">Search or jump to…</span>
-        <kbd className="rounded border border-border px-1.5 py-0.5 text-2xs">⌘K</kbd>
+        <span className="flex-1">Search or jump to...</span>
+        <kbd className="rounded border border-border px-1.5 py-0.5 text-2xs">Ctrl K</kbd>
       </button>
 
       <div className="flex-1" />
@@ -50,7 +50,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white">
             {(user?.displayName ?? '?').slice(0, 1).toUpperCase()}
           </span>
-          <span className="hidden text-sm font-medium text-ink sm:block">{user?.displayName ?? '…'}</span>
+          <span className="hidden text-sm font-medium text-ink sm:block">{user?.displayName ?? '...'}</span>
           <Icon name="arrow-down-s-line" className="text-ink-muted" />
         </button>
         {menu && (
@@ -58,7 +58,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             <div className="px-2.5 py-2">
               <p className="text-sm font-medium text-ink">{user?.displayName}</p>
               <p className="tabular text-2xs text-ink-muted">
-                {user?.username} · uid {user?.uid}
+                {user?.username} | uid {user?.uid}
               </p>
               <div className="mt-1.5 flex flex-wrap gap-1">
                 {user?.groups.map((g) => (

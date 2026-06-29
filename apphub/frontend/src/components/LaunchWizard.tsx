@@ -100,7 +100,7 @@ export function LaunchWizard({
       await api.requestVanity(nm)
       setName(nm)
       setVanityOpen(false)
-      toast.push(`Reserved ${nm}.app.sisp.com — it's yours`, 'ok')
+      toast.push(`Reserved ${nm}.app.sisp.com, it's yours`, 'ok')
     } catch (e) {
       toast.push(e instanceof Error ? e.message : 'Could not claim that name', 'err')
     } finally {
@@ -136,7 +136,7 @@ export function LaunchWizard({
         public: !isBatch && makePublic,
         visibility: visibility === 'public' ? 'private' : visibility,
       })
-      toast.push(`Launching ${inst.name} — it will appear on your dashboard.`, 'ok')
+      toast.push(`Launching ${inst.name}. It will appear on your dashboard.`, 'ok')
       onLaunched(inst)
       onClose()
     } catch (e) {
@@ -220,7 +220,7 @@ export function LaunchWizard({
                 role="radio"
                 aria-checked={timeMinutes === null}
                 onClick={() => setTimeMinutes(null)}
-                title="Runs until you stop it — no time limit"
+                title="Runs until you stop it, no time limit"
                 className={cn(
                   'min-h-10 rounded-md border px-3 text-xs font-medium transition-colors',
                   timeMinutes === null
@@ -363,7 +363,7 @@ export function LaunchWizard({
 
       <div className="flex items-center justify-between gap-3 border-t border-border px-5 py-3.5">
         <p className="tabular text-2xs text-ink-muted">
-          {cpus} CPU · {gb(memoryMb)} · {timeLimitLabel(timeMinutes)}
+          {cpus} CPU | {gb(memoryMb)} | {timeLimitLabel(timeMinutes)}
         </p>
         <div className="flex gap-2">
           <Button variant="ghost" onClick={onClose}>Cancel</Button>

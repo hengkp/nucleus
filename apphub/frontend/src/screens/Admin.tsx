@@ -100,7 +100,7 @@ export function Admin() {
       </div>
       <Card className="mb-6 overflow-hidden">
         {reqs.loading && !reqs.data ? (
-          <div className="p-4"><Badge tone="neutral">Loading…</Badge></div>
+          <div className="p-4"><Badge tone="neutral">Loading...</Badge></div>
         ) : pending.length === 0 ? (
           <div className="flex items-center gap-2 p-4 text-sm text-ink-muted"><Icon name="checkbox-circle-line" className="text-ok" /> No requests awaiting approval.</div>
         ) : (
@@ -109,7 +109,7 @@ export function Admin() {
               <div className="flex items-start gap-3">
                 <Icon name="shield-user-line" className="mt-0.5 text-warn" />
                 <div>
-                  <p className="text-sm font-medium text-ink">{r.user} · <span className="font-normal text-ink-muted">{r.kind}</span></p>
+                  <p className="text-sm font-medium text-ink">{r.user} | <span className="font-normal text-ink-muted">{r.kind}</span></p>
                   <p className="text-2xs text-ink-muted">{r.detail || 'No details provided.'}</p>
                   <p className="text-2xs text-ink-muted">{new Date(r.createdAt).toLocaleString()}</p>
                 </div>
@@ -123,19 +123,19 @@ export function Admin() {
         )}
         {requests.some((r) => r.status !== 'pending') && (
           <div className="border-t border-border bg-surface-2/40 px-4 py-2 text-2xs text-ink-muted">
-            Recent: {requests.filter((r) => r.status !== 'pending').slice(0, 4).map((r) => `${r.user} ${r.status}`).join(' · ')}
+            Recent: {requests.filter((r) => r.status !== 'pending').slice(0, 4).map((r) => `${r.user} ${r.status}`).join(' | ')}
           </div>
         )}
       </Card>
 
       {/* Custom URLs — self-service (granted automatically when unique) */}
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-ink">Custom URLs <span className="font-normal text-ink-muted">· self-service</span></h2>
+        <h2 className="text-sm font-semibold text-ink">Custom URLs <span className="font-normal text-ink-muted">| self-service</span></h2>
         <button onClick={() => vanities.refresh()} className="text-2xs text-ink-muted hover:text-ink"><Icon name="refresh-line" className="mr-1" />refresh</button>
       </div>
       <Card className="mb-6 overflow-hidden">
         <div className="border-b border-border bg-surface-2/40 px-4 py-2 text-2xs text-ink-muted">
-          Names are granted automatically when valid, unique &amp; not reserved — no approval needed. Release one here to free it up.
+          Names are granted automatically when valid, unique, and not reserved, with no approval needed. Release one here to free it up.
         </div>
         {vanityList.length === 0 ? (
           <div className="flex items-center gap-2 p-4 text-sm text-ink-muted"><Icon name="links-line" className="text-ink-muted" /> No custom URLs claimed yet.</div>
@@ -146,7 +146,7 @@ export function Admin() {
                 <Icon name="links-line" className={cn('mt-0.5', v.status === 'pending' ? 'text-warn' : 'text-brand')} />
                 <div>
                   <p className="text-sm font-medium text-ink">{v.name}<span className="font-normal text-ink-muted">.app.sisp.com</span></p>
-                  <p className="text-2xs text-ink-muted">{v.owner} · {v.status} · {new Date(v.createdAt).toLocaleString()}</p>
+                  <p className="text-2xs text-ink-muted">{v.owner} | {v.status} | {new Date(v.createdAt).toLocaleString()}</p>
                 </div>
               </div>
               <div className="flex shrink-0 gap-2">
@@ -179,8 +179,8 @@ export function Admin() {
               <input type="checkbox" aria-label={`select ${i.name}`} disabled={!stoppable(i)} checked={sel.has(i.id)} onChange={() => toggle(i.id)} className="h-4 w-4 accent-[var(--brand)] disabled:opacity-30" />
               <span className="flex items-center gap-2 truncate text-ink"><Icon name={i.icon} className="text-ink-muted" /><span className="truncate">{i.name}</span>{i.visibility !== 'private' && <Badge tone="blue">{i.visibility}</Badge>}</span>
               <span className="tabular truncate text-ink-muted">{i.owner}</span>
-              <span className="tabular text-ink-muted">{i.node ?? '—'}</span>
-              <span className="tabular text-ink-muted">{i.cpus}c · {gb(i.memoryMb)}</span>
+              <span className="tabular text-ink-muted">{i.node ?? '-'}</span>
+              <span className="tabular text-ink-muted">{i.cpus}c | {gb(i.memoryMb)}</span>
               <StatusDot state={i.state} withLabel={false} />
               <span className="text-right">{stoppable(i) && <button title="Stop" onClick={() => stopOne(i)} disabled={busy} className={cn('text-ink-muted hover:text-err disabled:opacity-40')}><Icon name="stop-circle-line" /></button>}</span>
             </div>

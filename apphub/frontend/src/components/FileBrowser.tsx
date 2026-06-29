@@ -92,7 +92,7 @@ export function FileBrowser({
                 <Icon name="corner-left-up-line" /> Up one level
               </button>
               {loading ? (
-                <div className="px-3 py-4 text-center text-xs text-ink-muted"><Icon name="loader-4-line" className="animate-spin" /> Loading…</div>
+                <div className="px-3 py-4 text-center text-xs text-ink-muted"><Icon name="loader-4-line" className="animate-spin" /> Loading...</div>
               ) : err ? (
                 <div className="px-3 py-4 text-center text-xs text-err">{err}</div>
               ) : visible.length === 0 ? (

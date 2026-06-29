@@ -113,7 +113,7 @@ function NewTemplateModal({
           {() => <IconPicker value={icon} onChange={setIcon} placeholder={baseTpl?.icon ? `default: ${baseTpl.icon}` : undefined} />}
         </Field>
         {(baseTpl?.needsEntrypoint || byo) && (
-          <Field label={byo ? 'Container image (.sif) path in your locker' : 'Entry file (optional)'} hint={byo ? 'For example containers/myapp.sif — the image must already be in your locker.' : undefined}>
+          <Field label={byo ? 'Container image (.sif) path in your locker' : 'Entry file (optional)'} hint={byo ? 'For example containers/myapp.sif. The image must already be in your locker.' : undefined}>
             {(id) => <Input id={id} value={entrypoint} onChange={(e) => setEntrypoint(e.target.value)} placeholder={byo ? 'containers/myapp.sif' : 'app.py'} />}
           </Field>
         )}
@@ -191,13 +191,13 @@ export function Catalog() {
     <>
       <PageHeader
         title="App catalog"
-        subtitle="Pick a template — preconfigured for common analysis tasks."
+        subtitle="Pick a template. Each one is preconfigured for common analysis tasks."
         actions={<Button variant="primary" icon="add-line" onClick={() => setCreating(true)}>New template</Button>}
       />
 
       <div className="relative mb-6 max-w-md">
         <Icon name="search-line" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
-        <Input aria-label="Search apps and packages" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search apps, packages (e.g. seurat)…" className="pl-9" />
+        <Input aria-label="Search apps and packages" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search apps, packages (e.g. seurat)..." className="pl-9" />
       </div>
 
       {templates.loading ? (
@@ -252,7 +252,7 @@ export function Catalog() {
           <div className="flex h-11 w-11 items-center justify-center rounded-md bg-brand-tint text-brand"><Icon name="box-3-line" className="text-xl" /></div>
           <div>
             <p className="text-sm font-semibold text-ink">Need a long-running or persistent app?</p>
-            <p className="text-xs text-ink-muted">Apps top up in 12h steps (up to 7 days). For a never-expiring hosted service, request the persistent track — a one-time admin approval.</p>
+            <p className="text-xs text-ink-muted">Apps top up in 12h steps (up to 7 days). For a never-expiring hosted service, request the persistent track, which is a one-time admin approval.</p>
           </div>
         </div>
         {canHost ? (

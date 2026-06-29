@@ -71,7 +71,7 @@ export function TemplateCard({
 
       <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
         <span className="tabular text-2xs text-ink-muted">
-          {template.defaults.cpus} CPU · {(template.defaults.memoryMb / 1024).toFixed(0)} GB to start
+          {template.defaults.cpus} CPU | {(template.defaults.memoryMb / 1024).toFixed(0)} GB to start
         </span>
         <Button size="sm" variant="primary" icon="settings-3-line" onClick={(e) => { e.stopPropagation(); onLaunch(template) }}>
           Configure
