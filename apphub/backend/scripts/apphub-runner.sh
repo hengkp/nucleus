@@ -140,6 +140,9 @@ case "$TEMPLATE" in
       vncserver :1 -select-de manual -disableBasicAuth </dev/null >/tmp/vnc.log 2>&1
       sleep 4
       DISPLAY=:1 openbox >/tmp/openbox.log 2>&1 &
+      # Keep dialogs on-screen and the main window fitted as KasmVNC resizes the desktop to the
+      # browser window (otherwise the startup licence dialog can open with its buttons off-frame).
+      DISPLAY=:1 /usr/local/bin/qupath-window-fit.sh >/tmp/winfit.log 2>&1 &
       DISPLAY=:1 /usr/local/bin/QuPath >/tmp/qupath.log 2>&1 &
       XPID=\$(cat '$WS'/.vnc/*:1.pid 2>/dev/null | head -1)
       if [ -n \"\$XPID\" ]; then exec tail --pid=\"\$XPID\" -f /dev/null; fi
