@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- NAS drive -->
+  <rect x="150" y="140" width="520" height="620" rx="74" ry="74" fill="#ECF1EF" stroke="#22312E" stroke-width="26"/>
+  <line x1="194" y1="290" x2="626" y2="290" stroke="#22312E" stroke-width="16" stroke-linecap="round"/>
+  <line x1="194" y1="610" x2="626" y2="610" stroke="#22312E" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="207" cy="367" r="17" fill="#22312E"/>
+  <!-- status badge: connecting (amber refresh) -->
+  <circle cx="740" cy="720" r="206" fill="#FFFFFF"/>
+  <circle cx="740" cy="720" r="184" fill="#F59E0B"/>
+  <path d="M692,803.1 A96,96 0 1 1 834.5,736.7" fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linecap="round"/>
+  <polygon points="821,813.5 893.6,747.1 775.5,726.3" fill="#FFFFFF"/>
+</svg>

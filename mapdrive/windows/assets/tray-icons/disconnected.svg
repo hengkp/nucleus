@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- NAS drive -->
+  <rect x="150" y="140" width="520" height="620" rx="74" ry="74" fill="#ECF1EF" stroke="#22312E" stroke-width="26"/>
+  <line x1="194" y1="290" x2="626" y2="290" stroke="#22312E" stroke-width="16" stroke-linecap="round"/>
+  <line x1="194" y1="610" x2="626" y2="610" stroke="#22312E" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="207" cy="367" r="17" fill="#22312E"/>
+  <!-- status badge: disconnected (red cross) -->
+  <circle cx="740" cy="720" r="206" fill="#FFFFFF"/>
+  <circle cx="740" cy="720" r="184" fill="#EF4444"/>
+  <line x1="672" y1="652" x2="808" y2="788" stroke="#FFFFFF" stroke-width="50" stroke-linecap="round"/>
+  <line x1="808" y1="652" x2="672" y2="788" stroke="#FFFFFF" stroke-width="50" stroke-linecap="round"/>
+</svg>
