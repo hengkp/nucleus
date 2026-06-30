@@ -93,7 +93,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func toggleShare(_ sender: NSMenuItem) {
         let share = sender.representedObject as! String
-        setConnecting()
         if mountedShares().contains(share) {
             runShell("/usr/sbin/diskutil", ["unmount", "/Volumes/\(share)"])
         } else {
@@ -103,13 +102,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func connectAll() {
-        setConnecting()
         for s in mode.shares where !mountedShares().contains(s) { mount(s) }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.refresh() }
     }
 
     @objc private func disconnectAll() {
-        setConnecting()
         for s in mountedShares() { runShell("/usr/sbin/diskutil", ["unmount", "/Volumes/\(s)"]) }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self.refresh() }
     }
@@ -152,18 +149,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func quit() { NSApp.terminate(nil) }
 
     // MARK: UI
-
-    // Transient "working" icon shown while a mount/unmount is in flight (uses the third
-    // generated tray state), before refresh() settles on connected/disconnected.
-    private func setConnecting() {
-        guard let btn = statusItem.button else { return }
-        if let img = NSImage(named: NSImage.Name("connecting")) {
-            img.isTemplate = false; img.size = NSSize(width: 18, height: 18); btn.image = img   // colorful generated icon
-        } else if let img = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: "MapDrive: working") {
-            img.isTemplate = true; btn.image = img
-        }
-        btn.toolTip = "Working..."
-    }
 
     private func refresh() {
         let mounted = mountedShares().filter { mode.shares.contains($0) }

@@ -486,11 +486,6 @@ function Get-TrayStatus {
         return 'Disconnected'
     }
 
-    $users = @($mappings | Where-Object { -not [string]::IsNullOrWhiteSpace($_.UserName) } | Select-Object -ExpandProperty UserName -Unique)
-    if ($users.Count -gt 1) {
-        return 'Warning'
-    }
-
     return 'Connected'
 }
 
@@ -835,7 +830,6 @@ function Get-TrayIconAssetPath {
 
     $fileName = switch ($Status) {
         'Connected' { 'connected.ico' }
-        'Connecting' { 'connecting.ico' }
         'Disconnected' { 'disconnected.ico' }
         default { '' }
     }
@@ -977,19 +971,15 @@ function Update-MappingView {
 }
 
 function Set-TrayBusy {
-    # Show the "connecting" tray state (the third generated icon) while a map/unmap is in
-    # flight. The blocking MapNetworkDrive call follows, so DoEvents() forces a repaint first.
-    param([string]$Message = 'connecting...')
+    # Only two tray states now (connected / disconnected). While a map/unmap is in flight just
+    # update the tooltip; DoEvents() forces a repaint before the blocking call. refresh() sets
+    # the final connected/disconnected icon afterwards.
+    param([string]$Message = 'working...')
 
     if ($null -eq $notifyIcon) {
         return
     }
 
-    $old = $notifyIcon.Icon
-    $notifyIcon.Icon = New-SispTrayIcon -Status 'Connecting'
-    if ($null -ne $old) {
-        $old.Dispose()
-    }
     $notifyIcon.Text = "$AppTitle`: $Message"
     [System.Windows.Forms.Application]::DoEvents()
 }
