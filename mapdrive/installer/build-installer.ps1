@@ -40,17 +40,15 @@ if (-not (Test-Path -LiteralPath $OutputExe)) {
 New-Item -ItemType Directory -Force -Path $WebDownloads | Out-Null
 Copy-Item -LiteralPath $OutputExe -Destination (Join-Path $WebDownloads 'SISPDriveMapperSetup.exe') -Force
 
-$zipForWeb = Join-Path $WebDownloads 'SISPDriveMapper.zip'
-Remove-Item -LiteralPath $zipForWeb -Force -ErrorAction SilentlyContinue
-Compress-Archive -Path (Join-Path $WindowsApp '*') -DestinationPath $zipForWeb -Force
-
+# Portable ZIP removed: it did not work as a standalone (no installed shortcuts / file
+# associations), so we ship only the installer.
 $macZipForWeb = Join-Path $WebDownloads 'SISPDriveMapper-macOS.zip'
 if (Test-Path -LiteralPath $MacApp) {
     Remove-Item -LiteralPath $macZipForWeb -Force -ErrorAction SilentlyContinue
     Compress-Archive -Path (Join-Path $MacApp '*') -DestinationPath $macZipForWeb -Force
 }
 
-$outputs = @($OutputExe, (Join-Path $WebDownloads 'SISPDriveMapperSetup.exe'), $zipForWeb)
+$outputs = @($OutputExe, (Join-Path $WebDownloads 'SISPDriveMapperSetup.exe'))
 if (Test-Path -LiteralPath $macZipForWeb) {
     $outputs += $macZipForWeb
 }

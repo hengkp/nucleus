@@ -25,11 +25,9 @@ jobs:
         shell: pwsh
         run: ./mapdrive/installer/build-installer.ps1
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: SISPDriveMapper-Windows
-          path: |
-            mapdrive/installer/SISPDriveMapperSetup.exe
-            mapdrive/web/downloads/SISPDriveMapper.zip
+          path: mapdrive/installer/SISPDriveMapperSetup.exe
           if-no-files-found: error
