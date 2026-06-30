@@ -825,12 +825,30 @@ function Apply-LaunchOptions {
     }
 }
 
+function Test-DarkTaskbar {
+    # Windows 11 taskbar/tray colour follows SystemUsesLightTheme: 1 = light taskbar,
+    # 0 = dark taskbar. The disconnected glyph is monochrome, so we ship a dark version
+    # for a light taskbar and a light version for a dark taskbar. Default to light taskbar
+    # (dark glyph) when the key is missing, since that is the common case.
+    try {
+        $v = Get-ItemPropertyValue -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' -Name 'SystemUsesLightTheme' -ErrorAction Stop
+        return ($v -eq 0)
+    }
+    catch {
+        return $false
+    }
+}
+
 function Get-TrayIconAssetPath {
     param([string]$Status)
 
     $fileName = switch ($Status) {
         'Connected' { 'connected.ico' }
-        'Disconnected' { 'disconnected.ico' }
+        'Disconnected' {
+            # Colourful "connected" reads on either taskbar; the monochrome "disconnected"
+            # glyph needs a light variant on a dark taskbar so it stays visible.
+            if (Test-DarkTaskbar) { 'disconnected-darktheme.ico' } else { 'disconnected.ico' }
+        }
         default { '' }
     }
 
