@@ -1,12 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <!-- NAS drive -->
   <rect x="150" y="140" width="520" height="620" rx="74" ry="74" fill="#ECF1EF" stroke="#22312E" stroke-width="26"/>
-  <line x1="194" y1="290" x2="626" y2="290" stroke="#22312E" stroke-width="16" stroke-linecap="round"/>
-  <line x1="194" y1="610" x2="626" y2="610" stroke="#22312E" stroke-width="14" stroke-linecap="round"/>
-  <circle cx="207" cy="367" r="17" fill="#22312E"/>
+  <line x1="194" y1="288" x2="626" y2="288" stroke="#22312E" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="226" cy="226" r="18" fill="#22312E"/>
+  <!-- ventilation grille (vertical slots) -->
+  <g stroke="#22312E" stroke-width="16" stroke-linecap="round">
+    <line x1="222" y1="410" x2="222" y2="570"/>
+    <line x1="270" y1="410" x2="270" y2="570"/>
+    <line x1="318" y1="410" x2="318" y2="570"/>
+    <line x1="366" y1="410" x2="366" y2="570"/>
+    <line x1="414" y1="410" x2="414" y2="570"/>
+  </g>
   <!-- status badge: connecting (amber refresh) -->
-  <circle cx="740" cy="720" r="206" fill="#FFFFFF"/>
-  <circle cx="740" cy="720" r="184" fill="#F59E0B"/>
-  <path d="M692,803.1 A96,96 0 1 1 834.5,736.7" fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linecap="round"/>
-  <polygon points="821,813.5 893.6,747.1 775.5,726.3" fill="#FFFFFF"/>
+  <circle cx="716" cy="700" r="238" fill="#FFFFFF"/>
+  <circle cx="716" cy="700" r="212" fill="#F59E0B"/>
+  <path d="M660.9,795.5 A110.24,110.24 0 1 1 824.6,719.1" fill="none" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round"/>
+  <polygon points="809.1,806.8 891.4,730.9 757.8,707.4" fill="#FFFFFF"/>
 </svg>

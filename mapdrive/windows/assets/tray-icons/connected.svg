@@ -1,11 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <!-- NAS drive -->
   <rect x="150" y="140" width="520" height="620" rx="74" ry="74" fill="#ECF1EF" stroke="#22312E" stroke-width="26"/>
-  <line x1="194" y1="290" x2="626" y2="290" stroke="#22312E" stroke-width="16" stroke-linecap="round"/>
-  <line x1="194" y1="610" x2="626" y2="610" stroke="#22312E" stroke-width="14" stroke-linecap="round"/>
-  <circle cx="207" cy="367" r="17" fill="#22312E"/>
+  <line x1="194" y1="288" x2="626" y2="288" stroke="#22312E" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="226" cy="226" r="18" fill="#22312E"/>
+  <!-- ventilation grille (vertical slots) -->
+  <g stroke="#22312E" stroke-width="16" stroke-linecap="round">
+    <line x1="222" y1="410" x2="222" y2="570"/>
+    <line x1="270" y1="410" x2="270" y2="570"/>
+    <line x1="318" y1="410" x2="318" y2="570"/>
+    <line x1="366" y1="410" x2="366" y2="570"/>
+    <line x1="414" y1="410" x2="414" y2="570"/>
+  </g>
   <!-- status badge: connected (green tick) -->
-  <circle cx="740" cy="720" r="206" fill="#FFFFFF"/>
-  <circle cx="740" cy="720" r="184" fill="#22C55E"/>
-  <polyline points="648,726 712,790 840,648" fill="none" stroke="#FFFFFF" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="716" cy="700" r="238" fill="#FFFFFF"/>
+  <circle cx="716" cy="700" r="212" fill="#22C55E"/>
+  <polyline points="627,708.5 688.4,772.1 822,615.2" fill="none" stroke="#FFFFFF" stroke-width="57.2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
