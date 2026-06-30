@@ -1,0 +1,35 @@
+name: Build Windows installer
+
+# Builds the MapDrive Windows installer (SISPDriveMapperSetup.exe) and the portable zip on a
+# Windows runner (the only place ISCC + the .NET Framework C# compiler are available), and
+# uploads them as artifacts for download/deploy. node1 is on a private LAN, so the runner only
+# produces the artifacts; the deploy to the live download page is done from a LAN machine.
+on:
+  push:
+    paths:
+      - 'mapdrive/windows/**'
+      - 'mapdrive/installer/**'
+      - '.github/workflows/build-windows.yml'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer + portable zip
+        shell: pwsh
+        run: ./mapdrive/installer/build-installer.ps1
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SISPDriveMapper-Windows
+          path: |
+            mapdrive/installer/SISPDriveMapperSetup.exe
+            mapdrive/web/downloads/SISPDriveMapper.zip
+          if-no-files-found: error
