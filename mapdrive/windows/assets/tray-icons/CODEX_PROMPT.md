@@ -13,8 +13,11 @@ to the GPT image 2.0 tool and save what it returns.
   - Prompt 1 to `connected-source.png`
   - Prompt 2 to `connecting-source.png`
   - Prompt 3 to `disconnected-source.png`
-- After all three exist, the existing `build-tray-icons.ps1` resizer turns them
-  into the 16 to 256 px PNGs and the `.ico` files.
+- The three sources must be transparent PNGs (no background). If the image tool
+  only returns an opaque/keyed image, key out the flat background to alpha before
+  saving here. From these three transparent sources the maintainer regenerates the
+  sized PNGs (16 to 256 px), the Windows `.ico` files, and the macOS 18 / 36 px
+  menu-bar PNGs; just leave the three updated source PNGs in this folder.
 
 Why this redesign: the old set drew the same black network drive for all three
 states with only a small corner mark, so at 16 px in the system tray you could
