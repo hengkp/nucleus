@@ -34,8 +34,10 @@ From: ubuntu:22.04
     # Window helper: under KasmVNC's dynamic resize, QuPath sizes its main window and centres its
     # dialogs for the framebuffer size at launch. When the desktop is later resized to the browser
     # window, an already-open dialog (e.g. the startup licence "Notice") can land partly off-screen
-    # with its buttons out of frame. This daemon re-centres any off-screen dialog fully into view
-    # (accounting for the WM frame) and pins/maximizes the main window so the menus stay reachable.
+    # with its buttons out of frame. This daemon acts ONLY when the desktop size changes: it
+    # re-centres any dialog that is now off-screen (accounting for the WM frame) and pins/maximizes
+    # the main window so the menus stay reachable. Between resizes it stays completely idle, so it
+    # never fights the user moving or interacting with a dialog.
     cat > /usr/local/bin/qupath-window-fit.sh <<'WFEOF'
 #!/bin/bash
 export DISPLAY="${DISPLAY:-:1}"
@@ -45,7 +47,9 @@ prev=""
 while sleep 1; do
   read W H < <(wmctrl -d 2>/dev/null | awk 'NR==1{for(i=1;i<=NF;i++) if($i=="DG:"){split($(i+1),b,"x"); print b[1],b[2]}}')
   [ -z "$W" ] && continue
-  cur="${W}x${H}"; changed=0; [ "$cur" != "$prev" ] && { changed=1; prev="$cur"; }
+  cur="${W}x${H}"
+  [ "$cur" = "$prev" ] && continue          # idle unless the desktop size actually changed
+  prev="$cur"
   while read -r id x y w h; do
     [ -z "$id" ] && continue
     if is_dialog "$id"; then
@@ -55,8 +59,7 @@ while sleep 1; do
         fy=$(((H-fh)/2)); mfy=$((H-fh)); [ "$mfy" -lt 0 ] && mfy=0; [ "$fy" -lt 0 ] && fy=0; [ "$fy" -gt "$mfy" ] && fy=$mfy
         xdotool windowmove "$id" "$fx" "$fy" 2>/dev/null
       fi
-    elif [ "$changed" = 1 ] || [ "$w" -gt "$W" ] || [ "$h" -gt "$H" ]; then
-      wmctrl -ia "$id" 2>/dev/null
+    else
       wmctrl -i -r "$id" -b add,maximized_vert,maximized_horz 2>/dev/null
       { [ "$w" -gt "$W" ] || [ "$h" -gt "$H" ]; } && xdotool windowmove "$id" 0 0 2>/dev/null
     fi

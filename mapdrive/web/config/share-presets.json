@@ -9,7 +9,7 @@
   "modes": {
     "gateway": {
       "label": "Recommended",
-      "sublabel": "SISP gateway · node1",
+      "sublabel": "SISP gateway | node1",
       "hint": "Connects through the SISP gateway. File ownership is always correct. Sign in with your plain lab username.",
       "server": "192.168.0.25",
       "defaultLoginFormat": "username only",
@@ -17,7 +17,7 @@
         {
           "name": "sisplockers",
           "unc": "\\\\192.168.0.25\\sisplockers",
-          "nasPath": "All lab lockers via the gateway — your files plus others' where they've shared them",
+          "nasPath": "All lab lockers via the gateway: your files plus others where they have shared them",
           "nfs": true
         },
         {
@@ -168,7 +168,7 @@
     },
     "direct": {
       "label": "Direct",
-      "sublabel": "Infortrend NAS · 192.168.0.103",
+      "sublabel": "Infortrend NAS | 192.168.0.103",
       "hint": "Connects straight to the NAS. Use for department and project shares. Sign in as SIRIRAJ\\username.",
       "server": "192.168.0.103",
       "defaultLoginFormat": "SIRIRAJ\\username",

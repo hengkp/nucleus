@@ -126,7 +126,7 @@ function Get-QualifiedUsername {
         return "$cleanDomain\$cleanUser"
     }
 
-    # Gateway authenticates against OpenLDAP — default to the bare username, not a domain.
+    # Gateway authenticates against OpenLDAP, so default to the bare username, not a domain.
     return $cleanUser
 }
 
@@ -1029,7 +1029,7 @@ $script:LaunchOptions = ConvertFrom-LaunchUri -RawUri $LaunchUri
 Apply-AppSettings
 Apply-LaunchOptions
 
-# SISP MapDrive palette — shares the AppHub design tokens (teal heritage).
+# SISP MapDrive palette, shares the AppHub design tokens (teal heritage).
 # brand #11695f / brand-strong #0c4f47 / ink #131a19 / muted #5d6b68 /
 # surface #fff / surface-alt #f1f5f4 / bg #f7f9f9 / border #dce4e2 / danger #c0392b.
 $ColorBackground = [System.Drawing.Color]::FromArgb(247, 249, 249)
@@ -1281,7 +1281,7 @@ $drivesPanel.BorderStyle = 'FixedSingle'
 $form.Controls.Add($drivesPanel)
 
 $mappingLabel = New-Object System.Windows.Forms.Label
-$mappingLabel.Text = 'Mounted network drives  —  click a row to tick, double-click to open'
+$mappingLabel.Text = 'Mounted network drives:  click a row to tick, double-click to open'
 $mappingLabel.Font = New-Object System.Drawing.Font('Segoe UI', 11, [System.Drawing.FontStyle]::Bold)
 $mappingLabel.ForeColor = $ColorInk
 $mappingLabel.Location = New-Object System.Drawing.Point(36, 380)
@@ -1315,7 +1315,7 @@ $mappingList.Scrollable = $true
 $mappingList.BackColor = $ColorSurfaceAlt
 $mappingList.ForeColor = $ColorInk
 $mappingList.Font = New-Object System.Drawing.Font('Consolas', 9)
-[void]$mappingList.Columns.Add('✓ Drive', 150)
+[void]$mappingList.Columns.Add('Drive', 150)
 [void]$mappingList.Columns.Add('Share', 360)
 [void]$mappingList.Columns.Add('User', 190)
 [void]$mappingList.Columns.Add('Status', 100)
@@ -1594,7 +1594,7 @@ $mappingList.Add_MouseClick({
 })
 
 # Double-click opens that drive in Explorer. A double-click also fired one MouseClick above (which
-# toggled the tick), so undo that stray toggle first — opening must never change the selection.
+# toggled the tick), so undo that stray toggle first, opening must never change the selection.
 $mappingList.Add_DoubleClick({
     if ($null -ne $script:LastToggled) {
         $script:LastToggled.Checked = -not $script:LastToggled.Checked

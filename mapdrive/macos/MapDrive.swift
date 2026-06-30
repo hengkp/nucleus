@@ -162,7 +162,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else if let img = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: "MapDrive: working") {
             img.isTemplate = true; btn.image = img
         }
-        btn.toolTip = "Working…"
+        btn.toolTip = "Working..."
     }
 
     private func refresh() {
@@ -180,7 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 img.isTemplate = true   // adapts to light/dark menu bar
                 btn.image = img
             } else {
-                btn.title = connected ? "MD ●" : "MD ○"
+                btn.title = connected ? "MD on" : "MD off"
             }
             btn.toolTip = connected ? "\(mounted.count) share(s) connected" : "No shares connected"
         }
@@ -197,7 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let modeItem = NSMenuItem(title: "Mode: \(mode.label)  (\(mode.server))", action: nil, keyEquivalent: "")
         modeItem.isEnabled = false
         menu.addItem(modeItem)
-        let userItem = NSMenuItem(title: username.isEmpty ? "Set username…" : "User: \(username)",
+        let userItem = NSMenuItem(title: username.isEmpty ? "Set username..." : "User: \(username)",
                                   action: #selector(setUsername), keyEquivalent: "")
         userItem.target = self
         menu.addItem(userItem)
