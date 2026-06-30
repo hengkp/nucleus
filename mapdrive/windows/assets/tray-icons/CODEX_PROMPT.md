@@ -13,29 +13,34 @@ to the GPT image 2.0 tool and save what it returns.
   - Prompt 1 to `connected-source.png`
   - Prompt 2 to `connecting-source.png`
   - Prompt 3 to `disconnected-source.png`
-- The three sources must be transparent PNGs (no background). If the image tool
-  only returns an opaque/keyed image, key out the flat background to alpha before
-  saving here. From these three transparent sources the maintainer regenerates the
-  sized PNGs (16 to 256 px), the Windows `.ico` files, and the macOS 18 / 36 px
-  menu-bar PNGs; just leave the three updated source PNGs in this folder.
+- The three sources must be transparent PNGs (no background). If the tool only
+  returns an opaque/keyed image, key out the flat background to alpha before
+  saving here. From these three transparent sources the maintainer regenerates
+  the sized PNGs (16 to 256 px), the Windows `.ico` files, and the macOS 18 / 36
+  px menu-bar PNGs; just leave the three updated source PNGs in this folder.
 
-Why this redesign: the old set drew the same black network drive for all three
-states with only a small corner mark, so at 16 px in the system tray you could
-not tell connect, connecting, and disconnect apart. These three share one drive
-shape but make the state loud, with a large color-coded badge plus a body tint,
-so the state reads instantly even when tiny. Each prompt below is complete on its
-own, so they can be generated independently and still look like one family.
+Design goal: a much simpler, bolder mark that stays crystal clear at 16 px in
+the system tray. One single storage drive seen from the TOP, with a very thick
+black outline and a cloud in its centre. The state is shown by the fill colour:
+ocean green when connected, yuzu yellow while connecting, and no fill plus a
+single diagonal black slash through the whole drive when disconnected (the way
+the OneDrive tray icon looks when you are not signed in). The thick outline and
+the solid fill colour are what make the three states readable at tiny sizes.
+
+Keep the drive shape, the outline thickness, the cloud, its size and position,
+and the framing pixel-for-pixel identical across all three icons. Only the fill
+colour changes, plus the added slash on the disconnected one.
 
 ---
 
 ## Prompt 1 of 3, CONNECTED, save as `connected-source.png`
 
 ```
-A single modern flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no white fill, no checkerboard, no border, no text, no watermark). Center the artwork with about 8 percent padding on all sides.
+A single flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no background fill, no checkerboard, no border, no text, no shadow, no watermark). Center the artwork with about 12 percent padding on every side.
 
-Subject: a friendly modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near its lower-left. Above the drive sit three short, clean concentric connectivity arcs (a signal fan) rising from the top-center. Use a single consistent corner radius, a bold even stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps, and gentle subtle top-down shading for a little depth. No drop shadow. Premium, fluent, not clip-art.
+Draw exactly ONE object: a computer storage drive (an external hard drive / NAS unit) seen straight from the TOP, as a bird's-eye view. It is a single bold rounded rectangle, clearly wider than it is tall, representing the flat top face of the drive. Outline it with a VERY THICK, heavy, even, solid BLACK stroke with smoothly rounded corners and joins; the outline must be thick enough to read clearly when the whole icon is shrunk to 16 by 16 pixels. In the exact center of the drive sits one simple clean cloud symbol, drawn with the SAME thick black outline and a white fill. There are no other elements at all: no second drive, no signal waves or arcs, no status badge, no dot, no text, no gradient.
 
-State = CONNECTED: the drive body is a confident deep teal (about #0E7C7B) with a soft lighter teal highlight along the top, and all three signal arcs are bright and complete in teal. Add one LARGE circular status badge overlapping the lower-right corner of the drive: a solid filled circle about 46 percent of the icon width, emerald green (about #22C55E), separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with a crisp bold pure-white check mark centered inside it. The badge, badge symbol, signal arcs, and LED are the only colored parts. Flat vector illustration, high contrast, transparent background, no text.
+State = CONNECTED: fill the inside of the drive (the area inside the thick black outline, behind and around the white cloud) with a solid ocean green, the deep teal-green #11695f (the SISP / AppHub brand green). The cloud stays white on top of the green fill so it reads clearly. Flat solid colors only, crisp thick black linework, transparent background, no text.
 ```
 
 ---
@@ -43,11 +48,11 @@ State = CONNECTED: the drive body is a confident deep teal (about #0E7C7B) with 
 ## Prompt 2 of 3, CONNECTING, save as `connecting-source.png`
 
 ```
-A single modern flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no white fill, no checkerboard, no border, no text, no watermark). Center the artwork with about 8 percent padding on all sides.
+A single flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no background fill, no checkerboard, no border, no text, no shadow, no watermark). Center the artwork with about 12 percent padding on every side.
 
-Subject: a friendly modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near its lower-left. Above the drive sit three short, clean concentric connectivity arcs (a signal fan) rising from the top-center. Use a single consistent corner radius, a bold even stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps, and gentle subtle top-down shading for a little depth. No drop shadow. Premium, fluent, not clip-art. Keep the drive shape, stroke weight, arc geometry, and badge size identical to the connected and disconnected icons in this family.
+Draw exactly ONE object: a computer storage drive (an external hard drive / NAS unit) seen straight from the TOP, as a bird's-eye view. It is a single bold rounded rectangle, clearly wider than it is tall, representing the flat top face of the drive. Outline it with a VERY THICK, heavy, even, solid BLACK stroke with smoothly rounded corners and joins; the outline must be thick enough to read clearly when the whole icon is shrunk to 16 by 16 pixels. In the exact center of the drive sits one simple clean cloud symbol, drawn with the SAME thick black outline and a white fill. There are no other elements at all: no second drive, no signal waves or arcs, no status badge, no dot, no text, no gradient. Keep the drive shape, outline thickness, and the cloud identical to the connected and disconnected icons in this family.
 
-State = CONNECTING: the drive body is the same confident deep teal (about #0E7C7B) with a soft lighter teal top highlight; the signal arcs look mid-transmission, with the outermost arc faded to about half opacity to suggest motion. Add one LARGE circular status badge overlapping the lower-right corner of the drive: a solid filled circle about 46 percent of the icon width, warm amber (about #F59E0B), separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with two crisp pure-white curved arrows chasing each other in a circle (a sync / refresh loop) centered inside it. The badge, badge symbol, signal arcs, and LED are the only colored parts. Flat vector illustration, high contrast, transparent background, no text.
+State = CONNECTING: fill the inside of the drive (the area inside the thick black outline, behind and around the white cloud) with a solid vibrant yuzu yellow, a bright saturated warm citrus yellow #F5C518. The cloud stays white on top of the yellow fill so it reads clearly. Flat solid colors only, crisp thick black linework, transparent background, no text.
 ```
 
 ---
@@ -55,11 +60,11 @@ State = CONNECTING: the drive body is the same confident deep teal (about #0E7C7
 ## Prompt 3 of 3, DISCONNECTED, save as `disconnected-source.png`
 
 ```
-A single modern flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no white fill, no checkerboard, no border, no text, no watermark). Center the artwork with about 8 percent padding on all sides.
+A single flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no background fill, no checkerboard, no border, no text, no shadow, no watermark). Center the artwork with about 12 percent padding on every side.
 
-Subject: a friendly modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near its lower-left. Above the drive sit short concentric connectivity arcs (a signal fan) rising from the top-center. Use a single consistent corner radius, a bold even stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps. No drop shadow. Premium, fluent, not clip-art. Keep the drive shape, stroke weight, arc geometry, and badge size identical to the connected and connecting icons in this family.
+Draw exactly ONE object: a computer storage drive (an external hard drive / NAS unit) seen straight from the TOP, as a bird's-eye view. It is a single bold rounded rectangle, clearly wider than it is tall, representing the flat top face of the drive. Outline it with a VERY THICK, heavy, even, solid BLACK stroke with smoothly rounded corners and joins; the outline must be thick enough to read clearly when the whole icon is shrunk to 16 by 16 pixels. In the exact center of the drive sits one simple clean cloud symbol, drawn with the SAME thick black outline. There are no other elements at all: no second drive, no signal waves or arcs, no status badge, no dot, no text, no gradient. Keep the drive shape, outline thickness, and the cloud identical to the connected and connecting icons in this family.
 
-State = DISCONNECTED: the drive body is a desaturated cool slate grey (about #94A3B8) with NO top highlight so it clearly reads as inactive and dimmed; the signal arcs are dimmed grey and the topmost (outer) arc is omitted. Add one LARGE circular status badge overlapping the lower-right corner of the drive: a solid filled circle about 46 percent of the icon width, red (about #EF4444), separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with a crisp bold pure-white X (cross) centered inside it. The badge and its X are the only saturated color; the rest stays muted grey. Flat vector illustration, high contrast, transparent background, no text.
+State = DISCONNECTED: NO fill color at all. The inside of the drive stays fully transparent, so only the thick black drive outline and the black cloud outline are visible (the cloud has a transparent inside too). Then draw ONE bold straight BLACK diagonal slash running from the upper-left down to the lower-right, straight across the entire drive logo, in the same heavy black weight as the drive outline, exactly like the Microsoft OneDrive tray icon when you are signed out / not connected. Flat black linework only, no color, transparent background, no text.
 ```
 
 ---
@@ -68,5 +73,6 @@ State = DISCONNECTED: the drive body is a desaturated cool slate grey (about #94
 
 If any image comes back with a solid or checkerboard background instead of real
 transparency, regenerate that one and add "must have genuine alpha transparency,
-absolutely no background fill" to the prompt. Colors map to the SISP palette:
-teal heritage for the drive, semantic green / amber / red for the live state.
+absolutely no background fill" to the prompt. Colour reference: connected fill =
+ocean green #11695f (AppHub brand green, deeper shade #0c4f47); connecting fill =
+vibrant yuzu yellow #F5C518; disconnected = no fill, black diagonal slash.
