@@ -1,43 +1,69 @@
-# MapDrive tray icon set, Codex / GPT image prompt
+# MapDrive tray icon set, image-generation prompts
 
-One single prompt that produces the full three-state tray icon family in one
-consistent image. Paste everything in the fenced block below into Codex (GPT
-image) as a single prompt. It returns one transparent 1536 x 512 sheet holding
-three 512 x 512 icons in a row: connected, connecting, disconnected. Slice the
-sheet into three squares and run them through the existing
-`build-tray-icons.ps1` resizer to make the 16 to 256 px PNGs and the .ico files.
+## Instructions for Codex (read this first)
 
-Design intent: the old set used the same black drawing for all three states
-with only a tiny corner mark, so at 16 px in the tray they were hard to tell
-apart. This set keeps one shared network-drive shape but drives the meaning
-with a large, color-coded status badge and a state tint, so a quick glance is
-enough to read connect vs connecting vs disconnect even at 16 px.
+Generate three tray icons by calling the **GPT image 2.0** image-generation tool
+directly, once per prompt below. Do **not** write Python, PIL, or any other code
+to draw the icons, and do not download anything. Just pass each prompt straight
+to the GPT image 2.0 tool and save what it returns.
 
----
+- Run the tool three times, one per prompt in the sections below.
+- Each output: a single square PNG, transparent background, 1024 x 1024.
+- Save them, in this folder, as:
+  - Prompt 1 to `connected-source.png`
+  - Prompt 2 to `connecting-source.png`
+  - Prompt 3 to `disconnected-source.png`
+- After all three exist, the existing `build-tray-icons.ps1` resizer turns them
+  into the 16 to 256 px PNGs and the `.ico` files.
 
-```
-Create one flat, modern vector-style icon SHEET as a single PNG, 1536 x 512 pixels, on a FULLY TRANSPARENT background (real alpha, no white, no checkerboard). The sheet holds THREE separate app tray icons in one horizontal row. Each icon is perfectly centered inside its own invisible 512 x 512 square cell: cell 1 spans x 0 to 512, cell 2 spans x 512 to 1024, cell 3 spans x 1024 to 1536. Leave about 8 percent padding around each icon so nothing touches the cell edges. Do not draw the cells, gridlines, labels, frames, or any text anywhere.
-
-All three icons share ONE identical base symbol so they read as a family: a friendly, modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near the lower-left of the body. Above the drive sit three short, clean concentric connectivity arcs (a signal / Wi-Fi fan) rising from the top-center. Use a single consistent corner radius, a consistent bold stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps, and gentle subtle top-down shading for a little depth. No drop shadow on the transparent background. No outlines around the whole icon. Clean, premium, Apple-and-Microsoft-fluent feeling, not clip-art.
-
-Each icon adds a single LARGE circular STATUS BADGE that overlaps the lower-right corner of the drive body. The badge is bold and unmistakable at tiny sizes: it is a filled solid-color circle about 46 percent of the icon's width, separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with a crisp pure-white symbol centered inside it. The badge, the badge symbol, the signal arcs, and the LED are the only colored parts; keep the rest readable.
-
-The three states, left to right:
-
-1) CONNECTED (cell 1): the drive body is a confident deep teal (about #0E7C7B) with a soft lighter teal top highlight; the three signal arcs are bright and complete in teal. The status badge is emerald green (about #22C55E) with a bold white check mark.
-
-2) CONNECTING (cell 2): the drive body is the same deep teal; the signal arcs look mid-transmission, the outermost arc faded to roughly half opacity to suggest motion. The status badge is warm amber (about #F59E0B) with two white curved arrows chasing each other in a circle (a sync / refresh loop) centered in the badge.
-
-3) DISCONNECTED (cell 3): the drive body is desaturated cool slate grey (about #94A3B8) so it clearly reads as inactive, with no top highlight; the signal arcs are dimmed grey and the topmost arc is omitted. The status badge is red (about #EF4444) with a bold white X.
-
-Keep the drive shape, stroke weight, arc geometry, badge size, badge ring, and symbol weight pixel-for-pixel identical across all three icons; only the colors, the highlight, the arc opacity, and the badge symbol change between states. Flat vector illustration, high contrast, no gradients other than the subtle body shading described, no background, no text, no extra decoration.
-```
+Why this redesign: the old set drew the same black network drive for all three
+states with only a small corner mark, so at 16 px in the system tray you could
+not tell connect, connecting, and disconnect apart. These three share one drive
+shape but make the state loud, with a large color-coded badge plus a body tint,
+so the state reads instantly even when tiny. Each prompt below is complete on its
+own, so they can be generated independently and still look like one family.
 
 ---
 
-## Notes for whoever runs this
+## Prompt 1 of 3, CONNECTED, save as `connected-source.png`
 
-- If the model will not honor the three-in-one sheet cleanly, run the same prompt three times and each time keep only ONE of the numbered state paragraphs (and ask for a single 512 x 512 transparent icon). The shared-base wording keeps them consistent across runs.
-- Output must be transparent PNG. If it comes back with a solid background, re-ask for "real alpha transparency, no background fill."
-- After generating, drop the three squares in as `connected-source.png`, `connecting-source.png`, `disconnected-source.png` here, then regenerate the sized PNGs and `.ico` files with the existing build script.
-- Colors map to the SISP palette: teal heritage for the drive, semantic green / amber / red for the live state.
+```
+A single modern flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no white fill, no checkerboard, no border, no text, no watermark). Center the artwork with about 8 percent padding on all sides.
+
+Subject: a friendly modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near its lower-left. Above the drive sit three short, clean concentric connectivity arcs (a signal fan) rising from the top-center. Use a single consistent corner radius, a bold even stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps, and gentle subtle top-down shading for a little depth. No drop shadow. Premium, fluent, not clip-art.
+
+State = CONNECTED: the drive body is a confident deep teal (about #0E7C7B) with a soft lighter teal highlight along the top, and all three signal arcs are bright and complete in teal. Add one LARGE circular status badge overlapping the lower-right corner of the drive: a solid filled circle about 46 percent of the icon width, emerald green (about #22C55E), separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with a crisp bold pure-white check mark centered inside it. The badge, badge symbol, signal arcs, and LED are the only colored parts. Flat vector illustration, high contrast, transparent background, no text.
+```
+
+---
+
+## Prompt 2 of 3, CONNECTING, save as `connecting-source.png`
+
+```
+A single modern flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no white fill, no checkerboard, no border, no text, no watermark). Center the artwork with about 8 percent padding on all sides.
+
+Subject: a friendly modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near its lower-left. Above the drive sit three short, clean concentric connectivity arcs (a signal fan) rising from the top-center. Use a single consistent corner radius, a bold even stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps, and gentle subtle top-down shading for a little depth. No drop shadow. Premium, fluent, not clip-art. Keep the drive shape, stroke weight, arc geometry, and badge size identical to the connected and disconnected icons in this family.
+
+State = CONNECTING: the drive body is the same confident deep teal (about #0E7C7B) with a soft lighter teal top highlight; the signal arcs look mid-transmission, with the outermost arc faded to about half opacity to suggest motion. Add one LARGE circular status badge overlapping the lower-right corner of the drive: a solid filled circle about 46 percent of the icon width, warm amber (about #F59E0B), separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with two crisp pure-white curved arrows chasing each other in a circle (a sync / refresh loop) centered inside it. The badge, badge symbol, signal arcs, and LED are the only colored parts. Flat vector illustration, high contrast, transparent background, no text.
+```
+
+---
+
+## Prompt 3 of 3, DISCONNECTED, save as `disconnected-source.png`
+
+```
+A single modern flat vector app icon, 1024 x 1024 pixels, on a FULLY TRANSPARENT background (real alpha, no white fill, no checkerboard, no border, no text, no watermark). Center the artwork with about 8 percent padding on all sides.
+
+Subject: a friendly modern network storage drive (a NAS), drawn as a rounded-rectangle drive body seen straight from the front, with one slim horizontal seam line across it and one small round status LED near its lower-left. Above the drive sit short concentric connectivity arcs (a signal fan) rising from the top-center. Use a single consistent corner radius, a bold even stroke weight that stays crisp when scaled down to 16 px, smooth rounded line caps. No drop shadow. Premium, fluent, not clip-art. Keep the drive shape, stroke weight, arc geometry, and badge size identical to the connected and connecting icons in this family.
+
+State = DISCONNECTED: the drive body is a desaturated cool slate grey (about #94A3B8) with NO top highlight so it clearly reads as inactive and dimmed; the signal arcs are dimmed grey and the topmost (outer) arc is omitted. Add one LARGE circular status badge overlapping the lower-right corner of the drive: a solid filled circle about 46 percent of the icon width, red (about #EF4444), separated from the drive by a clean 3 px transparent gap plus a thin white inner ring, with a crisp bold pure-white X (cross) centered inside it. The badge and its X are the only saturated color; the rest stays muted grey. Flat vector illustration, high contrast, transparent background, no text.
+```
+
+---
+
+## If the result has a background
+
+If any image comes back with a solid or checkerboard background instead of real
+transparency, regenerate that one and add "must have genuine alpha transparency,
+absolutely no background fill" to the prompt. Colors map to the SISP palette:
+teal heritage for the drive, semantic green / amber / red for the live state.

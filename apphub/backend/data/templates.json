@@ -56,7 +56,7 @@
       "description": "QuPath 0.7 for whole-slide and multiplexed image analysis, streamed to your browser. Opens images straight from the NAS shares. Heavy slides run on the cluster, not your laptop.",
       "icon": "microscope-line",
       "image": "qupath.sif",
-      "preinstalled": ["QuPath 0.7.0", "browser desktop (noVNC)"],
+      "preinstalled": ["QuPath 0.7.0", "browser desktop (KasmVNC)"],
       "defaults": { "cpus": 4, "memoryMb": 16384, "timeMinutes": 480 },
       "limits": { "maxCpus": 32, "maxMemoryMb": 262144, "maxTimeMinutes": 4320 },
       "enabled": true

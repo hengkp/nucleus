@@ -31,39 +31,51 @@ From: ubuntu:22.04
     chmod +x "$QP"
     ln -sf "$QP" /usr/local/bin/QuPath
 
-    # Window helper: under KasmVNC's dynamic resize, QuPath sizes its main window and centres its
-    # dialogs for the framebuffer size at launch. When the desktop is later resized to the browser
-    # window, an already-open dialog (e.g. the startup licence "Notice") can land partly off-screen
-    # with its buttons out of frame. This daemon acts ONLY when the desktop size changes: it
-    # re-centres any dialog that is now off-screen (accounting for the WM frame) and pins/maximizes
-    # the main window so the menus stay reachable. Between resizes it stays completely idle, so it
-    # never fights the user moving or interacting with a dialog.
+    # Window helper for KasmVNC's dynamic resize. QuPath sizes its main window and centres its
+    # dialogs for the framebuffer size at launch; once the desktop is resized to the browser window
+    # the main can overflow, so a dialog (the startup licence "Notice", "Welcome", or one the user
+    # opens later such as Brightness & Contrast) centres on the off-screen main and lands out of
+    # frame with its title/buttons unreachable. This daemon rescues a dialog (centres it on-screen,
+    # allowing for the WM frame) the FIRST time it appears off-frame and again if a resize pushes it
+    # off-frame; otherwise it leaves every window alone, so the user can move and use dialogs freely.
+    # It also pins/maximizes the main window on each resize. It tracks window ids it has already
+    # handled so it never repeatedly grabs a window (which is what made dialogs impossible to move).
     cat > /usr/local/bin/qupath-window-fit.sh <<'WFEOF'
 #!/bin/bash
 export DISPLAY="${DISPLAY:-:1}"
 FW=6; FT=42   # openbox frame: side border + title-bar height (approx)
 is_dialog() { xprop -id "$1" WM_TRANSIENT_FOR 2>/dev/null | grep -q '0x[0-9a-fA-F]'; }
+offscreen() { [ "$1" -lt 0 ] || [ "$2" -lt "$FT" ] || [ $(($1+$3)) -gt "$W" ] || [ $(($2+$4)) -gt "$H" ]; }
 prev=""
+declare -A seen
 while sleep 1; do
   read W H < <(wmctrl -d 2>/dev/null | awk 'NR==1{for(i=1;i<=NF;i++) if($i=="DG:"){split($(i+1),b,"x"); print b[1],b[2]}}')
   [ -z "$W" ] && continue
   cur="${W}x${H}"
-  [ "$cur" = "$prev" ] && continue          # idle unless the desktop size actually changed
-  prev="$cur"
+  resized=0; [ "$cur" != "$prev" ] && { resized=1; prev="$cur"; }
+  ids=" "
   while read -r id x y w h; do
     [ -z "$id" ] && continue
+    ids="$ids$id "
     if is_dialog "$id"; then
-      if [ "$x" -lt 0 ] || [ "$y" -lt 0 ] || [ $((x+w)) -gt "$W" ] || [ $((y+h)) -gt "$H" ]; then
-        fw=$((w+FW)); fh=$((h+FT))
-        fx=$(((W-fw)/2)); mfx=$((W-fw)); [ "$mfx" -lt 0 ] && mfx=0; [ "$fx" -lt 0 ] && fx=0; [ "$fx" -gt "$mfx" ] && fx=$mfx
-        fy=$(((H-fh)/2)); mfy=$((H-fh)); [ "$mfy" -lt 0 ] && mfy=0; [ "$fy" -lt 0 ] && fy=0; [ "$fy" -gt "$mfy" ] && fy=$mfy
-        xdotool windowmove "$id" "$fx" "$fy" 2>/dev/null
+      if [ -z "${seen[$id]}" ] || [ "$resized" = 1 ]; then
+        if offscreen "$x" "$y" "$w" "$h"; then
+          fw=$((w+FW)); fh=$((h+FT))
+          fx=$(((W-fw)/2)); mfx=$((W-fw)); [ "$mfx" -lt 0 ] && mfx=0; [ "$fx" -lt 0 ] && fx=0; [ "$fx" -gt "$mfx" ] && fx=$mfx
+          fy=$(((H-fh)/2)); mfy=$((H-fh)); [ "$mfy" -lt 0 ] && mfy=0; [ "$fy" -lt 0 ] && fy=0; [ "$fy" -gt "$mfy" ] && fy=$mfy
+          xdotool windowmove "$id" "$fx" "$fy" 2>/dev/null
+        fi
       fi
+      seen[$id]=1
     else
-      wmctrl -i -r "$id" -b add,maximized_vert,maximized_horz 2>/dev/null
-      { [ "$w" -gt "$W" ] || [ "$h" -gt "$H" ]; } && xdotool windowmove "$id" 0 0 2>/dev/null
+      if [ "$resized" = 1 ] || [ -z "${seen[$id]}" ]; then
+        wmctrl -i -r "$id" -b add,maximized_vert,maximized_horz 2>/dev/null
+        { [ "$w" -gt "$W" ] || [ "$h" -gt "$H" ]; } && xdotool windowmove "$id" 0 0 2>/dev/null
+      fi
+      seen[$id]=1
     fi
   done < <(wmctrl -lG 2>/dev/null | awk '{print $1,$3,$4,$5,$6}')
+  for k in "${!seen[@]}"; do case "$ids" in *" $k "*) ;; *) unset 'seen[$k]';; esac; done
 done
 WFEOF
     chmod +x /usr/local/bin/qupath-window-fit.sh

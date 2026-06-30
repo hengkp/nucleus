@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { PageHeader } from '@/components/PageHeader'
 import { TemplateCard } from '@/components/TemplateCard'
 import { LaunchWizard } from '@/components/LaunchWizard'
@@ -147,6 +148,7 @@ function NewTemplateModal({
 }
 
 export function Catalog() {
+  const nav = useNavigate()
   const templates = useLive(() => api.listTemplates(), { intervalMs: 600_000 })
   const { session } = useSession()
   const toast = useToast()
@@ -263,7 +265,7 @@ export function Catalog() {
       </Card>
 
       <NewTemplateModal open={creating} onClose={() => setCreating(false)} bases={bases} isAdmin={isAdmin} onCreated={() => templates.refresh()} />
-      <LaunchWizard template={wizard} onClose={() => setWizard(null)} onLaunched={() => { /* dashboard refetches */ }} />
+      <LaunchWizard template={wizard} onClose={() => setWizard(null)} onLaunched={() => nav('/')} />
     </>
   )
 }
