@@ -1,3 +1,8 @@
+> **Superseded.** The shipping tray icons are no longer AI-generated from this prompt.
+> They are drawn deterministically by [`generate-tray-icons.py`](generate-tray-icons.py)
+> using the MapDrive brand glyph (hexagon network-node -> external drive), matching the
+> app icon and logo. See [`README.md`](README.md). This file is kept for history.
+
 # MapDrive tray icon set, single Codex image-generation prompt
 
 Hand the prompt in the fenced block below to Codex as one task. It tells Codex to
