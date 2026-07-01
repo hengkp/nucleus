@@ -7,6 +7,21 @@ Add-Type -AssemblyName System.Drawing
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
+# Give this process its own taskbar identity. The app is hosted by powershell.exe, so
+# without an explicit AppUserModelID the taskbar button inherits PowerShell's identity and
+# shows the PowerShell icon instead of our window icon (app-icon.ico). Setting an AUMID
+# makes Windows use the window's own icon for the taskbar button and its grouping. Must run
+# before any window (the form or the tray icon) is created.
+try {
+    Add-Type -Namespace SISP -Name TaskbarIdentity -MemberDefinition @'
+[System.Runtime.InteropServices.DllImport("shell32.dll", PreserveSig=false)]
+public static extern void SetCurrentProcessExplicitAppUserModelID(
+    [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string AppID);
+'@ -ErrorAction Stop
+    [SISP.TaskbarIdentity]::SetCurrentProcessExplicitAppUserModelID('SISP.MapDrive')
+}
+catch { }
+
 $AppTitle = 'SISP MapDrive'
 # Refactor (ADR-004): connect to the SISP CIFS GATEWAY (nas.sisp.com -> node2/node1), NOT
 # the Infortrend NAS (192.168.0.103) directly. The gateway authenticates against OpenLDAP
