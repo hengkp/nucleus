@@ -22,6 +22,18 @@ public static extern void SetCurrentProcessExplicitAppUserModelID(
 }
 catch { }
 
+# Single instance: one tray icon per user session. Launching MapDrive again (for example to
+# map a drive with a different account) would otherwise start a second process and leave a
+# duplicate icon in the tray. Hold a named mutex; if another instance already owns it, signal
+# that instance to surface its window and exit instead of adding a second tray icon.
+$script:InstanceCreatedNew = $false
+$script:InstanceMutex = New-Object System.Threading.Mutex($true, 'Local\SISPDriveMapper.Instance', [ref]$script:InstanceCreatedNew)
+$script:ShowRequest = New-Object System.Threading.EventWaitHandle($false, [System.Threading.EventResetMode]::AutoReset, 'Local\SISPDriveMapper.Show')
+if (-not $script:InstanceCreatedNew) {
+    try { [void]$script:ShowRequest.Set() } catch { }
+    exit
+}
+
 $AppTitle = 'SISP MapDrive'
 # Refactor (ADR-004): connect to the SISP CIFS GATEWAY (nas.sisp.com -> node2/node1), NOT
 # the Infortrend NAS (192.168.0.103) directly. The gateway authenticates against OpenLDAP
@@ -1406,6 +1418,15 @@ $notifyIcon.Text = $AppTitle
 $notifyIcon.ContextMenuStrip = $trayMenu
 $notifyIcon.Visible = $true
 
+# Watch (on the UI thread) for a second launch asking us to come forward, and surface the
+# existing window instead of it spawning a duplicate tray icon.
+$showPollTimer = New-Object System.Windows.Forms.Timer
+$showPollTimer.Interval = 500
+$showPollTimer.Add_Tick({
+    try { if ($script:ShowRequest.WaitOne(0)) { Show-MainWindow } } catch { }
+})
+$showPollTimer.Start()
+
 $refreshTimer = New-Object System.Windows.Forms.Timer
 $refreshTimer.Interval = 10000
 
@@ -1732,8 +1753,10 @@ $form.Add_FormClosing({
     else {
         Save-CurrentSettings
         $refreshTimer.Stop()
+        $showPollTimer.Stop()
         $notifyIcon.Visible = $false
         $notifyIcon.Dispose()
+        try { $script:InstanceMutex.ReleaseMutex(); $script:InstanceMutex.Dispose() } catch { }
     }
 })
 
