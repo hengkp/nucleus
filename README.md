@@ -63,6 +63,18 @@ cd apphub/backend
 node src/server.js   # configured via .env (SLURM mode, sudo helper paths, store)
 ```
 
+Publish the MapDrive site (node1 is on the lab LAN, unreachable from CI, so the
+portal is pushed from a workstation). Deploy with the script instead of editing
+the server in place, which is how the live files drift out of git:
+
+```bash
+./mapdrive/deploy-web.sh --check   # dry run: report any drift between git and the live site
+./mapdrive/deploy-web.sh           # publish git -> mapdrive.sisp.com (backs up what it changes)
+```
+
+The `downloads/` folder (installer + macOS zip) is published from CI artifacts,
+not by this script, so the deploy leaves it untouched.
+
 ## Docs
 
 See [`docs/`](docs/) for the deployment runbook, security model, architecture, user guide, and the running list of pain points & solutions. Start with [`docs/README.md`](docs/README.md).
