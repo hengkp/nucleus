@@ -142,9 +142,21 @@ async function init() {
 }
 
 // ---- events ----
+function closeMenu() {
+  const nav = $('#nav'), tog = $('#navToggle')
+  if (nav) nav.classList.remove('open')
+  if (tog) { tog.classList.remove('open'); tog.setAttribute('aria-expanded', 'false') }
+}
 document.addEventListener('click', async (e) => {
+  const navToggle = e.target.closest('#navToggle')
+  if (navToggle) {
+    const nav = $('#nav'), open = nav.classList.toggle('open')
+    navToggle.classList.toggle('open', open); navToggle.setAttribute('aria-expanded', String(open))
+    return
+  }
   const navLink = e.target.closest('[data-view]')
-  if (navLink) { e.preventDefault(); showView(navLink.dataset.view); return }
+  if (navLink) { e.preventDefault(); showView(navLink.dataset.view); closeMenu(); return }
+  if (!e.target.closest('#nav')) closeMenu()
   const modeBtn = e.target.closest('#modeToggle button')
   if (modeBtn) { setMode(modeBtn.dataset.mode); return }
   if (e.target.closest('#themeToggle')) setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark')
