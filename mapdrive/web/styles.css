@@ -103,7 +103,7 @@ a { color: inherit; text-decoration: none; }
 .nav-toggle .ri-close-line { display: none; }
 .nav-toggle.open .ri-menu-line { display: none; }
 .nav-toggle.open .ri-close-line { display: inline; }
-@media (min-width: 900px) { .nav-toggle { display: none; } }
+@media (min-width: 900px) { .hdr-tools .nav-toggle { display: none; } }
 @media (max-width: 899px) {
   .nav {
     position: absolute; top: calc(100% + 0.55rem); right: 1.25rem; left: 1.25rem;
