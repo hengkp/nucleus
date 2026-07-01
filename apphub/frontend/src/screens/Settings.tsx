@@ -66,11 +66,66 @@ function DrivePasswordModal({ open, onClose }: { open: boolean; onClose: () => v
   )
 }
 
+function ChangePasswordModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const toast = useToast()
+  const [current, setCurrent] = useState('')
+  const [next, setNext] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string>()
+
+  function reset() { setCurrent(''); setNext(''); setConfirm(''); setErr(undefined) }
+  function close() { reset(); onClose() }
+
+  async function submit() {
+    setErr(undefined)
+    if (!current) { setErr('Enter your current password.'); return }
+    if (next.length < 8) { setErr('Your new password must be at least 8 characters.'); return }
+    if (next !== confirm) { setErr('The new passwords do not match.'); return }
+    if (next === current) { setErr('The new password must be different from your current one.'); return }
+    setBusy(true)
+    try {
+      await api.changePassword(current, next)
+      toast.push('Password changed. Sign-in and network drives now use it.', 'ok')
+      close()
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Could not change your password')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Modal open={open} onClose={close} title="Change password" size="sm">
+      <div className="space-y-4 p-5">
+        <p className="text-sm text-ink-muted">
+          Sets a new lab password for both <span className="font-medium text-ink">sign-in</span> and your{' '}
+          <span className="font-medium text-ink">network drives</span>. You will use it everywhere from now on.
+        </p>
+        <Field label="Current password" error={err}>
+          {(id) => <Input id={id} type="password" value={current} onChange={(e) => setCurrent(e.target.value)} autoComplete="current-password" autoFocus />}
+        </Field>
+        <Field label="New password">
+          {(id) => <Input id={id} type="password" value={next} onChange={(e) => setNext(e.target.value)} autoComplete="new-password" />}
+        </Field>
+        <Field label="Confirm new password">
+          {(id) => <Input id={id} type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" />}
+        </Field>
+      </div>
+      <div className="flex justify-end gap-2 border-t border-border px-5 py-3.5">
+        <Button variant="ghost" onClick={close}>Cancel</Button>
+        <Button variant="primary" icon="key-2-line" loading={busy} onClick={submit}>Change password</Button>
+      </div>
+    </Modal>
+  )
+}
+
 export function Settings() {
   const { pref, setPref } = useTheme()
   const { session } = useSession()
   const u = session?.user
   const [drivePwOpen, setDrivePwOpen] = useState(false)
+  const [changePwOpen, setChangePwOpen] = useState(false)
 
   return (
     <>
@@ -112,15 +167,25 @@ export function Settings() {
         </Card>
 
         <Card className="flex items-start gap-3 p-5">
-          <Icon name="key-2-line" className="mt-0.5 text-ink-muted" />
+          <Icon name="lock-password-line" className="mt-0.5 text-ink-muted" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-ink">Password</p>
+            <p className="text-xs text-ink-muted">Change your lab password. Updates both your sign-in and your network drives, so one password works everywhere.</p>
+          </div>
+          <Button variant="primary" icon="key-2-line" onClick={() => setChangePwOpen(true)}>Change password</Button>
+        </Card>
+
+        <Card className="flex items-start gap-3 p-5">
+          <Icon name="hard-drive-2-line" className="mt-0.5 text-ink-muted" />
           <div className="flex-1">
             <p className="text-sm font-medium text-ink">Network-drive access</p>
-            <p className="text-xs text-ink-muted">Enable mapping your locker as a drive on Windows/macOS. Uses your existing lab password, and nothing is changed.</p>
+            <p className="text-xs text-ink-muted">Already happy with your password? Enable mapping your locker as a drive on Windows/macOS using your current lab password, without changing it.</p>
           </div>
           <Button variant="secondary" icon="hard-drive-2-line" onClick={() => setDrivePwOpen(true)}>Enable</Button>
         </Card>
       </div>
 
+      <ChangePasswordModal open={changePwOpen} onClose={() => setChangePwOpen(false)} />
       <DrivePasswordModal open={drivePwOpen} onClose={() => setDrivePwOpen(false)} />
     </>
   )

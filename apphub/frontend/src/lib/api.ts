@@ -104,6 +104,8 @@ export interface AppHubApi {
   getInstanceLogs(id: string): Promise<string>
   /** Seed the SMB/drive password from the user's existing lab password (no rotation). */
   setDrivePassword(password: string): Promise<void>
+  /** Change the lab password (updates the LDAP login password and the drive hash together). */
+  changePassword(currentPassword: string, newPassword: string): Promise<void>
 }
 
 function redirectToLogin(): never {
@@ -231,6 +233,8 @@ function createHttpApi(): AppHubApi {
       return res.text()
     },
     setDrivePassword: (password) => send<void>('/drive-password', 'POST', { password }),
+    changePassword: (currentPassword, newPassword) =>
+      send<void>('/change-password', 'POST', { currentPassword, newPassword }),
   }
 }
 

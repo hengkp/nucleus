@@ -648,6 +648,13 @@ export function createMockApi(): AppHubApi {
       if (!password) throw new Error('Password is required')
       // Demo only — no real LDAP/Samba behind the mock.
     },
+    async changePassword(currentPassword, newPassword) {
+      await delay(500)
+      if (!currentPassword) throw new Error('Your current password is incorrect.')
+      if (!newPassword || newPassword.length < 8) throw new Error('Your new password must be at least 8 characters.')
+      if (newPassword === currentPassword) throw new Error('The new password must be different from your current one.')
+      // Demo only — no real LDAP/Samba behind the mock.
+    },
     async getInstanceLogs(iid) {
       await delay(120)
       const inst = instances.find((i) => i.id === iid)

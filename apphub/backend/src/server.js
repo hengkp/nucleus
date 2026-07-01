@@ -12,6 +12,7 @@ import { createReconciler } from './lib/reconciler.js'
 import { buildCluster, buildJobs } from './lib/cluster.js'
 import { buildLogs } from './lib/logs.js'
 import { setDrivePassword } from './lib/drive-password.js'
+import { changePassword } from './lib/change-password.js'
 import { listFiles, statFile, makeDir, makeFile, removePath, renamePath, hashFile, dirSize, readStream, zipStream, writeStream } from './lib/files.js'
 import { listShares } from './lib/shares.js'
 import { createRequest, listRequests, pendingCount, decideRequest, isPowerUser } from './lib/approvals.js'
@@ -197,6 +198,13 @@ async function drivePassword(req, res, user) {
   const body = await readJsonBody(req)
   await setDrivePassword(user.username, String(body?.password ?? ''))
   await store.audit({ actor: user.username, action: 'drive-password-set', target: user.username })
+  sendNoContent(res)
+}
+
+async function changePasswordHandler(req, res, user) {
+  const body = await readJsonBody(req)
+  await changePassword(user.username, String(body?.currentPassword ?? ''), String(body?.newPassword ?? ''))
+  await store.audit({ actor: user.username, action: 'password-changed', target: user.username })
   sendNoContent(res)
 }
 
@@ -497,6 +505,7 @@ const ROUTES = [
   ['POST', /^\/api\/apps\/([^/]+)\/extend$/, extendApp],
   ['GET', /^\/api\/apps\/([^/]+)\/logs$/, appLogs],
   ['POST', /^\/api\/drive-password$/, drivePassword],
+  ['POST', /^\/api\/change-password$/, changePasswordHandler],
   ['GET', /^\/api\/cluster\/nodes$/, async (_q, res) => sendJson(res, 200, await buildCluster(slurm))],
   ['GET', /^\/api\/jobs$/, async (_q, res, user) => sendJson(res, 200, await buildJobs(store, user, slurm))],
   ['POST', /^\/api\/jobs\/([^/]+)\/cancel$/, cancelJob],
