@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SISP MapDrive — map your lab drive in one click</title>
-    <meta name="description" content="Map your SISP lab network drive in one click. Sign in with your lab username — file ownership is stamped automatically by the gateway." />
+    <title>SISP MapDrive - map your lab drive in one click</title>
+    <meta name="description" content="Map your SISP lab network drive in one click. Sign in with your lab username - file ownership is stamped automatically by the gateway." />
     <link rel="icon" href="/assets/logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
     <script>try { document.documentElement.dataset.theme = localStorage.getItem('mapdrive-theme') || 'light' } catch (e) {}</script>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=2" />
   </head>
   <body>
     <!-- Header -->
     <header class="hdr" id="hdr">
       <div class="wrap hdr-in">
-        <a href="#top" class="brand"><img class="brand-wm" src="/assets/wordmark.png" alt="SISP MapDrive" /></a>
+        <a href="#top" data-view="connect" class="brand"><img class="brand-wm" src="/assets/wordmark.png" alt="SISP MapDrive" /></a>
         <nav class="nav" id="nav">
           <a href="#" data-view="connect" class="active">Connect</a>
           <a href="#" data-view="how">How it works</a>
@@ -40,7 +40,7 @@
         <div>
           <span class="eyebrow">SISP lab storage</span>
           <h1>Map your lab drive in one click.</h1>
-          <p class="lede">Choose a share and a drive letter, then open the MapDrive app — your PC makes the secure connection through the SISP gateway. Sign in with your plain lab username; every file you save is stamped with your identity, so ownership is never mixed up again.</p>
+          <p class="lede">Choose a share and a drive letter, then open the MapDrive app - your PC makes the secure connection through the SISP gateway. Sign in with your plain lab username; every file you save is stamped with your identity, so ownership is never mixed up again.</p>
           <div class="chips">
             <span class="chip"><i class="ri-shield-check-line"></i> One lab login (LDAP)</span>
             <span class="chip"><i class="ri-fingerprint-line"></i> Correct ownership, always</span>
@@ -80,8 +80,8 @@
 
             <div class="preview">
               <div class="preview-row"><span class="k">Drive</span><span class="v" id="previewDrive">Z:</span></div>
-              <div class="preview-row"><span class="k">Network path</span><span class="v" id="previewUnc">—</span></div>
-              <div class="preview-row"><span class="k">Signs in as</span><span class="v" id="previewUser">—</span></div>
+              <div class="preview-row"><span class="k">Network path</span><span class="v" id="previewUnc">-</span></div>
+              <div class="preview-row"><span class="k">Signs in as</span><span class="v" id="previewUser">-</span></div>
             </div>
 
             <div class="cmd">
@@ -101,10 +101,10 @@
     <section class="section view view-connect">
       <div class="wrap">
         <div class="trust">
-          <div class="it"><div class="ic"><i class="ri-fingerprint-line"></i></div><h3>Ownership fixed</h3><p>The gateway maps you to your lab identity, so files are owned by you — no more mixed-up permissions.</p></div>
+          <div class="it"><div class="ic"><i class="ri-fingerprint-line"></i></div><h3>Ownership fixed</h3><p>The gateway maps you to your lab identity, so files are owned by you - no more mixed-up permissions.</p></div>
           <div class="it"><div class="ic"><i class="ri-shield-keyhole-line"></i></div><h3>One login</h3><p>Your normal lab username and password. No domain prefixes to memorise.</p></div>
           <div class="it"><div class="ic"><i class="ri-computer-line"></i></div><h3>Windows & macOS</h3><p>A tiny helper app on each machine does the secure SMB mount locally.</p></div>
-          <div class="it"><div class="ic"><i class="ri-flashlight-line"></i></div><h3>One click</h3><p>Pick a share here, press one button — the app fills everything in.</p></div>
+          <div class="it"><div class="ic"><i class="ri-flashlight-line"></i></div><h3>One click</h3><p>Pick a share here, press one button - the app fills everything in.</p></div>
         </div>
       </div>
     </section>
@@ -112,11 +112,11 @@
     <!-- How it works -->
     <section class="section alt view view-how" id="how">
       <div class="wrap">
-        <div class="section-head"><span class="eyebrow">How it works</span><h2>Three steps, built for non-technical labs</h2><p>From zero to a mapped drive — no IT ticket required.</p></div>
+        <div class="section-head"><span class="eyebrow">How it works</span><h2>Three steps, built for non-technical labs</h2><p>From zero to a mapped drive - no IT ticket required.</p></div>
         <div class="steps">
           <div class="step"><img src="/assets/step-install.png" alt="" /><span class="n">1</span><h3>Install the app once</h3><p>Download the Windows helper (or macOS helper) and run it once per user. It registers the one-click <code>sispdrive://</code> link.</p></div>
           <div class="step"><img src="/assets/step-choose.png" alt="" /><span class="n">2</span><h3>Choose your share</h3><p>Pick a shared folder and a drive letter above, then enter your plain lab username.</p></div>
-          <div class="step"><img src="/assets/step-connect.png" alt="" /><span class="n">3</span><h3>Connect securely</h3><p>The drive mounts through the gateway with your identity. Saved files are owned by you — every time.</p></div>
+          <div class="step"><img src="/assets/step-connect.png" alt="" /><span class="n">3</span><h3>Connect securely</h3><p>The drive mounts through the gateway with your identity. Saved files are owned by you - every time.</p></div>
         </div>
       </div>
     </section>
@@ -127,7 +127,7 @@
         <div class="section-head"><span class="eyebrow">Get the app</span><h2>Install the MapDrive helper</h2><p>Once per machine. Tiny, no admin rights needed on most setups.</p></div>
         <div class="dl">
           <div class="card dark">
-            <div class="top"><img src="/assets/os-windows.png" alt="Windows" /><div><h3>Windows 10 / 11</h3><div class="dl-meta">Setup EXE · one-click installer</div></div></div>
+            <div class="top"><img src="/assets/os-windows.png" alt="Windows" /><div><h3>Windows 10 / 11</h3><div class="dl-meta">Setup EXE - one-click installer</div></div></div>
             <p class="muted" style="line-height:1.6">Adds a Start-Menu shortcut, the <code>sispdrive://</code> handler, and native uninstallers. Optional desktop &amp; startup shortcuts.</p>
             <div class="row">
               <a class="btn btn-primary" href="/downloads/SISPDriveMapperSetup.exe"><i class="ri-download-2-line"></i> Download setup</a>
@@ -135,9 +135,9 @@
           </div>
           <div class="card">
             <div class="top"><img src="/assets/os-macos.png" alt="macOS" /><div><h3>macOS</h3><div class="dl-meta">.command Finder helper</div></div></div>
-            <p class="muted" style="line-height:1.6">A lightweight Finder SMB helper. macOS prompts for your lab password and can store it in Keychain. Right-click → Open the first time.</p>
+            <p class="muted" style="line-height:1.6">A lightweight Finder SMB helper. macOS prompts for your lab password and can store it in Keychain. Right-click > Open the first time.</p>
             <div class="row"><a class="btn btn-primary" href="/downloads/SISPDriveMapper-macOS.zip"><i class="ri-download-2-line"></i> Download helper</a></div>
-            <p class="dl-meta" style="margin-top:1rem"><i class="ri-information-line"></i> To remove: Start-Menu → SISP → Uninstall (Windows), or delete the helper (macOS).</p>
+            <p class="dl-meta" style="margin-top:1rem"><i class="ri-information-line"></i> To remove: Start-Menu > SISP > Uninstall (Windows), or delete the helper (macOS).</p>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@
       <div class="wrap">
         <div class="section-head"><span class="eyebrow">Available shares</span><h2>Browse the lab shares</h2><p><span id="shareCount">0</span> shared folders served through the gateway.</p></div>
         <div class="share-tools">
-          <label class="search"><i class="ri-search-line"></i><input id="shareSearch" class="ctl" type="search" placeholder="Search sisplockers, CRCproject, Rarecyte…" /></label>
+          <label class="search"><i class="ri-search-line"></i><input id="shareSearch" class="ctl" type="search" placeholder="Search sisplockers, CRCproject, Rarecyte..." /></label>
         </div>
         <div class="share-table"><div id="shareRows"></div></div>
       </div>
@@ -157,41 +157,45 @@
     <!-- Help -->
     <section class="section view view-help" id="help">
       <div class="wrap">
-        <div class="section-head"><span class="eyebrow">Help &amp; community</span><h2>Stuck? Ask the lab</h2><p>Post a question, share a fix, mark it solved. <span id="supportOpenCount">0</span> open right now.</p></div>
-        <div class="support">
-          <form id="supportForm" class="panel">
-            <h3>Ask a question</h3>
-            <label class="lbl" for="supportAuthor">Your name</label>
-            <input id="supportAuthor" class="ctl" required placeholder="Name or lab nickname" />
-            <label class="lbl" for="supportTitle" style="margin-top:0.8rem">Issue title</label>
-            <input id="supportTitle" class="ctl" required maxlength="120" placeholder="Cannot map sisplockers on Z:" />
-            <div class="grid2" style="margin-top:0.8rem">
-              <div><label class="lbl" for="supportShare">Related share</label><select id="supportShare" class="ctl"></select></div>
-              <div><label class="lbl" for="supportStatus">Status</label><select id="supportStatus" class="ctl"><option value="open">Not solved</option><option value="solved">Solved</option></select></div>
-            </div>
-            <label class="lbl" for="supportBody" style="margin-top:0.8rem">Details</label>
-            <textarea id="supportBody" class="ctl" required maxlength="2000" placeholder="Error message, selected share, drive letter, sign-in format. Don't post passwords."></textarea>
-            <button class="btn btn-primary btn-block" type="submit" style="margin-top:1rem"><i class="ri-send-plane-line"></i> Post question</button>
-          </form>
-          <div class="panel">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-              <h3 style="margin:0">Recent discussions</h3>
-              <button id="refreshSupport" class="btn btn-ghost" type="button" style="padding:0.45rem 0.8rem"><i class="ri-refresh-line"></i> Refresh</button>
-            </div>
-            <div id="supportList"></div>
+        <div class="section-head"><span class="eyebrow">Help</span><h2>How to map your drive</h2><p>Quick answers below. For anything else, ask the team and other users in the MapDrive Help channel on Zulip.</p></div>
+
+        <div class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem">
+          <div style="display:flex;align-items:center;gap:0.9rem">
+            <i class="ri-discuss-line" style="font-size:1.7rem;color:var(--brand)"></i>
+            <div><strong>Chat with the lab on Zulip</strong><div class="meta">Questions, fixes, and quick help, all searchable.</div></div>
           </div>
+          <a class="btn btn-primary" href="https://zulip.sisp.freeddns.org:8443/" target="_blank" rel="noopener"><i class="ri-external-link-line"></i> Open Zulip</a>
+        </div>
+
+        <style>
+          .faq details.panel{margin-bottom:0.7rem}
+          .faq summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+          .faq summary::-webkit-details-marker{display:none}
+          .faq summary::after{content:'+';color:var(--brand);font-weight:700;font-size:1.25rem;line-height:1}
+          .faq details[open] summary::after{content:'\2212'}
+          .faq p{margin:0.7rem 0 0;line-height:1.6}
+        </style>
+        <div class="faq">
+          <details class="panel"><summary>Which connection mode should I use?</summary><p><strong>Gateway (recommended)</strong> for your lab lockers and most shares: file ownership is always correct and you sign in with your plain username. Use <strong>Direct NAS</strong> only for the department or project shares that need it.</p></details>
+          <details class="panel"><summary>What do I sign in with?</summary><p>Your lab account password, with the username in the format the mode expects. Gateway: just your username (for example <code>kriengkraip</code>). Direct NAS: <code>SIRIRAJ\username</code>.</p></details>
+          <details class="panel"><summary>It says access denied or wrong password</summary><p>Double-check the sign-in format for your mode (plain username for Gateway, <code>SIRIRAJ\username</code> for Direct). The password is your normal lab account password. If it still fails, ask on Zulip.</p></details>
+          <details class="panel"><summary>My files show the wrong owner or I cannot write</summary><p>Use <strong>Gateway</strong> mode. It connects through the SISP gateway, so ownership and permissions are always correct.</p></details>
+          <details class="panel"><summary>Windows says the drive letter is already in use</summary><p>Pick a different drive letter in the Connect panel, or disconnect the existing mapping first (right-click it in File Explorer and choose Disconnect).</p></details>
+          <details class="panel"><summary>How do I connect on a Mac?</summary><p>Use the MapDrive macOS app (see Get the app), or in Finder choose Go, then Connect to Server, and enter <code>smb://192.168.0.25/sisplockers</code> (swap in the share you want).</p></details>
+          <details class="panel"><summary>How do I reconnect after a restart?</summary><p>Open the MapDrive app and connect again, or re-run the connect steps. You can set the app to start at login so your drives come back on their own.</p></details>
+          <details class="panel"><summary>Still stuck?</summary><p>Post in the <strong>MapDrive Help</strong> channel on <a href="https://zulip.sisp.freeddns.org:8443/" target="_blank" rel="noopener">Zulip</a> with the share name, the mode, and the exact error. Please do not post passwords.</p></details>
         </div>
       </div>
     </section>
 
     <footer class="ftr">
       <div class="wrap ftr-in">
-        <span style="display:flex;align-items:center;gap:0.5rem"><img src="/assets/logo.png" alt="" style="height:20px" /> SISP MapDrive · part of the SISP lab platform</span>
-        <span style="display:flex;gap:1.2rem"><a href="https://apphub.sisp.com" target="_blank" rel="noopener">AppHub</a><a href="#" data-view="help">Help</a><a href="mailto:heng.kkpk@gmail.com">Contact admin</a></span>
+        <span style="display:flex;align-items:center;gap:0.5rem"><img src="/assets/logo.png" alt="" style="height:20px" /> SISP MapDrive - part of the SISP lab platform</span>
+        <span style="display:flex;gap:1.2rem"><a href="https://apphub.sisp.com" target="_blank" rel="noopener">AppHub</a><a href="#" data-view="help">Help</a><a href="https://zulip.sisp.freeddns.org:8443/" target="_blank" rel="noopener">Zulip chat</a><a href="mailto:sisp.hpcteam@gmail.com">Contact admin</a></span>
       </div>
     </footer>
 
     <div id="toast"></div>
-    <script src="/app.js"></script>
+    <script src="/app.js?v=2"></script>
   </body>
 </html>
