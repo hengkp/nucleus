@@ -8,13 +8,14 @@ its drive LEDs green.
 
 | State | File | Look |
 | --- | --- | --- |
-| Connected | `connected.ico` | black stack, green check + green LEDs |
+| Connected, light taskbar | `connected.ico` | black stack, green check + green LEDs |
+| Connected, dark taskbar | `connected-darktheme.ico` | white stack, green check + green LEDs |
 | Disconnected, light taskbar | `disconnected.ico` | black stack, dark X badge |
 | Disconnected, dark taskbar | `disconnected-darktheme.ico` | white stack, white-ringed X badge |
 
-The connected badge is green, so it reads on either taskbar from a single file. The
-disconnected badge is monochrome, so it ships a light-taskbar (black) and a dark-taskbar
-(white) variant, chosen from `SystemUsesLightTheme`. Each `.ico` embeds 16–256 px frames.
+The badges (green check, white-ringed X) read on either taskbar, but the NAS stack is
+monochrome, so every state ships a light-taskbar (black stack) and a dark-taskbar (white
+stack) variant, chosen from `SystemUsesLightTheme`. Each `.ico` embeds 16–256 px frames.
 
 The macOS menu-bar app reuses the **white** variants of this same art
 (`connected` / `disconnected`) so both platforms share one look — see

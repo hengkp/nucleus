@@ -843,10 +843,13 @@ function Get-TrayIconAssetPath {
     param([string]$Status)
 
     $fileName = switch ($Status) {
-        'Connected' { 'connected.ico' }
+        'Connected' {
+            # The green badge reads on either taskbar, but the NAS stack is monochrome, so
+            # ship a dark-stack variant for a light taskbar and a white-stack one for dark.
+            if (Test-DarkTaskbar) { 'connected-darktheme.ico' } else { 'connected.ico' }
+        }
         'Disconnected' {
-            # Colourful "connected" reads on either taskbar; the monochrome "disconnected"
-            # glyph needs a light variant on a dark taskbar so it stays visible.
+            # Same idea for the disconnected glyph: black stack on a light taskbar, white on dark.
             if (Test-DarkTaskbar) { 'disconnected-darktheme.ico' } else { 'disconnected.ico' }
         }
         default { '' }
