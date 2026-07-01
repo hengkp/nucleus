@@ -158,7 +158,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let desc = connected ? "MapDrive: connected" : "MapDrive: disconnected"
             let customName = connected ? "connected" : "disconnected"
             if let img = NSImage(named: NSImage.Name(customName)) {
-                img.isTemplate = true                      // monochrome menu-bar glyph: filled = connected, outline = disconnected, tinted by the system
+                img.isTemplate = false                     // full-colour status art: white NAS stack + green check (connected) / white-ringed X (disconnected), shown as-is to match a dark menu bar
                 img.size = NSSize(width: 18, height: 18)   // fit the menu bar
                 btn.image = img
             } else if let img = NSImage(systemSymbolName: symbol, accessibilityDescription: desc) {

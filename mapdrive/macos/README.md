@@ -41,14 +41,19 @@ For wider distribution, sign and notarize it with your Apple Developer ID.
 
 System Settings -> General -> Login Items -> add `MapDrive.app`.
 
-## Custom tray icons (optional)
+## Menu-bar icons
 
-By default it uses the SF Symbols `externaldrive.fill.badge.checkmark` (connected) and
-`externaldrive.badge.xmark` (disconnected), rendered as template images so they match a
-light or dark menu bar. To use your own art, add `connected.png` / `disconnected.png`
-(menu-bar template PNGs, ~18x18 pt @1x/@2x, black on transparent) to `assets/`;
-`build.sh` copies them to `MapDrive.app/Contents/Resources/`, and the app loads them
-before falling back to the symbols.
+`assets/` ships the shared MapDrive status art (white NAS stack + status badge) as the
+menu-bar icons: `connected.png` / `connected@2x.png` (green check) and
+`disconnected.png` / `disconnected@2x.png` (white-ringed X), 18 pt @1x/@2x. These are the
+white variants of the Windows tray set, so both platforms share one look. They are loaded
+as full-colour (non-template) images — tuned for a dark menu bar; on a light menu bar the
+white stack recedes and the coloured badge carries the status. `build.sh` copies them to
+`MapDrive.app/Contents/Resources/`.
+
+If either PNG is missing, the app falls back to the SF Symbols
+`externaldrive.fill.badge.checkmark` (connected) and `externaldrive.badge.xmark`
+(disconnected), rendered as template images that adapt to a light or dark menu bar.
 
 ## Editing the share list
 
