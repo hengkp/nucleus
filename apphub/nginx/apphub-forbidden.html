@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Not your app | SISP AppHub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #11695f; --brand-strong: #0c4f47; --brand-tint: #e2f1ee;
+      --accent: #1b7fbd; --amber: #b6791f;
+      --ink: #131a19; --ink-2: #3a4744; --muted: #5d6b68;
+      --surface: #ffffff; --bg: #f7f9f9; --border: #e4ecea;
+      --ring: rgba(17,105,95,0.22);
+      --shadow: 0 24px 60px -18px rgba(12,79,71,0.28), 0 2px 8px rgba(16,38,34,0.06);
+      --glow: rgba(17,105,95,0.28);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --brand: #2bb3a3; --brand-strong: #46c7b7; --brand-tint: #11332e;
+        --accent: #4aa8d8; --amber: #d0a24a;
+        --ink: #eaf2f0; --ink-2: #b9c8c4; --muted: #8fa19d;
+        --surface: #131d1b; --bg: #0d1413; --border: #223230;
+        --ring: rgba(43,179,163,0.30);
+        --shadow: 0 30px 70px -20px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.4);
+        --glow: rgba(43,179,163,0.34);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: "Inter", system-ui, -apple-system, sans-serif;
+      color: var(--ink); background: var(--bg);
+      display: grid; place-items: center; padding: 1.5rem;
+      -webkit-font-smoothing: antialiased; overflow: hidden; position: relative;
+    }
+    /* Ambient background: drifting brand blobs + a faint hex grid, all CSS (no assets). */
+    .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5; will-change: transform; }
+    .blob.a { width: 46rem; height: 46rem; top: -16rem; right: -12rem;
+      background: radial-gradient(circle, var(--glow), transparent 68%); animation: drift1 22s ease-in-out infinite; }
+    .blob.b { width: 40rem; height: 40rem; bottom: -18rem; left: -14rem;
+      background: radial-gradient(circle, rgba(27,127,189,0.22), transparent 68%); animation: drift2 26s ease-in-out infinite; }
+    .grid { position: absolute; inset: 0; opacity: 0.5;
+      background-image: radial-gradient(currentColor 1px, transparent 1.6px);
+      background-size: 26px 26px; color: var(--border);
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 78%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 78%); }
+    @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-3rem,2rem) scale(1.08); } }
+    @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(2.5rem,-1.5rem) scale(1.06); } }
+
+    .card {
+      position: relative; z-index: 1; width: min(30rem, 100%);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      -webkit-backdrop-filter: blur(12px) saturate(150%); backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow);
+      padding: 2.4rem 2rem 1.9rem; text-align: center;
+      animation: rise 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(0.985); } to { opacity: 1; transform: none; } }
+
+    .brand { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--muted);
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; margin-bottom: 1.4rem; }
+    .brand .mk { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 16px; height: 16px; }
+    .brand .mk i { background: var(--brand); border-radius: 2px; }
+    .brand .mk i:nth-child(2), .brand .mk i:nth-child(3) { background: color-mix(in srgb, var(--brand) 55%, transparent); }
+    .brand b { color: var(--ink); font-weight: 700; }
+
+    /* The lock: floating badge, pulsing ring, and a periodic "won't open" nudge. */
+    .lock-wrap { position: relative; width: 116px; height: 116px; margin: 0.2rem auto 1.4rem; }
+    .lock-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--brand);
+      opacity: 0; animation: pulse 2.8s ease-out infinite; }
+    .lock-ring.two { animation-delay: 1.4s; }
+    @keyframes pulse { 0% { transform: scale(0.72); opacity: 0.55; } 70% { opacity: 0; } 100% { transform: scale(1.25); opacity: 0; } }
+    .lock-badge { position: absolute; inset: 14px; border-radius: 50%;
+      background: linear-gradient(150deg, var(--brand), var(--brand-strong));
+      display: grid; place-items: center; color: #fff;
+      box-shadow: 0 12px 30px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,0.25);
+      animation: float 4.2s ease-in-out infinite; }
+    .lock-badge svg { width: 42px; height: 42px; animation: nudge 4.2s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes nudge { 0%,86%,100% { transform: rotate(0); } 90% { transform: rotate(-6deg); } 94% { transform: rotate(6deg); } 97% { transform: rotate(-3deg); } }
+    .shackle { transform-origin: 50% 62%; animation: shackle 4.2s ease-in-out infinite; }
+    @keyframes shackle { 0%,86%,100% { transform: translateY(0) rotate(0); } 91% { transform: translateY(-2px) rotate(-8deg); } 96% { transform: translateY(0) rotate(0); } }
+
+    h1 { font-size: 1.5rem; line-height: 1.2; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.6rem; }
+    .lede { color: var(--ink-2); font-size: 0.98rem; line-height: 1.6; margin: 0 auto 1rem; max-width: 24rem; }
+    .lede b { color: var(--ink); font-weight: 600; }
+    .who { display: inline-flex; align-items: center; gap: 0.45rem; font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem; color: var(--brand-strong); background: var(--brand-tint);
+      border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent); border-radius: 999px;
+      padding: 0.34rem 0.8rem; margin-bottom: 1.1rem; max-width: 100%; }
+    .who span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .note { display: flex; gap: 0.6rem; text-align: left; align-items: flex-start;
+      background: color-mix(in srgb, var(--amber) 9%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--amber) 26%, var(--border));
+      border-radius: 13px; padding: 0.8rem 0.9rem; margin: 0.2rem 0 1.5rem;
+      font-size: 0.86rem; line-height: 1.5; color: var(--ink-2); }
+    .note i { color: var(--amber); font-size: 1.05rem; margin-top: 1px; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+    .btn { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; font-weight: 600;
+      padding: 0.72rem 1.15rem; border-radius: 12px; border: 1px solid transparent; cursor: pointer;
+      text-decoration: none; transition: transform 0.08s ease, background 0.15s, border-color 0.15s, box-shadow 0.15s; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 3px 10px -2px var(--glow); }
+    .btn-primary:hover { background: var(--brand-strong); box-shadow: 0 6px 16px -3px var(--glow); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-tint); }
+    .foot { margin-top: 1.5rem; font-size: 0.72rem; color: var(--muted); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .lock-badge, .lock-badge svg, .shackle, .lock-ring, .blob { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="blob a"></div><div class="blob b"></div><div class="grid"></div>
+  </div>
+
+  <main class="card" role="alert">
+    <div class="brand"><span class="mk"><i></i><i></i><i></i><i></i></span> SISP <b>AppHub</b></div>
+
+    <div class="lock-wrap" aria-hidden="true">
+      <div class="lock-ring"></div><div class="lock-ring two"></div>
+      <div class="lock-badge">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="shackle" d="M7 10V7a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <rect x="4.5" y="10" width="15" height="10.5" rx="2.4" fill="currentColor" opacity="0.16"/>
+          <rect x="4.5" y="10" width="15" height="10.5" rx="2.4" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="12" cy="14.6" r="1.7" fill="currentColor"/>
+          <path d="M12 16v2.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1>This one isn't yours to open</h1>
+    <p class="lede">You're signed in, but this app was launched by <b>another lab member</b>, so it stays private to them. Nothing's broken.</p>
+
+    <div class="who" title="the app you tried to open"><i class="ri-window-line"></i><span id="host">this app</span></div>
+
+    <div class="note">
+      <i class="ri-error-warning-line"></i>
+      <div>Sure it's yours? You might be the owner but hit a hiccup (a stale login or a mistyped link). Head back to your dashboard, or give the admins a shout and we'll sort it out.</div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="https://apphub.sisp.com/"><i class="ri-arrow-left-line"></i> Back to my apps</a>
+      <a class="btn btn-ghost" href="https://apphub.sisp.com/support"><i class="ri-customer-service-2-line"></i> Contact an admin</a>
+    </div>
+
+    <div class="foot">SISP AppHub &middot; access is limited to each app's owner</div>
+  </main>
+
+  <script>
+    // Show the app the visitor tried to open (owner + name are in the subdomain).
+    try {
+      var h = location.hostname.replace(/\.app\.sisp\.com$/, '');
+      if (h) document.getElementById('host').textContent = h + '.app.sisp.com';
+    } catch (e) { /* leave the default */ }
+  </script>
+</body>
+</html>
