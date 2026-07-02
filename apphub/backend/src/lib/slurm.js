@@ -153,15 +153,18 @@ function realSlurm() {
       await run('sudo', ['scontrol', 'update', `JobId=${String(jobId)}`, `TimeLimit=${min}`])
     },
     async queue() {
-      const stdout = await run('squeue', ['-h', '-a', '-o', '%i|%j|%u|%N|%T|%P|%M|%l']).catch(() => '')
+      // %V = submission time (ISO-like, cluster-local). Parsed to epoch ms for the queue UI.
+      const stdout = await run('squeue', ['-h', '-a', '-o', '%i|%j|%u|%N|%T|%P|%M|%l|%V']).catch(() => '')
       return stdout.trim().split('\n').filter(Boolean).map((l) => {
-        const [jobId, name, owner, nodeName, slurmState, partition, elapsed, timelimit] = l.split('|')
+        const [jobId, name, owner, nodeName, slurmState, partition, elapsed, timelimit, submit] = l.split('|')
+        const submittedAt = submit ? Date.parse(submit) : NaN
         return {
           jobId, name, owner,
           node: NODE_IP.has(nodeName) ? nodeName : nodeName || null,
           slurmState, partition,
           elapsedMinutes: slurmDurToMin(elapsed) ?? 0,
           timeLimitMinutes: slurmDurToMin(timelimit),
+          submittedAt: Number.isFinite(submittedAt) ? submittedAt : null,
         }
       })
     },

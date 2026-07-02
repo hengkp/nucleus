@@ -18,7 +18,39 @@ async function load() {
   }
   if (!Array.isArray(cache.requests)) cache.requests = []
   if (!Array.isArray(cache.powerUsers)) cache.powerUsers = []
+  if (!cache.quotas || typeof cache.quotas !== 'object') cache.quotas = {}
   return cache
+}
+
+// Per-user simultaneous-apps quota. Bounded to [1, maxInstancesPerUser] — the existing
+// hard ceiling keeps one user from exhausting the port pool no matter what is granted.
+function clampQuota(n) {
+  const v = Math.round(Number(n))
+  if (!Number.isFinite(v)) return null
+  return Math.min(Math.max(v, 1), config.maxInstancesPerUser)
+}
+
+export async function getQuotaLimit(user) {
+  const data = await load()
+  return clampQuota(data.quotas[user]) ?? config.defaultQuota
+}
+
+export async function setQuotaLimit(user, limit, admin) {
+  const data = await load()
+  if (limit === null || limit === undefined || limit === '') {
+    delete data.quotas[user] // back to the default
+  } else {
+    const v = clampQuota(limit)
+    if (v === null) throw new Error('invalid quota')
+    data.quotas[user] = v
+  }
+  await save()
+  return { user, limit: await getQuotaLimit(user), override: user in data.quotas, setBy: admin }
+}
+
+export async function allQuotaOverrides() {
+  const data = await load()
+  return { ...data.quotas }
 }
 
 async function save() {
@@ -39,7 +71,7 @@ export async function pendingCount() {
   return (await load()).requests.filter((r) => r.status === 'pending').length
 }
 
-export async function createRequest({ user, kind, detail }) {
+export async function createRequest({ user, kind, detail, requested }) {
   const data = await load()
   const k = String(kind || 'host-app').slice(0, 40)
   const open = data.requests.find((r) => r.user === user && r.kind === k && r.status === 'pending')
@@ -49,6 +81,8 @@ export async function createRequest({ user, kind, detail }) {
     user,
     kind: k,
     detail: String(detail || '').slice(0, 500),
+    // quota requests carry the asked-for limit so approving applies it in one click
+    requested: k === 'quota' ? clampQuota(requested) : null,
     status: 'pending',
     createdAt: Date.now(),
     decidedBy: null,
@@ -68,6 +102,11 @@ export async function decideRequest(id, decision, admin) {
   req.decidedAt = Date.now()
   if (req.status === 'approved' && req.kind === 'host-app' && !data.powerUsers.includes(req.user)) {
     data.powerUsers.push(req.user)
+  }
+  // Approving a quota request grants the asked-for limit immediately.
+  if (req.status === 'approved' && req.kind === 'quota') {
+    const v = clampQuota(req.requested)
+    if (v !== null) data.quotas[req.user] = v
   }
   if (req.status === 'denied') {
     const i = data.powerUsers.indexOf(req.user)

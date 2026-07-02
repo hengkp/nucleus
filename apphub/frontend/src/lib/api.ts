@@ -1,9 +1,11 @@
 import type {
+  AdminQuotaRow,
   Cluster,
   FileListing,
   HostingRequest,
   Instance,
   Job,
+  QuotaInfo,
   LaunchRequest,
   NewTemplate,
   Session,
@@ -39,6 +41,16 @@ export interface AppHubApi {
   /** delete a custom template (owner or admin) */
   deleteTemplate(id: string): Promise<void>
   listInstances(): Promise<Instance[]>
+  /** every user's instances — Admin tab only (backend enforces the role) */
+  listAllInstances(): Promise<Instance[]>
+  /** the caller's launch quota + current usage */
+  getQuota(): Promise<QuotaInfo>
+  /** ask the admins for a higher simultaneous-apps quota */
+  requestQuota(limit: number, reason?: string): Promise<HostingRequest>
+  /** admin: everyone's quota + usage */
+  adminQuotas(): Promise<{ quotas: AdminQuotaRow[]; defaultLimit: number; max: number }>
+  /** admin: set a per-user quota override (null = back to the default) */
+  setUserQuota(user: string, limit: number | null): Promise<{ user: string; limit: number; override: boolean }>
   /** team/public apps shared by other users */
   listSharedInstances(): Promise<Instance[]>
   getInstance(id: string): Promise<Instance | null>
@@ -157,6 +169,11 @@ function createHttpApi(): AppHubApi {
     createTemplate: (def) => send<Template>('/templates', 'POST', def),
     deleteTemplate: (id) => send<void>(`/templates/${encodeURIComponent(id)}`, 'DELETE'),
     listInstances: () => get<Instance[]>('/apps'),
+    listAllInstances: () => get<Instance[]>('/apps?scope=all'),
+    getQuota: () => get<QuotaInfo>('/quota'),
+    requestQuota: (limit, reason) => send<HostingRequest>('/quota/request', 'POST', { limit, reason }),
+    adminQuotas: () => get<{ quotas: AdminQuotaRow[]; defaultLimit: number; max: number }>('/admin/quotas'),
+    setUserQuota: (user, limit) => send<{ user: string; limit: number; override: boolean }>(`/admin/quotas/${encodeURIComponent(user)}`, 'POST', { limit }),
     listSharedInstances: () => get<Instance[]>('/apps?scope=shared'),
     getInstance: async (id) => {
       // 404 -> null so this matches the mock's "not found" semantics (contract fix).

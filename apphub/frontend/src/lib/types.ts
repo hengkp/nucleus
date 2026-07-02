@@ -23,10 +23,30 @@ export interface HostingRequest {
   user: string
   kind: string
   detail: string
+  /** quota requests: the asked-for simultaneous-apps limit (applied on approve) */
+  requested?: number | null
   status: 'pending' | 'approved' | 'denied'
   createdAt: number
   decidedBy: string | null
   decidedAt: number | null
+}
+
+/** The caller's own launch quota + usage (GET /api/quota). */
+export interface QuotaInfo {
+  limit: number
+  used: number
+  defaultLimit: number
+  max: number
+  pendingRequest: { id: string; requested: number | null } | null
+}
+
+/** One row of the admin quota table (GET /api/admin/quotas). */
+export interface AdminQuotaRow {
+  user: string
+  limit: number
+  override: boolean
+  active: number
+  pendingRequested?: number | null
 }
 
 export interface UploadResult {
@@ -243,6 +263,8 @@ export interface Job {
   node: string | null
   elapsedMinutes: number
   timeLimitMinutes: number | null
+  /** epoch ms the job was submitted (AppHub record or squeue %V); null if unknown */
+  submittedAt?: number | null
   /** true = a cluster job not managed by AppHub (e.g. submitted from a terminal). Shown in
    *  the queue with a "cluster" badge; the owner or an admin can still cancel it. */
   external?: boolean

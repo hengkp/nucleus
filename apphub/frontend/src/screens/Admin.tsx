@@ -17,12 +17,14 @@ import type { Instance } from '@/lib/types'
 export function Admin() {
   const { session } = useSession()
   const toast = useToast()
-  const instances = useLive(() => api.listInstances(), { intervalMs: CADENCE.fast })
+  const instances = useLive(() => api.listAllInstances(), { intervalMs: CADENCE.fast })
   const reqs = useLive(() => api.listRequests(), { intervalMs: CADENCE.slow })
   const vanities = useLive(() => api.listVanity(), { intervalMs: CADENCE.slow })
+  const quotas = useLive(() => api.adminQuotas(), { intervalMs: CADENCE.slow })
   const [sel, setSel] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
   const [deciding, setDeciding] = useState<string>()
+  const [quotaEdits, setQuotaEdits] = useState<Record<string, string>>({})
 
   if (session?.user?.role !== 'admin') {
     return <EmptyState icon="shield-keyhole-line" title="Admins only" description="This area is for the lab admin team." />
@@ -67,6 +69,15 @@ export function Admin() {
     try { await api.removeVanity(name); toast.push(`Released ${name}.app.sisp.com`, 'ok'); vanities.refresh() }
     catch (e) { toast.push(e instanceof Error ? e.message : 'Action failed', 'err') } finally { setDeciding(undefined) }
   }
+  async function saveQuota(user: string, value: number | null) {
+    setDeciding(`quota:${user}`)
+    try {
+      const r = await api.setUserQuota(user, value)
+      toast.push(value === null ? `${user} back to the default quota` : `${user} quota set to ${r.limit}`, 'ok')
+      setQuotaEdits((q) => { const n = { ...q }; delete n[user]; return n })
+      quotas.refresh()
+    } catch (e) { toast.push(e instanceof Error ? e.message : 'Quota update failed', 'err') } finally { setDeciding(undefined) }
+  }
 
   const Stat = ({ icon, label, value }: { icon: string; label: string; value: string | number }) => (
     <Card className="p-4">
@@ -109,7 +120,7 @@ export function Admin() {
               <div className="flex items-start gap-3">
                 <Icon name="shield-user-line" className="mt-0.5 text-warn" />
                 <div>
-                  <p className="text-sm font-medium text-ink">{r.user} | <span className="font-normal text-ink-muted">{r.kind}</span></p>
+                  <p className="text-sm font-medium text-ink">{r.user} | <span className="font-normal text-ink-muted">{r.kind === 'quota' ? `quota increase${r.requested ? ` to ${r.requested} apps` : ''}` : r.kind}</span></p>
                   <p className="text-2xs text-ink-muted">{r.detail || 'No details provided.'}</p>
                   <p className="text-2xs text-ink-muted">{new Date(r.createdAt).toLocaleString()}</p>
                 </div>
@@ -125,6 +136,46 @@ export function Admin() {
           <div className="border-t border-border bg-surface-2/40 px-4 py-2 text-2xs text-ink-muted">
             Recent: {requests.filter((r) => r.status !== 'pending').slice(0, 4).map((r) => `${r.user} ${r.status}`).join(' | ')}
           </div>
+        )}
+      </Card>
+
+      {/* Launch quotas — per-user simultaneous-apps limits */}
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-ink">Launch quotas <span className="font-normal text-ink-muted">| default {quotas.data?.defaultLimit ?? 3}, ceiling {quotas.data?.max ?? 8}</span></h2>
+        <button onClick={() => quotas.refresh()} className="text-2xs text-ink-muted hover:text-ink"><Icon name="refresh-line" className="mr-1" />refresh</button>
+      </div>
+      <Card className="mb-6 overflow-hidden">
+        <div className="grid grid-cols-[1fr_6rem_8rem_12rem] gap-2 border-b border-border bg-surface-2/50 px-4 py-2.5 text-2xs font-medium uppercase tracking-wide text-ink-muted">
+          <span>User</span><span>Running</span><span>Quota</span><span>Set limit</span>
+        </div>
+        {(quotas.data?.quotas ?? []).length === 0 ? (
+          <div className="flex items-center gap-2 p-4 text-sm text-ink-muted"><Icon name="user-line" /> No active users or overrides yet.</div>
+        ) : (
+          (quotas.data?.quotas ?? []).map((q) => (
+            <div key={q.user} className="grid grid-cols-[1fr_6rem_8rem_12rem] items-center gap-2 border-b border-border px-4 py-2.5 text-sm last:border-0">
+              <span className="flex items-center gap-2 truncate">
+                <span className="tabular truncate text-ink">{q.user}</span>
+                {q.pendingRequested != null && <Badge tone="warn">wants {q.pendingRequested}</Badge>}
+              </span>
+              <span className={cn('tabular', q.active >= q.limit ? 'font-medium text-warn' : 'text-ink-muted')}>{q.active}/{q.limit}</span>
+              <span>{q.override ? <Badge tone="blue">custom</Badge> : <Badge tone="neutral">default</Badge>}</span>
+              <span className="flex items-center gap-1.5">
+                <input
+                  type="number" min={1} max={quotas.data?.max ?? 8}
+                  value={quotaEdits[q.user] ?? String(q.limit)}
+                  onChange={(e) => setQuotaEdits((m) => ({ ...m, [q.user]: e.target.value }))}
+                  aria-label={`quota for ${q.user}`}
+                  className="h-8 w-16 rounded-md border border-border bg-surface px-2 text-sm text-ink"
+                />
+                <Button size="sm" variant="secondary" loading={deciding === `quota:${q.user}`}
+                  disabled={(quotaEdits[q.user] ?? String(q.limit)) === String(q.limit)}
+                  onClick={() => saveQuota(q.user, Number(quotaEdits[q.user] ?? q.limit))}>Set</Button>
+                {q.override && (
+                  <button title="Reset to default" onClick={() => saveQuota(q.user, null)} className="text-ink-muted hover:text-ink"><Icon name="arrow-go-back-line" /></button>
+                )}
+              </span>
+            </div>
+          ))
         )}
       </Card>
 

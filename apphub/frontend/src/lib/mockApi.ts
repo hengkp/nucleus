@@ -213,11 +213,16 @@ const instances: Instance[] = [
 ]
 
 const jobs: Job[] = [
-  { id: '4821', name: 'pbmc-reanalysis', owner: 'kriengkraip', state: 'RUNNING', partition: 'inter', node: 'node2', elapsedMinutes: 96, timeLimitMinutes: 480 },
-  { id: '4823', name: 'qc-notebook', owner: 'kriengkraip', state: 'PENDING', partition: 'inter', node: null, elapsedMinutes: 0, timeLimitMinutes: 480 },
-  { id: '4817', name: 'lab-dashboard', owner: 'kriengkraip', state: 'RUNNING', partition: 'inter', node: 'node4', elapsedMinutes: 420, timeLimitMinutes: 480 },
-  { id: '4790', name: 'galaxy', owner: 'nodeadmin', state: 'RUNNING', partition: 'persistent', node: 'node3', elapsedMinutes: 2880, timeLimitMinutes: null },
+  { id: '4821', name: 'pbmc-reanalysis', owner: 'kriengkraip', state: 'RUNNING', partition: 'inter', node: 'node2', elapsedMinutes: 96, timeLimitMinutes: 480, submittedAt: Date.now() - 96 * 60_000 },
+  { id: '4823', name: 'qc-notebook', owner: 'kriengkraip', state: 'PENDING', partition: 'inter', node: null, elapsedMinutes: 0, timeLimitMinutes: 480, submittedAt: Date.now() - 4 * 60_000 },
+  { id: '4817', name: 'lab-dashboard', owner: 'kriengkraip', state: 'RUNNING', partition: 'inter', node: 'node4', elapsedMinutes: 420, timeLimitMinutes: 480, submittedAt: Date.now() - 420 * 60_000 },
+  { id: '4790', name: 'galaxy', owner: 'nodeadmin', state: 'RUNNING', partition: 'persistent', node: 'node3', elapsedMinutes: 2880, timeLimitMinutes: null, submittedAt: Date.now() - 2880 * 60_000 },
 ]
+
+// ---- launch quotas (demo) --------------------------------------------------
+const QUOTA_DEFAULT = 3
+const QUOTA_MAX = 8
+const mockQuotas: Record<string, number> = { porncheerac: 5 } // one demo override
 
 // ---- mock locker filesystem (dev only) -----------------------------------
 type MEntry = { type: 'dir' | 'file'; size: number; mtime: number; content?: string }
@@ -258,6 +263,7 @@ function evalVanity(name: string, user: string): VanityCheck {
 }
 const mockRequests: HostingRequest[] = [
   { id: 'req-seed1', user: 'ryanr', kind: 'host-app', detail: 'Host my kmer dashboard (Apptainer image, persistent).', status: 'pending', createdAt: Date.now() - 3600_000, decidedBy: null, decidedAt: null },
+  { id: 'req-seed2', user: 'krittiyabhornk', kind: 'quota', detail: 'Running QuPath + two notebooks for the imaging project.', requested: 5, status: 'pending', createdAt: Date.now() - 1800_000, decidedBy: null, decidedAt: null },
 ]
 
 // Advance lifecycle so the UI shows live transitions.
@@ -333,6 +339,60 @@ export function createMockApi(): AppHubApi {
     async listInstances() {
       await delay(160)
       return structuredClone(instances)
+    },
+    async listAllInstances() {
+      await delay(160)
+      // Admin view: the caller's apps plus other users' (demo data).
+      const others: Instance[] = [
+        { id: 'inst-amph-1', name: 'jupyterlab', templateId: 'jupyterlab', templateName: 'JupyterLab', icon: 'flask-line', owner: 'amphunc', node: 'node3', cpus: 2, memoryMb: 8192, state: 'running', url: null, visibility: 'private', startedAt: Date.now() - 42 * 60_000, timeLimitMinutes: 480, elapsedMinutes: 42 },
+        { id: 'inst-porn-1', name: 'rstudio', templateId: 'rstudio', templateName: 'RStudio', icon: 'bar-chart-box-line', owner: 'porncheerac', node: 'node2', cpus: 4, memoryMb: 16384, state: 'running', url: null, visibility: 'private', startedAt: Date.now() - 12 * 60_000, timeLimitMinutes: 480, elapsedMinutes: 12 },
+      ]
+      return [...structuredClone(instances), ...others]
+    },
+    async getQuota() {
+      await delay(100)
+      const used = instances.filter((i) => i.state !== 'stopped' && i.state !== 'failed').length
+      const pending = mockRequests.find((r) => r.user === MOCK_USER.username && r.kind === 'quota' && r.status === 'pending')
+      return {
+        limit: mockQuotas[MOCK_USER.username] ?? QUOTA_DEFAULT,
+        used,
+        defaultLimit: QUOTA_DEFAULT,
+        max: QUOTA_MAX,
+        pendingRequest: pending ? { id: pending.id, requested: pending.requested ?? null } : null,
+      }
+    },
+    async requestQuota(limit, reason) {
+      await delay(200)
+      if (limit < 1 || limit > QUOTA_MAX) throw new Error(`Requested quota must be between 1 and ${QUOTA_MAX}.`)
+      const r: HostingRequest = { id: id('req'), user: MOCK_USER.username, kind: 'quota', detail: reason || `Requesting a quota of ${limit} simultaneous apps.`, requested: limit, status: 'pending', createdAt: Date.now(), decidedBy: null, decidedAt: null }
+      mockRequests.unshift(r)
+      return structuredClone(r)
+    },
+    async adminQuotas() {
+      await delay(120)
+      const rows = new Map<string, { user: string; limit: number; override: boolean; active: number; pendingRequested?: number | null }>()
+      for (const [u, limit] of Object.entries(mockQuotas)) rows.set(u, { user: u, limit, override: true, active: 0 })
+      const seed = [
+        { owner: MOCK_USER.username, active: instances.filter((i) => i.state !== 'stopped' && i.state !== 'failed').length },
+        { owner: 'amphunc', active: 1 },
+        { owner: 'porncheerac', active: 1 },
+      ]
+      for (const s of seed) {
+        if (!rows.has(s.owner)) rows.set(s.owner, { user: s.owner, limit: QUOTA_DEFAULT, override: false, active: 0 })
+        rows.get(s.owner)!.active = s.active
+      }
+      for (const r of mockRequests) {
+        if (r.kind !== 'quota' || r.status !== 'pending') continue
+        if (!rows.has(r.user)) rows.set(r.user, { user: r.user, limit: QUOTA_DEFAULT, override: false, active: 0 })
+        rows.get(r.user)!.pendingRequested = r.requested
+      }
+      return { quotas: [...rows.values()].sort((a, b) => b.active - a.active || a.user.localeCompare(b.user)), defaultLimit: QUOTA_DEFAULT, max: QUOTA_MAX }
+    },
+    async setUserQuota(user, limit) {
+      await delay(150)
+      if (limit === null) delete mockQuotas[user]
+      else mockQuotas[user] = Math.min(Math.max(Math.round(limit), 1), QUOTA_MAX)
+      return { user, limit: mockQuotas[user] ?? QUOTA_DEFAULT, override: user in mockQuotas }
     },
     async listSharedInstances() {
       await delay(160)
@@ -535,6 +595,7 @@ export function createMockApi(): AppHubApi {
       r.status = decision === 'approve' ? 'approved' : 'denied'
       r.decidedBy = MOCK_USER.username
       r.decidedAt = Date.now()
+      if (r.status === 'approved' && r.kind === 'quota' && r.requested) mockQuotas[r.user] = r.requested
       return structuredClone(r)
     },
     async listVanity() {

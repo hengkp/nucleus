@@ -69,6 +69,7 @@ export async function buildJobs(store, user, slurm) {
       node: r.node ?? null,
       elapsedMinutes: r.startedAt ? Math.floor((Date.now() - r.startedAt) / 60000) : 0,
       timeLimitMinutes: r.timeLimitMinutes ?? null,
+      submittedAt: r.createdAt ?? null,
       external: false,
     }))
 
@@ -88,6 +89,7 @@ export async function buildJobs(store, user, slurm) {
         node: j.node ?? null,
         elapsedMinutes: j.elapsedMinutes ?? 0,
         timeLimitMinutes: j.timeLimitMinutes ?? null,
+        submittedAt: j.submittedAt ?? null,
         external: true,
       }))
   } catch {

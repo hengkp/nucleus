@@ -15,7 +15,7 @@ import { setDrivePassword } from './lib/drive-password.js'
 import { changePassword } from './lib/change-password.js'
 import { listFiles, statFile, makeDir, makeFile, removePath, renamePath, hashFile, dirSize, readStream, zipStream, writeStream } from './lib/files.js'
 import { listShares } from './lib/shares.js'
-import { createRequest, listRequests, pendingCount, decideRequest, isPowerUser } from './lib/approvals.js'
+import { createRequest, listRequests, pendingCount, decideRequest, isPowerUser, getQuotaLimit, setQuotaLimit, allQuotaOverrides } from './lib/approvals.js'
 import { listVanity, checkVanity, requestVanity, decideVanity, removeVanity, approvedVanityFor, isValidVanity } from './lib/vanity.js'
 import { pipelinesFor, resolvePipeline, publicPipeline, fetchSchema, buildNextflowRun, pipelineSlug, addCustomPipeline, removeCustomPipeline, probeSchema } from './lib/pipelines.js'
 import { newId } from './lib/id.js'
@@ -45,23 +45,31 @@ function canControl(rec, user) {
 async function listApps(req, res, user) {
   const all = await store.all()
   const url = new URL(req.url, 'http://localhost')
-  if (url.searchParams.get('scope') === 'shared') {
+  const scope = url.searchParams.get('scope')
+  if (scope === 'shared') {
     // team/public apps owned by OTHERS (the "Shared with me" view)
     const shared = all.filter((r) => r.owner !== user.username && r.visibility !== 'private' && !isTerminal(r.state))
     return sendJson(res, 200, shared.map(publicInstance))
   }
-  const mine = user.role === 'admin' ? all : all.filter((r) => r.owner === user.username)
+  if (scope === 'all') {
+    // cluster-wide view for the Admin tab ONLY. The default (personal) view is owner-only
+    // for everyone, admins included — an admin's dashboard shows their own apps, not the lab's.
+    requireAdmin(user)
+    return sendJson(res, 200, all.map(publicInstance))
+  }
+  const mine = all.filter((r) => r.owner === user.username)
   sendJson(res, 200, mine.map(publicInstance))
 }
 
 async function launchApp(req, res, user) {
   if (isReserved(user.username)) throw new HttpError(403, 'This account may not launch user apps')
 
-  // Per-user concurrency cap — prevents one user exhausting the port pool / spamming SLURM
-  // (review MEDIUM, self/global DoS).
+  // Per-user launch quota (default config.defaultQuota, per-user override set by an admin or
+  // granted via an approved quota request). maxInstancesPerUser stays the hard ceiling.
   const active = (await store.all()).filter((r) => r.owner === user.username && !isTerminal(r.state))
-  if (active.length >= config.maxInstancesPerUser) {
-    throw new HttpError(429, `You already have ${active.length} active apps (max ${config.maxInstancesPerUser}). Stop one first.`)
+  const quota = await getQuotaLimit(user.username)
+  if (active.length >= quota) {
+    throw new HttpError(429, `You already have ${active.length} active apps (your quota is ${quota}). Stop one first, or request a higher quota from the dashboard.`)
   }
 
   const body = await readJsonBody(req)
@@ -338,9 +346,76 @@ async function uploadFile(req, res, user) {
 // ---- approvals / hosting requests ----------------------------------------
 async function postRequest(req, res, user) {
   const body = await readJsonBody(req)
-  const r = await createRequest({ user: user.username, kind: body?.kind || 'host-app', detail: body?.detail })
-  await store.audit({ actor: user.username, action: 'request', target: r.id, detail: { kind: r.kind } })
+  const r = await createRequest({ user: user.username, kind: body?.kind || 'host-app', detail: body?.detail, requested: body?.requested })
+  await store.audit({ actor: user.username, action: 'request', target: r.id, detail: { kind: r.kind, requested: r.requested ?? undefined } })
   sendJson(res, 201, r)
+}
+
+// ---- launch quotas ---------------------------------------------------------
+// Own quota + usage (shown on the dashboard, with a "request more" flow).
+async function getQuotaHandler(_req, res, user) {
+  const all = await store.all()
+  const used = all.filter((r) => r.owner === user.username && !isTerminal(r.state)).length
+  const limit = await getQuotaLimit(user.username)
+  const pendingReq = (await listRequests()).find((r) => r.user === user.username && r.kind === 'quota' && r.status === 'pending')
+  sendJson(res, 200, {
+    limit,
+    used,
+    defaultLimit: config.defaultQuota,
+    max: config.maxInstancesPerUser,
+    pendingRequest: pendingReq ? { id: pendingReq.id, requested: pendingReq.requested } : null,
+  })
+}
+
+async function requestQuotaHandler(req, res, user) {
+  const body = await readJsonBody(req)
+  const requested = Math.round(Number(body?.limit))
+  if (!Number.isFinite(requested) || requested < 1 || requested > config.maxInstancesPerUser) {
+    throw new HttpError(400, `Requested quota must be between 1 and ${config.maxInstancesPerUser}.`)
+  }
+  const current = await getQuotaLimit(user.username)
+  if (requested <= current) throw new HttpError(400, `Your quota is already ${current}.`)
+  const r = await createRequest({
+    user: user.username,
+    kind: 'quota',
+    detail: String(body?.reason || '').slice(0, 500) || `Requesting a quota of ${requested} simultaneous apps.`,
+    requested,
+  })
+  await store.audit({ actor: user.username, action: 'quota-request', target: r.id, detail: { requested } })
+  sendJson(res, 201, r)
+}
+
+// Admin: everyone's quota + live usage, and per-user set/clear.
+async function adminQuotasHandler(_req, res, user) {
+  requireAdmin(user)
+  const [all, overrides, requests] = await Promise.all([store.all(), allQuotaOverrides(), listRequests()])
+  const users = new Map()
+  for (const [u, limit] of Object.entries(overrides)) users.set(u, { user: u, limit, override: true, active: 0 })
+  for (const r of all) {
+    if (isTerminal(r.state)) continue
+    if (!users.has(r.owner)) users.set(r.owner, { user: r.owner, limit: config.defaultQuota, override: false, active: 0 })
+    users.get(r.owner).active += 1
+  }
+  for (const r of requests) {
+    if (r.kind !== 'quota' || r.status !== 'pending') continue
+    if (!users.has(r.user)) users.set(r.user, { user: r.user, limit: config.defaultQuota, override: false, active: 0 })
+    users.get(r.user).pendingRequested = r.requested
+  }
+  const rows = [...users.values()].sort((a, b) => b.active - a.active || a.user.localeCompare(b.user))
+  sendJson(res, 200, { quotas: rows, defaultLimit: config.defaultQuota, max: config.maxInstancesPerUser })
+}
+
+async function setQuotaHandler(req, res, user, target) {
+  requireAdmin(user)
+  if (!/^[a-z_][a-z0-9._-]{0,31}$/.test(target)) throw new HttpError(400, 'Invalid username')
+  const body = await readJsonBody(req)
+  const limit = body?.limit === null ? null : Math.round(Number(body?.limit))
+  if (limit !== null && (!Number.isFinite(limit) || limit < 1 || limit > config.maxInstancesPerUser)) {
+    throw new HttpError(400, `Quota must be between 1 and ${config.maxInstancesPerUser} (or null to reset to the default).`)
+  }
+  const result = await setQuotaLimit(target, limit, user.username)
+  await store.audit({ actor: user.username, action: 'quota-set', target, detail: { limit: result.limit, override: result.override } })
+  sendJson(res, 200, result)
 }
 async function getRequests(_req, res, user) {
   requireAdmin(user)
@@ -454,8 +529,9 @@ async function removePipelineHandler(_req, res, user, id) {
 async function launchPipelineHandler(req, res, user) {
   if (isReserved(user.username)) throw new HttpError(403, 'This account may not launch pipelines')
   const active = (await store.all()).filter((r) => r.owner === user.username && !isTerminal(r.state))
-  if (active.length >= config.maxInstancesPerUser) {
-    throw new HttpError(429, `You already have ${active.length} active apps/runs (max ${config.maxInstancesPerUser}). Stop one first.`)
+  const pipeQuota = await getQuotaLimit(user.username)
+  if (active.length >= pipeQuota) {
+    throw new HttpError(429, `You already have ${active.length} active apps/runs (your quota is ${pipeQuota}). Stop one first, or request a higher quota from the dashboard.`)
   }
   const body = await readJsonBody(req)
   const p = await resolvePipeline(body?.pipelineId, user.username)
@@ -522,6 +598,10 @@ const ROUTES = [
   ['POST', /^\/api\/files\/rename$/, renameFile],
   ['POST', /^\/api\/files\/delete$/, deleteFile],
   ['POST', /^\/api\/requests$/, postRequest],
+  ['GET', /^\/api\/quota$/, getQuotaHandler],
+  ['POST', /^\/api\/quota\/request$/, requestQuotaHandler],
+  ['GET', /^\/api\/admin\/quotas$/, adminQuotasHandler],
+  ['POST', /^\/api\/admin\/quotas\/([^/]+)$/, setQuotaHandler],
   ['GET', /^\/api\/admin\/requests$/, getRequests],
   ['POST', /^\/api\/admin\/requests\/([^/]+)\/approve$/, decideHandler('approve')],
   ['POST', /^\/api\/admin\/requests\/([^/]+)\/deny$/, decideHandler('deny')],

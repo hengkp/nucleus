@@ -8,6 +8,9 @@ import { Card } from '@/components/Card'
 import { Badge } from '@/components/Badge'
 import { Icon } from '@/components/Icon'
 import { Button } from '@/components/Button'
+import { Modal } from '@/components/Modal'
+import { Field } from '@/components/Field'
+import { Input } from '@/components/Input'
 import { SkeletonCard } from '@/components/Skeleton'
 import { EmptyState } from '@/components/EmptyState'
 import { useLive, CADENCE } from '@/lib/live'
@@ -16,7 +19,53 @@ import { useSession } from '@/lib/session'
 import { useFavorites } from '@/lib/favorites'
 import { useToast } from '@/lib/toast'
 import { gb } from '@/lib/format'
-import type { Instance, Template } from '@/lib/types'
+import type { Instance, QuotaInfo, Template } from '@/lib/types'
+
+function QuotaRequestModal({ quota, open, onClose, onSent }: { quota: QuotaInfo; open: boolean; onClose: () => void; onSent: () => void }) {
+  const toast = useToast()
+  const [limit, setLimit] = useState(String(Math.min(quota.limit + 1, quota.max)))
+  const [reason, setReason] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string>()
+
+  async function submit() {
+    setErr(undefined)
+    const n = Math.round(Number(limit))
+    if (!Number.isFinite(n) || n <= quota.limit || n > quota.max) {
+      setErr(`Pick a number between ${quota.limit + 1} and ${quota.max}.`)
+      return
+    }
+    setBusy(true)
+    try {
+      await api.requestQuota(n, reason)
+      toast.push('Quota request sent to the admins.', 'ok')
+      onSent(); onClose()
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Could not send the request')
+    } finally { setBusy(false) }
+  }
+
+  return (
+    <Modal open={open} onClose={onClose} title="Request a higher quota" size="sm">
+      <div className="space-y-4 p-5">
+        <p className="text-sm text-ink-muted">
+          You can run <span className="font-medium text-ink">{quota.limit}</span> apps at the same time.
+          Ask the admins for more (up to {quota.max}); approval applies it immediately.
+        </p>
+        <Field label={`New limit (${quota.limit + 1}-${quota.max})`} error={err}>
+          {(id) => <Input id={id} type="number" min={quota.limit + 1} max={quota.max} value={limit} onChange={(e) => setLimit(e.target.value)} autoFocus />}
+        </Field>
+        <Field label="Why do you need it? (optional)">
+          {(id) => <Input id={id} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. QuPath + two notebooks for the imaging project" />}
+        </Field>
+      </div>
+      <div className="flex justify-end gap-2 border-t border-border px-5 py-3.5">
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button variant="primary" icon="send-plane-line" loading={busy} onClick={submit}>Send request</Button>
+      </div>
+    </Modal>
+  )
+}
 
 export function Dashboard() {
   const navigate = useNavigate()
@@ -28,6 +77,8 @@ export function Dashboard() {
   const shared = useLive(() => api.listSharedInstances(), { intervalMs: CADENCE.slow })
   const cluster = useLive(() => api.getCluster(), { intervalMs: CADENCE.slow })
   const templates = useLive(() => api.listTemplates(), { intervalMs: 600_000 })
+  const quota = useLive(() => api.getQuota(), { intervalMs: CADENCE.slow })
+  const [quotaOpen, setQuotaOpen] = useState(false)
 
   const { favoriteIds } = useFavorites(session?.user?.username ?? '')
   const active = (instances.data ?? []).filter((i) => i.state !== 'stopped' && i.state !== 'failed')
@@ -125,8 +176,24 @@ export function Dashboard() {
       {/* Your apps */}
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-ink">Your running apps</h2>
-          {instances.stale && <Badge tone="warn">data delayed</Badge>}
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
+            Your running apps
+            {quota.data && (
+              <span className={`tabular text-2xs font-normal ${quota.data.used >= quota.data.limit ? 'text-warn' : 'text-ink-muted'}`}>
+                {quota.data.used}/{quota.data.limit} of your quota
+              </span>
+            )}
+          </h2>
+          <div className="flex items-center gap-2">
+            {instances.stale && <Badge tone="warn">data delayed</Badge>}
+            {quota.data && (quota.data.pendingRequest ? (
+              <Badge tone="warn">quota request pending{quota.data.pendingRequest.requested ? ` (${quota.data.pendingRequest.requested})` : ''}</Badge>
+            ) : quota.data.limit < quota.data.max ? (
+              <button onClick={() => setQuotaOpen(true)} className="text-2xs text-brand hover:underline">
+                <Icon name="add-circle-line" className="mr-0.5" />Request more
+              </button>
+            ) : null)}
+          </div>
         </div>
         {instances.loading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -173,6 +240,9 @@ export function Dashboard() {
       )}
 
       <LaunchWizard template={wizard} onClose={() => setWizard(null)} onLaunched={() => instances.refresh()} />
+      {quota.data && (
+        <QuotaRequestModal quota={quota.data} open={quotaOpen} onClose={() => setQuotaOpen(false)} onSent={() => quota.refresh()} />
+      )}
     </>
   )
 }

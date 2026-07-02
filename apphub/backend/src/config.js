@@ -32,6 +32,9 @@ export const config = {
   devAuth: bool(env.APPHUB_DEV_AUTH, false),
   proxySecret: env.APPHUB_PROXY_SECRET || '',
   maxInstancesPerUser: Number(env.APPHUB_MAX_PER_USER || 8),
+  // Default simultaneous-apps quota per user. Admins can set a per-user override (up to
+  // maxInstancesPerUser, the hard ceiling) and users can request more from the dashboard.
+  defaultQuota: Number(env.APPHUB_DEFAULT_QUOTA || 3),
   // Self-service extend ("top-up"): each click adds this much, up to the hard cap. Beyond the
   // cap, users request the admin-approved persistent track.
   extendStepMinutes: Number(env.APPHUB_EXTEND_STEP_MIN || 720), // +12h per click

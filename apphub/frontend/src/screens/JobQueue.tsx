@@ -28,6 +28,14 @@ const STATE_LABEL: Record<Job['state'], string> = {
 }
 const FILTERS = ['all', 'RUNNING', 'PENDING'] as const
 
+/** Compact submit time: today -> "14:32", earlier -> "2 Jul, 14:32" (hover shows the full stamp). */
+function submitted(ms: number): string {
+  const d = new Date(ms)
+  const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const sameDay = d.toDateString() === new Date().toDateString()
+  return sameDay ? time : `${d.toLocaleDateString([], { day: 'numeric', month: 'short' })}, ${time}`
+}
+
 export function JobQueue() {
   const jobs = useLive(() => api.listJobs(), { intervalMs: CADENCE.fast })
   const { session } = useSession()
@@ -106,11 +114,11 @@ export function JobQueue() {
       </div>
 
       <Card className="flex max-h-[calc(100vh-15rem)] flex-col overflow-hidden">
-        <div className={cn('grid shrink-0 gap-2 border-b border-border bg-surface-2/50 px-4 py-2.5 text-2xs font-medium uppercase tracking-wide text-ink-muted', isAdmin ? 'grid-cols-[1.5rem_5rem_1fr_8rem_6rem_6rem_5rem]' : 'grid-cols-[5rem_1fr_8rem_6rem_6rem_5rem]')}>
+        <div className={cn('grid shrink-0 gap-2 border-b border-border bg-surface-2/50 px-4 py-2.5 text-2xs font-medium uppercase tracking-wide text-ink-muted', isAdmin ? 'grid-cols-[1.5rem_5rem_1fr_8rem_6rem_10rem_6rem_5rem]' : 'grid-cols-[5rem_1fr_8rem_6rem_10rem_6rem_5rem]')}>
           {isAdmin && (
             <input type="checkbox" aria-label="select all jobs" disabled={cancellable.length === 0} checked={cancellable.length > 0 && sel.size === cancellable.length} onChange={toggleAll} className="h-4 w-4 accent-[var(--brand)] disabled:opacity-30" />
           )}
-          <span>Job</span><span>Name</span><span>Owner</span><span>Node</span><span>Elapsed</span><span></span>
+          <span>Job</span><span>Name</span><span>Owner</span><span>Node</span><span>Submitted</span><span>Elapsed</span><span></span>
         </div>
         <div className="flex-1 overflow-y-auto">
         {jobs.loading ? (
@@ -119,7 +127,7 @@ export function JobQueue() {
           <EmptyState icon="stack-line" title="No jobs in this view" />
         ) : (
           rows.map((j) => (
-            <div key={j.id} className={cn('grid items-center gap-2 border-b border-border px-4 py-2.5 text-sm last:border-0', isAdmin ? 'grid-cols-[1.5rem_5rem_1fr_8rem_6rem_6rem_5rem]' : 'grid-cols-[5rem_1fr_8rem_6rem_6rem_5rem]')}>
+            <div key={j.id} className={cn('grid items-center gap-2 border-b border-border px-4 py-2.5 text-sm last:border-0', isAdmin ? 'grid-cols-[1.5rem_5rem_1fr_8rem_6rem_10rem_6rem_5rem]' : 'grid-cols-[5rem_1fr_8rem_6rem_10rem_6rem_5rem]')}>
               {isAdmin && (
                 <input type="checkbox" aria-label={`select ${j.name}`} disabled={!canCancel(j)} checked={sel.has(j.id)} onChange={() => toggle(j.id)} className="h-4 w-4 accent-[var(--brand)] disabled:opacity-30" />
               )}
@@ -131,6 +139,7 @@ export function JobQueue() {
               </span>
               <span className="tabular truncate text-ink-muted">{j.owner}</span>
               <span className="tabular text-ink-muted">{j.node ?? <span className="inline-flex items-center gap-1"><Icon name="time-line" /> queued</span>}</span>
+              <span className="tabular text-ink-muted" title={j.submittedAt ? new Date(j.submittedAt).toLocaleString() : undefined}>{j.submittedAt ? submitted(j.submittedAt) : '-'}</span>
               <span className="tabular text-ink-muted">{duration(j.elapsedMinutes)}</span>
               <span className="text-right">
                 {canCancel(j) && (
