@@ -137,6 +137,11 @@ case "$TEMPLATE" in
       # interactive prompt and never binds the port. Auth is still disabled at the VNC layer
       # (-disableBasicAuth) since the per-instance vhost is Authelia-gated; this password is internal.
       [ -f '$WS/.kasmpasswd' ] || printf 'sispkasm\nsispkasm\n' | kasmvncpasswd -u sisp -w >/dev/null 2>&1
+      # Clear stale :1.pid files a previous run left in the locker (possibly from a DIFFERENT
+      # compute node). The liveness wait below matches THIS node's pid file; a leftover node-N
+      # pid would otherwise be read first and make the wait exit at once, ending the session even
+      # though KasmVNC is running fine.
+      rm -f '$WS'/.vnc/*:1.pid 2>/dev/null || true
       vncserver :1 -select-de manual -disableBasicAuth </dev/null >/tmp/vnc.log 2>&1
       sleep 4
       DISPLAY=:1 openbox >/tmp/openbox.log 2>&1 &
@@ -144,7 +149,7 @@ case "$TEMPLATE" in
       # browser window (otherwise the startup licence dialog can open with its buttons off-frame).
       DISPLAY=:1 /usr/local/bin/qupath-window-fit.sh >/tmp/winfit.log 2>&1 &
       DISPLAY=:1 /usr/local/bin/QuPath >/tmp/qupath.log 2>&1 &
-      XPID=\$(cat '$WS'/.vnc/*:1.pid 2>/dev/null | head -1)
+      XPID=\$(cat '$WS'/.vnc/\$(hostname):1.pid 2>/dev/null | head -1)
       if [ -n \"\$XPID\" ]; then exec tail --pid=\"\$XPID\" -f /dev/null; fi
       echo 'KasmVNC failed to start'; tail -30 /tmp/vnc.log; exit 1
     " ;;
