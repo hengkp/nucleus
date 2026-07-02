@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App not found | SISP AppHub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #11695f; --brand-strong: #0c4f47; --brand-tint: #e2f1ee;
+      --accent: #1b7fbd; --amber: #b6791f;
+      --ink: #131a19; --ink-2: #3a4744; --muted: #5d6b68;
+      --surface: #ffffff; --bg: #f7f9f9; --border: #e4ecea;
+      --ring: rgba(17,105,95,0.22);
+      --shadow: 0 24px 60px -18px rgba(12,79,71,0.28), 0 2px 8px rgba(16,38,34,0.06);
+      --glow: rgba(17,105,95,0.28);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --brand: #2bb3a3; --brand-strong: #46c7b7; --brand-tint: #11332e;
+        --accent: #4aa8d8; --amber: #d0a24a;
+        --ink: #eaf2f0; --ink-2: #b9c8c4; --muted: #8fa19d;
+        --surface: #131d1b; --bg: #0d1413; --border: #223230;
+        --ring: rgba(43,179,163,0.30);
+        --shadow: 0 30px 70px -20px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.4);
+        --glow: rgba(43,179,163,0.34);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: "Inter", system-ui, -apple-system, sans-serif;
+      color: var(--ink); background: var(--bg);
+      display: grid; place-items: center; padding: 1.5rem;
+      -webkit-font-smoothing: antialiased; overflow: hidden; position: relative;
+    }
+    .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5; will-change: transform; }
+    .blob.a { width: 46rem; height: 46rem; top: -16rem; right: -12rem;
+      background: radial-gradient(circle, var(--glow), transparent 68%); animation: drift1 22s ease-in-out infinite; }
+    .blob.b { width: 40rem; height: 40rem; bottom: -18rem; left: -14rem;
+      background: radial-gradient(circle, rgba(27,127,189,0.22), transparent 68%); animation: drift2 26s ease-in-out infinite; }
+    .grid { position: absolute; inset: 0; opacity: 0.5;
+      background-image: radial-gradient(currentColor 1px, transparent 1.6px);
+      background-size: 26px 26px; color: var(--border);
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 78%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 78%); }
+    @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-3rem,2rem) scale(1.08); } }
+    @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(2.5rem,-1.5rem) scale(1.06); } }
+
+    .card {
+      position: relative; z-index: 1; width: min(30rem, 100%);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      -webkit-backdrop-filter: blur(12px) saturate(150%); backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow);
+      padding: 2.4rem 2rem 1.9rem; text-align: center;
+      animation: rise 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(0.985); } to { opacity: 1; transform: none; } }
+
+    .brand { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--muted);
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; margin-bottom: 1.4rem; }
+    .brand .mk { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 16px; height: 16px; }
+    .brand .mk i { background: var(--brand); border-radius: 2px; }
+    .brand .mk i:nth-child(2), .brand .mk i:nth-child(3) { background: color-mix(in srgb, var(--brand) 55%, transparent); }
+    .brand b { color: var(--ink); font-weight: 700; }
+
+    /* Badge: floating window "screen" with a searching magnifier that never finds the app. */
+    .art-wrap { position: relative; width: 116px; height: 116px; margin: 0.2rem auto 1.4rem; }
+    .art-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--brand);
+      opacity: 0; animation: pulse 2.8s ease-out infinite; }
+    .art-ring.two { animation-delay: 1.4s; }
+    @keyframes pulse { 0% { transform: scale(0.72); opacity: 0.55; } 70% { opacity: 0; } 100% { transform: scale(1.25); opacity: 0; } }
+    .badge { position: absolute; inset: 14px; border-radius: 50%;
+      background: linear-gradient(150deg, var(--brand), var(--brand-strong));
+      display: grid; place-items: center; color: #fff;
+      box-shadow: 0 12px 30px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,0.25);
+      animation: float 4.6s ease-in-out infinite; }
+    .badge svg { width: 46px; height: 46px; overflow: visible; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    /* the empty window's placeholder line gently blinks; the magnifier sweeps in a small arc */
+    .scan { transform-origin: 12px 12px; animation: sweep 3.6s ease-in-out infinite; }
+    @keyframes sweep { 0%,100% { transform: translate(0,0) rotate(0); } 30% { transform: translate(2px,1px) rotate(6deg); } 65% { transform: translate(-2px,-1px) rotate(-6deg); } }
+    .miss { animation: blink 3.6s ease-in-out infinite; }
+    @keyframes blink { 0%,100% { opacity: 0.9; } 50% { opacity: 0.35; } }
+
+    h1 { font-size: 1.5rem; line-height: 1.2; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.6rem; }
+    .lede { color: var(--ink-2); font-size: 0.98rem; line-height: 1.6; margin: 0 auto 1rem; max-width: 24rem; }
+    .lede b { color: var(--ink); font-weight: 600; }
+    .who { display: inline-flex; align-items: center; gap: 0.45rem; font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem; color: var(--brand-strong); background: var(--brand-tint);
+      border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent); border-radius: 999px;
+      padding: 0.34rem 0.8rem; margin-bottom: 1.1rem; max-width: 100%; }
+    .who span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .note { display: flex; gap: 0.6rem; text-align: left; align-items: flex-start;
+      background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+      border-radius: 13px; padding: 0.8rem 0.9rem; margin: 0.2rem 0 1.5rem;
+      font-size: 0.86rem; line-height: 1.5; color: var(--ink-2); }
+    .note i { color: var(--accent); font-size: 1.05rem; margin-top: 1px; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+    .btn { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; font-weight: 600;
+      padding: 0.72rem 1.15rem; border-radius: 12px; border: 1px solid transparent; cursor: pointer;
+      text-decoration: none; transition: transform 0.08s ease, background 0.15s, border-color 0.15s, box-shadow 0.15s; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 3px 10px -2px var(--glow); }
+    .btn-primary:hover { background: var(--brand-strong); box-shadow: 0 6px 16px -3px var(--glow); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-tint); }
+    .foot { margin-top: 1.5rem; font-size: 0.72rem; color: var(--muted); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .badge, .scan, .miss, .art-ring, .blob { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="blob a"></div><div class="blob b"></div><div class="grid"></div>
+  </div>
+
+  <main class="card" role="alert">
+    <div class="brand"><span class="mk"><i></i><i></i><i></i><i></i></span> SISP <b>AppHub</b></div>
+
+    <div class="art-wrap" aria-hidden="true">
+      <div class="art-ring"></div><div class="art-ring two"></div>
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- empty app window -->
+          <rect x="3" y="4.5" width="18" height="15" rx="2.4" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M3 8.5h18" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="5.6" cy="6.5" r="0.7" fill="currentColor"/><circle cx="7.8" cy="6.5" r="0.7" fill="currentColor"/>
+          <path class="miss" d="M8.5 13.5h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.2 3"/>
+          <!-- searching magnifier -->
+          <g class="scan">
+            <circle cx="12" cy="14" r="3.4" fill="var(--brand)" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M14.6 16.6l2.4 2.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <h1>We couldn't find that app</h1>
+    <p class="lede">There's nothing running at this address. It probably <b>finished, was stopped, or timed out</b> — or the link is out of date.</p>
+
+    <div class="who" title="the app you tried to open"><i class="ri-window-line"></i><span id="host">this app</span></div>
+
+    <div class="note">
+      <i class="ri-information-line"></i>
+      <div>Apps stop on their own when their time limit is up. Start a fresh one from your dashboard in a couple of clicks, or reach an admin if you think it should still be here.</div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="https://apphub.sisp.com/"><i class="ri-arrow-left-line"></i> Back to my apps</a>
+      <a class="btn btn-ghost" href="https://apphub.sisp.com/catalog"><i class="ri-add-circle-line"></i> Launch an app</a>
+    </div>
+
+    <div class="foot">SISP AppHub &middot; need a hand? <a href="https://apphub.sisp.com/support" style="color:var(--brand);font-weight:600">contact an admin</a></div>
+  </main>
+
+  <script>
+    try {
+      var h = location.hostname.replace(/\.app\.sisp\.com$/, '');
+      if (h) document.getElementById('host').textContent = h + '.app.sisp.com';
+    } catch (e) { /* leave the default */ }
+  </script>
+</body>
+</html>
