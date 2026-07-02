@@ -60,6 +60,9 @@ export const config = {
   // <name>.app.sisp.com is also reachable at <name>.<publicDomain>:8443.
   publicDomain: env.APPHUB_PUBLIC_DOMAIN || 'sisp.freeddns.org',
   externalPort: env.APPHUB_EXTERNAL_PORT || '8443',
+  // Authelia forward-auth verify endpoint. /api/authz calls it server-side to authenticate the
+  // app-vhost session before enforcing per-owner access.
+  autheliaVerifyUrl: env.APPHUB_AUTHELIA_VERIFY || 'http://127.0.0.1:9091/api/verify',
   reservedUsers: new Set(list(env.APPHUB_RESERVED_USERS).concat(DEFAULT_RESERVED)),
 
   // Cluster topology — hard-coded IP allowlist (ADR-003: never trust job-written hosts).

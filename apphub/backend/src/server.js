@@ -209,6 +209,35 @@ async function drivePassword(req, res, user) {
   sendNoContent(res)
 }
 
+// nginx auth_request target for *.app.sisp.com. Authenticates the Authelia session server-side,
+// then enforces that the caller OWNS the app (or it's shared team/public). Authentication alone
+// is not enough — otherwise any lab member could open <name>-<owner>.app.sisp.com and operate as
+// the owner. Returns 204 allow, 401 (nginx -> login), 403 deny, 404 unknown host.
+async function authzApp(req, res) {
+  const host = String(req.headers['x-original-host'] || '')
+  const cookie = String(req.headers['cookie'] || '')
+  let remoteUser = ''
+  try {
+    const v = await fetch(config.autheliaVerifyUrl, {
+      headers: { cookie, 'X-Original-URL': `https://${host}/` },
+    })
+    if (v.status !== 200) { res.statusCode = 401; return res.end() }
+    remoteUser = String(v.headers.get('remote-user') || '').trim().toLowerCase()
+  } catch {
+    res.statusCode = 502
+    return res.end()
+  }
+  const meta = routes.metaFor(host)
+  if (!meta) { res.statusCode = 404; return res.end() }
+  const shared = meta.visibility === 'team' || meta.visibility === 'public'
+  if (shared || (remoteUser && remoteUser === String(meta.owner).toLowerCase())) {
+    res.statusCode = 204
+    return res.end()
+  }
+  res.statusCode = 403
+  return res.end()
+}
+
 async function changePasswordHandler(req, res, user) {
   const body = await readJsonBody(req)
   await changePassword(user.username, String(body?.currentPassword ?? ''), String(body?.newPassword ?? ''))
@@ -582,6 +611,7 @@ const ROUTES = [
   ['GET', /^\/api\/apps\/([^/]+)\/logs$/, appLogs],
   ['POST', /^\/api\/drive-password$/, drivePassword],
   ['POST', /^\/api\/change-password$/, changePasswordHandler],
+  ['GET', /^\/api\/authz$/, authzApp, true],
   ['GET', /^\/api\/cluster\/nodes$/, async (_q, res) => sendJson(res, 200, await buildCluster(slurm))],
   ['GET', /^\/api\/jobs$/, async (_q, res, user) => sendJson(res, 200, await buildJobs(store, user, slurm))],
   ['POST', /^\/api\/jobs\/([^/]+)\/cancel$/, cancelJob],
